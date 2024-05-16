@@ -3,12 +3,39 @@ name = "shinano-cms"
 compatibility_date = "2024-05-13"
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
+[placement]
+mode = "smart"
+
+######## PREVIEW environment config ########
+
+[env.preview.vars]
+NODE_VERSION = "20.13"
+
+[[env.preview.kv_namespaces]]
+binding = "CF_KV"
+id = "4ba4e83a40c7430ea4666de4db4c728e"
+
+[[env.preview.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "shinano-test"
+
+######## PRODUCTION environment config ########
+
+[env.production.vars]
+NODE_VERSION = "20.13"
+
+[[env.production.kv_namespaces]]
+binding = "CF_KV"
+id = "4ba4e83a40c7430ea4666de4db4c728e"
+
+[[env.production.r2_buckets]]
+binding = "STORAGE"
+bucket_name = "darmau-co"
+
 # Automatically place your workloads in an optimal location to minimize latency.
 # If you are running back-end logic in a Pages Function, running it closer to your back-end infrastructure
 # rather than the end user may result in better performance.
 # Docs: https://developers.cloudflare.com/pages/functions/smart-placement/#smart-placement
-# [placement]
-# mode = "smart"
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Docs:
@@ -65,29 +92,3 @@ pages_build_output_dir = ".svelte-kit/cloudflare"
 # To use different bindings for preview and production environments, follow the examples below.
 # When using environment-specific overrides for bindings, ALL bindings must be specified on a per-environment basis.
 # Docs: https://developers.cloudflare.com/pages/functions/wrangler-configuration#environment-specific-overrides
-
-######## PREVIEW environment config ########
-
-[env.preview.vars]
-NODE_VERSION = "20.13"
-
-[[env.preview.kv_namespaces]]
-binding = "CF_KV"
-id = "4ba4e83a40c7430ea4666de4db4c728e"
-
-[[env.preview.r2_buckets]]
-binding = "STORAGE"
-bucket_name = "shinano-test"
-
-######## PRODUCTION environment config ########
-
-[env.production.vars]
-NODE_VERSION = "20.13"
-
-[[env.production.kv_namespaces]]
-binding = "CF_KV"
-id = "4ba4e83a40c7430ea4666de4db4c728e"
-
-[[env.production.r2_buckets]]
-binding = "STORAGE"
-bucket_name = "darmau-co"
