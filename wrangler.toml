@@ -1,6 +1,6 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "<TBD>"
-compatibility_date = "<TBD>"
+name = "shinano-cms"
+compatibility_date = "2024-05-13"
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
 # Automatically place your workloads in an optimal location to minimize latency.
