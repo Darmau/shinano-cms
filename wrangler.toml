@@ -40,9 +40,9 @@ pages_build_output_dir = ".svelte-kit/cloudflare"
 
 # Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
 # Docs: https://developers.cloudflare.com/pages/functions/bindings/#kv-namespaces
-[[kv_namespaces]]
-binding = "CF_KV"
-id = "4ba4e83a40c7430ea4666de4db4c728e"
+#[[kv_namespaces]]
+# binding = "xxxxxxx"
+# id = "xxxxxxxxxx"
 
 # Bind a Queue producer. Use this binding to schedule an arbitrary task that may be processed later by a Queue consumer.
 # Docs: https://developers.cloudflare.com/pages/functions/bindings/#queue-producers
@@ -71,15 +71,23 @@ id = "4ba4e83a40c7430ea4666de4db4c728e"
 # [env.preview.vars]
 # API_KEY = "xyz789"
 
-# [[env.preview.kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "<PREVIEW_NAMESPACE_ID>"
+[[env.preview.kv_namespaces]]
+binding = "CF_KV"
+id = "4ba4e83a40c7430ea4666de4db4c728e"
+
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "shinano-test"
 
 ######## PRODUCTION environment config ########
 
 # [env.production.vars]
 # API_KEY = "abc123"
 
-# [[env.production.kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "<PRODUCTION_NAMESPACE_ID>"
+[[env.production.kv_namespaces]]
+binding = "CF_KV"
+id = "4ba4e83a40c7430ea4666de4db4c728e"
+
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "darmau-co"
