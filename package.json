@@ -39,5 +39,8 @@
 		"vitest": "^1.6.0",
 		"wrangler": "^3.56.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@supabase/supabase-js": "^2.43.2"
+	}
 }
