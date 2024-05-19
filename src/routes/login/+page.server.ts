@@ -9,10 +9,9 @@ export const actions: Actions = {
 		const password = formData.get('password') as string
 
 		const { error } = await supabase.auth.signInWithPassword({ email, password })
-		if (error) {
-			console.error(`登录提交${error.message}`)
-			// 返回svelte默认的错误页
-			throw new Error('登录失败')
+
+		if (error ) {
+			return redirect(303, '/signup/error')
 		} else {
 			return redirect(303, '/')
 		}

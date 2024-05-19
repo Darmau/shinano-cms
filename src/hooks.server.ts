@@ -2,7 +2,6 @@ import { redirect, type Handle } from '@sveltejs/kit';
 import { createServerClient } from '@supabase/ssr'
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public'
 import { sequence } from '@sveltejs/kit/hooks'
-import { API } from '$env/static/private';
 
 const supabase: Handle = async ({ event, resolve }) => {
 	/**
@@ -45,10 +44,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 			error,
 		} = await event.locals.supabase.auth.getUser()
 
-		// 检查是否为管理员
-		const isAdmin = await fetch(`${API}/users/ifadmin/${user?.id}`).then(res => res.json());
-
-		if (error || !isAdmin) {
+		if (error) {
 			// JWT validation has failed
 			return { session: null, user: null }
 		}
@@ -69,7 +65,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 	// 有session的时候继续执行，没有就返回登录页
 	if (!event.locals.session) {
-		if (event.url.pathname === '/signup') {
+		if (event.url.pathname.startsWith('/signup')) {
 			return resolve(event)
 		}
 		if (!event.url.pathname.startsWith('/login')) {

@@ -68,16 +68,16 @@
 				label = {$t('password')}
 				required
 			/>
-			<InputField
-				status = "normal"
-				type = "password"
-				id = "password-confirm"
-				name = "password-confirm"
-				autocomplete = "new-password"
-				error= {$t('password-not-match')}
-				label = {$t('confirm-password')}
-				required
-			/>
+<!--			<InputField-->
+<!--				status = "normal"-->
+<!--				type = "password"-->
+<!--				id = "password-confirm"-->
+<!--				name = "password-confirm"-->
+<!--				autocomplete = "new-password"-->
+<!--				error= {$t('password-not-match')}-->
+<!--				label = {$t('confirm-password')}-->
+<!--				required-->
+<!--			/>-->
 
 			<div class="mt-6">
 				<button

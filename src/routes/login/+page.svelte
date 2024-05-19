@@ -1,6 +1,4 @@
 <script lang="ts">
-	import "../../app.css"
-	import { enhance } from "$app/forms";
 	import InputField from '$components/InputField.svelte';
 	import { locale, locales, t } from '$lib/functions/i18n';
 </script>
