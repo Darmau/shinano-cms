@@ -39,7 +39,7 @@
 			disabled = {status === 'disabled'}
 			placeholder={placeholder}
 			class =
-				{`block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${classList}`}
+				{`block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 ${classList}`}
 		>
 		{#if status === 'error'}
 			<div

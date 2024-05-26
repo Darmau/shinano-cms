@@ -1,15 +1,12 @@
 import type { PageServerLoad } from './$types';
-import { API } from '$env/static/private';
+import { supabase } from '$lib/supabaseClient';
+
 
 export const load: PageServerLoad = async () => {
-  const [languages, oss, map] = await Promise.all([
-      fetch(`${API}/language/all`).then(res => res.json()),
-      fetch(`${API}/config/storage`).then(res => res.json()),
-      fetch(`${API}/config/map`).then(res => res.json())
-      ]);
+  const { data } = await supabase
+      .from("language")
+      .select();
   return {
-    languages,
-    oss,
-    map
+    languages: data ?? [{lang: 'zh-CN', locale: '简体中文'}, {lang: 'jp', locale: '日本'}],
   }
 }
