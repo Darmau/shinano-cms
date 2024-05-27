@@ -3,14 +3,6 @@
   import Footer from "$components/Footer.svelte";
 
   export let data;
-  $: ({ supabase } = data);
-
-  $: logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error(error);
-    }
-  };
 </script>
 
 <svelte:head></svelte:head>
@@ -20,7 +12,6 @@
     <Navbar/>
   </nav>
   <main class = "main">
-    <button on:click={logout}>Logout</button>
     <slot/>
   </main>
   <footer class = "footer border-t">

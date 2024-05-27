@@ -82,7 +82,7 @@
 		<p class = "text-center text-sm leading-6 text-gray-500">
 			Already have an account?
 			<a
-				href = "/login"
+				href = "/auth/login"
 				class = "font-semibold text-indigo-600 hover:text-indigo-500"
 			>Login</a>
 		</p>

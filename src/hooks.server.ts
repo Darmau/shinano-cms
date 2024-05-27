@@ -64,14 +64,18 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	event.locals.user = user
 
 	// 有session的时候继续执行，没有就返回登录页
-	if (!event.locals.session && event.url.pathname.startsWith('/admin')) {
-		return redirect(303, '/login')
+	if (!event.locals.session) {
+		if (event.url.pathname.startsWith('/auth/signup') || event.url.pathname.startsWith('/api/auth')) {
+			return resolve(event)
+		}
+		if (!event.url.pathname.startsWith('/auth/login')) {
+			return redirect(303, '/auth/login')
+		}
+	} else {
+		if (event.url.pathname.startsWith('/auth')) {
+			return redirect(303, '/admin')
+		}
 	}
-
-	if (event.locals.session && event.url.pathname === '/login') {
-		return redirect(303, '/private')
-	}
-
 	return resolve(event)
 }
 

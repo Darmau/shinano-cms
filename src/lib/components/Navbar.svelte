@@ -14,17 +14,17 @@
   import { t, locale, locales } from '$lib/functions/i18n'
 
   const navItems = [
-    {name: 'home', href: '/', icon: Home},
-    {name: 'message', href: '/message', icon: Message},
-    {name: 'media', href: '/media', icon: Media},
-    {name: 'article', href: '/article', icon: Article},
-    {name: 'photo', href: '/photo', icon: Photo},
-    {name: 'video', href: '/video', icon: Video},
-    {name: 'thought', href: '/thought', icon: Memo},
-    {name: 'comment', href: '/comment', icon: Comment},
-    {name: 'user', href: '/user', icon: User},
-    {name: 'tag', href: '/tag', icon: Tag},
-    {name: 'setting', href: '/setting', icon: Setting},
+    {name: 'home', href: '/admin', icon: Home},
+    {name: 'message', href: '/admin/message', icon: Message},
+    {name: 'media', href: '/admin/media', icon: Media},
+    {name: 'article', href: '/admin/article', icon: Article},
+    {name: 'photo', href: '/admin/photo', icon: Photo},
+    {name: 'video', href: '/admin/video', icon: Video},
+    {name: 'thought', href: '/admin/thought', icon: Memo},
+    {name: 'comment', href: '/admin/comment', icon: Comment},
+    {name: 'user', href: '/admin/user', icon: User},
+    {name: 'tag', href: '/admin/tag', icon: Tag},
+    {name: 'setting', href: '/admin/setting', icon: Setting},
   ];
 
   let menuOpen = false;

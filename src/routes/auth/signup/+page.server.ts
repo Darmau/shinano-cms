@@ -1,6 +1,5 @@
 import { redirect } from '@sveltejs/kit'
-
-import type { Actions } from './$types';
+import type { Actions } from '@sveltejs/kit'
 
 export const actions: Actions = {
 	signup: async ({ request, locals: { supabase } }) => {
@@ -21,9 +20,9 @@ export const actions: Actions = {
 		})
 		if (error) {
 			console.error(error)
-			return redirect(303, '/signup/error')
+			return redirect(303, '/auth/signup/error')
 		} else {
-			return redirect(303, '/signup/confirm')
+			return redirect(303, '/auth/confirm')
 		}
 	},
 }
