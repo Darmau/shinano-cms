@@ -1,30 +1,16 @@
 <script lang="ts">
   import Navbar from "$components/Navbar.svelte";
   import Footer from "$components/Footer.svelte";
-  import { goto, invalidate } from '$app/navigation';
-  import { onMount } from 'svelte';
 
   export let data;
-  $: ({ session, supabase } = data);
+  $: ({ supabase } = data);
 
-  onMount(() => {
-    const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-      if (!newSession) {
-        /**
-         * Queue this as a task so the navigation won't prevent the
-         * triggering function from completing
-         */
-        setTimeout(() => {
-          goto('/', { invalidateAll: true });
-        });
-      }
-      if (newSession?.expires_at !== session?.expires_at) {
-        invalidate('supabase:auth');
-      }
-    });
-
-    return () => data.subscription.unsubscribe();
-  });
+  $: logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error(error);
+    }
+  };
 </script>
 
 <svelte:head></svelte:head>
@@ -34,6 +20,7 @@
     <Navbar/>
   </nav>
   <main class = "main">
+    <button on:click={logout}>Logout</button>
     <slot/>
   </main>
   <footer class = "footer border-t">

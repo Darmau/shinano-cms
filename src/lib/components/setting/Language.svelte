@@ -1,9 +1,8 @@
 <script lang="ts">
-	import type { Configs } from '$types/config';
 	import PlusIcon from '$assets/icons/plus.svelte';
 	import { t } from '$lib/functions/i18n'
 
-	export let data: Configs
+	export let data;
 </script>
 
 <main class="py-8 flex flex-col gap-4">
@@ -15,6 +14,7 @@
 		<PlusIcon classList="w-4 h-4" />
 		{$t('add-language')}
 	</button>
+	<p>{JSON.stringify(data.languages)}</p>
 	{#if data.languages}
 		<div class="">
 			{#each data.languages as language}

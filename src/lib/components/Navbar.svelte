@@ -181,7 +181,7 @@
       </nav>
       <select
         bind:value={$locale}
-        class="rounded-md bg-white px-3 py-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
+        class="rounded-md border bg-white p-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
       >
         {#each locales as language}
           <option value={language.lang}>{language.locale}</option>

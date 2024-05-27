@@ -1,11 +1,11 @@
 import type { PageServerLoad } from './$types';
-import { supabase } from '$lib/supabaseClient';
 
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({locals: {supabase}}) => {
   const { data } = await supabase
       .from("language")
-      .select();
+      .select("lang, locale, is_default")
+      .order("is_default", {ascending: false});
   return {
     languages: data ?? [{lang: 'zh-CN', locale: '简体中文'}, {lang: 'jp', locale: '日本'}],
   }
