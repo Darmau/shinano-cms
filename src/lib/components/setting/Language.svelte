@@ -3,10 +3,26 @@
 	import { t } from '$lib/functions/i18n'
 
 	export let data;
+
+	const addTestLanguage = async () => {
+		const result = await fetch('/api/language', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(({
+				lang: 'jp',
+				locale: '日本语'
+			}))
+		}).then(res => res.json())
+		console.log(result)
+		return result
+	}
 </script>
 
 <main class="py-8 flex flex-col gap-4">
 	<button
+		on:click = {addTestLanguage}
 		type = "button"
 		class =
 			"self-end inline-flex items-center gap-x-1.5 rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -14,7 +30,6 @@
 		<PlusIcon classList="w-4 h-4" />
 		{$t('add-language')}
 	</button>
-	<p>{JSON.stringify(data.languages)}</p>
 	{#if data.languages}
 		<div class="">
 			{#each data.languages as language}

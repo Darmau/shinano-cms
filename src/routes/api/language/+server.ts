@@ -1,6 +1,24 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { error } from '@sveltejs/kit';
 
+// 获取语言列表
+export const GET: RequestHandler = async (event) => {
+	const { locals: { supabase } } = event;
+
+	const { data, error: dataError } = await supabase
+		.from('language')
+		.select('lang, locale, default');
+
+	if (dataError) {
+		error(500, dataError.message);
+	}
+
+	return new Response(JSON.stringify(data), {
+		headers: { 'Content-Type': 'application/json' },
+		status: 200,
+	});
+};
+
 // 增加语言 须提供lang, locale
 export const POST: RequestHandler = async (event) => {
 	const { lang, locale } = await event.request.json();
