@@ -79,9 +79,6 @@ devDependencies:
   vitest:
     specifier: ^1.6.0
     version: 1.6.0
-  wrangler:
-    specifier: ^3.56.0
-    version: 3.56.0
 
 packages:
 
