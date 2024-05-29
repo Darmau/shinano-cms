@@ -3,20 +3,12 @@
 	import { t } from '$lib/functions/i18n'
 
 	export let data;
+	$: ({ supabase } = data);
 
-	const addTestLanguage = async () => {
-		const result = await fetch('/api/language', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(({
-				lang: 'jp',
-				locale: '日本语'
-			}))
-		}).then(res => res.json())
-		console.log(result)
-		return result
+	$: addTestLanguage = async () => {
+		const { data, error } = await supabase.from('language').insert({lang: 'jp',
+			locale: '日本语'}).select();
+		return data;
 	}
 </script>
 
