@@ -1,12 +1,37 @@
 <script lang="ts">
 	import PlusIcon from '$assets/icons/plus.svelte';
 	import { t } from '$lib/functions/i18n'
+	import { onMount } from 'svelte';
 
-	export let data;
-	$: ({ supabase } = data);
+	export let data
+	let languages = [];
+	let { supabase } = data
+	$: ({ supabase } = data)
+
+	// 获取所有语言
+	$: getLanguages = async () => {
+		const { data } = await supabase.from('language').select('lang, locale, is_default');
+		languages = data;
+	}
+
+	$: addLanguage = async () => {
+		await supabase.from('language').insert({lang: 'jp',
+			locale: '日本语'}).select();
+		await getLanguages();
+	}
+
+	// 更换默认语言
+	$: setDefaultLanguage = async (lang: string) => {
+		await supabase.from('language').update({is_default: true}).eq('lang', lang);
+		await getLanguages();
+	}
+
+	onMount(async () => {
+		await getLanguages();
+	});
 
 	$: addTestLanguage = async () => {
-		const { data, error } = await supabase.from('language').insert({lang: 'jp',
+		const { data } = await supabase.from('language').insert({lang: 'jp',
 			locale: '日本语'}).select();
 		return data;
 	}
@@ -14,7 +39,7 @@
 
 <main class="py-8 flex flex-col gap-4">
 	<button
-		on:click = {addTestLanguage}
+		on:click = {addLanguage}
 		type = "button"
 		class =
 			"self-end inline-flex items-center gap-x-1.5 rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -22,9 +47,8 @@
 		<PlusIcon classList="w-4 h-4" />
 		{$t('add-language')}
 	</button>
-	{#if data.languages}
-		<div class="">
-			{#each data.languages as language}
+	<div>
+			{#each languages as language}
 				<div class="border-b flex justify-between py-4">
 					<div>
 						<h3 class="font-medium flex items-center gap-2">
@@ -39,6 +63,7 @@
 					<div class="flex gap-4">
 						{#if !language.is_default}
 							<button
+								on:click = {() => setDefaultLanguage(language.lang)}
 								type = "button"
 								class="uppercase text-cyan-600 text-sm hover:text-cyan-700 hover:font-semibold"
 							>{$t('set-default')}
@@ -53,6 +78,4 @@
 				</div>
 			{/each}
 		</div>
-	{/if}
-
 </main>
