@@ -30,7 +30,7 @@
 		</div>
 		<select
 			bind:value={$locale}
-			class="rounded-md w-full bg-white px-3 py-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
+			class="rounded-md w-full border bg-white p-2 py-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
 		>
 			{#each locales as language}
 				<option value={language.lang}>{language.locale}</option>
@@ -68,16 +68,6 @@
 				label = {$t('password')}
 				required
 			/>
-<!--			<InputField-->
-<!--				status = "normal"-->
-<!--				type = "password"-->
-<!--				id = "password-confirm"-->
-<!--				name = "password-confirm"-->
-<!--				autocomplete = "new-password"-->
-<!--				error= {$t('password-not-match')}-->
-<!--				label = {$t('confirm-password')}-->
-<!--				required-->
-<!--			/>-->
 
 			<div class="mt-6">
 				<button
@@ -92,7 +82,7 @@
 		<p class = "text-center text-sm leading-6 text-gray-500">
 			Already have an account?
 			<a
-				href = "/login"
+				href = "/auth/login"
 				class = "font-semibold text-indigo-600 hover:text-indigo-500"
 			>Login</a>
 		</p>

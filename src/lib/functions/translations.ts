@@ -33,6 +33,8 @@ const translations: Translation = {
 		"password-too-short": "密码长度不足8位",
 		"password-not-valid": "密码需要包含大小写字母和数字",
 		"password-not-match": "密码不匹配",
+		"ok": "确定",
+		"cancel": "取消",
 	},
 	"en": {
 		"home": "Home",
@@ -62,6 +64,8 @@ const translations: Translation = {
 		"password-too-short": "Password is too short",
 		"password-not-valid": "Password must contain uppercase, lowercase, and number",
 		"password-not-match": "Password does not match",
+		"ok": "OK",
+		"cancel": "Cancel",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -91,6 +95,8 @@ const translations: Translation = {
 		"password-too-short": "密碼長度不足8位",
 		"password-not-valid": "密碼需要包含大小寫字母和數字",
 		"password-not-match": "密碼不匹配",
+		"ok": "確定",
+		"cancel": "取消",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -120,6 +126,8 @@ const translations: Translation = {
 		"password-too-short": "パスワードが短すぎます",
 		"password-not-valid": "パスワードには大文字、小文字、数字が必要です",
 		"password-not-match": "パスワードが一致しません",
+		"ok": "OK",
+		"cancel": "キャンセル",
 	}
 }
 

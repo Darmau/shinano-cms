@@ -11,7 +11,7 @@
 		</div>
 		<select
 			bind:value={$locale}
-			class="rounded-md w-full bg-white px-3 py-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
+			class="rounded-md w-full bg-white border p-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
 		>
 			{#each locales as language}
 				<option value={language.lang}>{language.locale}</option>
@@ -52,7 +52,7 @@
 
 		<p class="text-center text-sm leading-6 text-gray-500">
 			Not a member?
-			<a href="/signup"
+			<a href="/auth/signup"
 				 class="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</a>
 		</p>
 	</div>

@@ -13,7 +13,7 @@ export const actions: Actions = {
 		if (error ) {
 			throw new Error('登录失败')
 		} else {
-			return redirect(303, '/')
+			return redirect(303, '/admin')
 		}
 	},
 }
