@@ -1,14 +1,13 @@
 <script lang="ts">
 	import PlusIcon from '$assets/icons/plus.svelte';
 	import { t } from '$lib/functions/i18n'
-	import { onMount } from 'svelte';
 	import AddLanguage from '$components/setting/AddLanguage.svelte';
+	import { onMount } from 'svelte';
 
 	export let data;
-	let errorMessage = '';
-	let languages = [];
 	let { supabase } = data
 	$: ({ supabase } = data)
+	$: languages = [];
 
 	// 获取所有语言
 	const getLanguages = async () => {
@@ -19,7 +18,7 @@
 
 	onMount(async () => {
 		await getLanguages();
-	});
+	})
 
 	// 更换默认语言
 	const setDefaultLanguage = async (lang: string) => {
@@ -32,9 +31,9 @@
 		const { data, error: dataError } = await
 			supabase.from('language').insert({ lang, locale }).select();
 		if (dataError) {
-			errorMessage = dataError.message;
+			console.error(dataError);
 		}
-		closeAddLanguage();
+		await getLanguages();
 	}
 
 	// 删除语言
@@ -53,11 +52,7 @@
 	let isAdding: boolean = false;
 	function closeAddLanguage() {
 		isAdding = false;
-		getLanguages();
 	}
-
-	// 错误信息alert
-	let errorVisible: boolean = true;
 
 </script>
 
@@ -72,10 +67,7 @@
 		{$t('add-language')}
 	</button>
 	{#if isAdding}
-		<AddLanguage {closeAddLanguage} {addLanguage} />
-	{/if}
-	{#if errorMessage}
-		<p>{errorMessage}</p>
+		<AddLanguage {addLanguage} {closeAddLanguage} />
 	{/if}
 	<div>
 			{#each languages as language}
