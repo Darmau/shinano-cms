@@ -4,6 +4,7 @@
 	import AddLanguage from '$components/setting/AddLanguage.svelte';
 	import { onMount } from 'svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
@@ -94,36 +95,42 @@
 		<AddLanguage {addLanguage} {closeAddLanguage} />
 	{/if}
 	<div>
-		{#each languages as language}
-			<div class = "border-b flex justify-between py-4">
-				<div>
-					<h3 class = "font-medium flex items-center gap-2">
-						{language.locale}
-						{#if language.is_default}
+		{#if languages.length === 0}
+			<div class="flex justify-center items-center min-h-32">
+				<ProgressRadial value={undefined} width="w-12" />
+			</div>
+		{:else}
+			{#each languages as language}
+				<div class = "border-b flex justify-between py-4">
+					<div>
+						<h3 class = "font-medium flex items-center gap-2">
+							{language.locale}
+							{#if language.is_default}
 								<span
 									class = "inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20"
 								>{$t('default')}</span>
+							{/if}
+						</h3>
+						<p class = "text-sm text-zinc-600 font-mono">{language.lang}</p>
+					</div>
+					<div class = "flex gap-4">
+						{#if !language.is_default}
+							<button
+								on:click = {() => setDefaultLanguage(language.lang)}
+								type = "button"
+								class = "uppercase text-cyan-600 text-sm hover:text-cyan-700 hover:font-semibold"
+							>{$t('set-default')}
+							</button>
 						{/if}
-					</h3>
-					<p class = "text-sm text-zinc-600 font-mono">{language.lang}</p>
-				</div>
-				<div class = "flex gap-4">
-					{#if !language.is_default}
 						<button
-							on:click = {() => setDefaultLanguage(language.lang)}
 							type = "button"
-							class = "uppercase text-cyan-600 text-sm hover:text-cyan-700 hover:font-semibold"
-						>{$t('set-default')}
+							on:click = {() => deleteLanguage(language.lang)}
+							class = "uppercase text-sm text-red-600 hover:text-red-700 hover:font-semibold"
+						>{$t('delete')}
 						</button>
-					{/if}
-					<button
-						type = "button"
-						on:click = {() => deleteLanguage(language.lang)}
-						class = "uppercase text-sm text-red-600 hover:text-red-700 hover:font-semibold"
-					>{$t('delete')}
-					</button>
+					</div>
 				</div>
-			</div>
-		{/each}
+			{/each}
+		{/if}
 	</div>
 </main>
