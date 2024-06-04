@@ -35,6 +35,11 @@ const translations: Translation = {
 		"password-not-match": "密码不匹配",
 		"ok": "确定",
 		"cancel": "取消",
+		"language-added": "语言已添加",
+		"language-deleted": "语言已删除",
+		"language-set-default": "默认语言已切换",
+		"language-add-fail": "添加语言失败",
+		"language-delete-fail": "删除语言失败，请检查是否还有关联的内容",
 	},
 	"en": {
 		"home": "Home",
@@ -66,6 +71,11 @@ const translations: Translation = {
 		"password-not-match": "Password does not match",
 		"ok": "OK",
 		"cancel": "Cancel",
+		"language-added": "Language added",
+		"language-deleted": "Language deleted",
+		"language-set-default": "Default language switched",
+		"language-add-fail": "Failed to add language",
+		"language-delete-fail": "Failed to delete language, please check if there are still associated contents",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -97,6 +107,11 @@ const translations: Translation = {
 		"password-not-match": "密碼不匹配",
 		"ok": "確定",
 		"cancel": "取消",
+		"language-added": "語言已添加",
+		"language-deleted": "語言已刪除",
+		"language-set-default": "默認語言已切換",
+		"language-add-fail": "添加語言失敗",
+		"language-delete-fail": "刪除語言失敗，請檢查是否還有關聯的內容",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -128,6 +143,11 @@ const translations: Translation = {
 		"password-not-match": "パスワードが一致しません",
 		"ok": "OK",
 		"cancel": "キャンセル",
+		"language-added": "言語が追加されました",
+		"language-deleted": "言語が削除されました",
+		"language-set-default": "デフォルト言語が切り替わりました",
+		"language-add-fail": "言語の追加に失敗しました",
+		"language-delete-fail": "言語の削除に失敗しました。関連コンテンツがまだあるかどうかを確認してください",
 	}
 }
 

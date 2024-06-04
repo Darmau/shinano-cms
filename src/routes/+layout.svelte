@@ -2,6 +2,9 @@
 	import { goto, invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import '../app.css';
+	import { initializeStores, Toast } from '@skeletonlabs/skeleton';
+
+	initializeStores();
 
 	export let data;
 	$: ({ session, supabase } = data);
@@ -26,4 +29,5 @@
 	});
 </script>
 
+<Toast position="t" />
 <slot />
