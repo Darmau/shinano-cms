@@ -102,7 +102,7 @@ async function submitForm(event: Event) {
 	>
 		<div>
 			<label
-				for="s3-region"
+				for="s3_region"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>
 				Region
@@ -119,7 +119,7 @@ async function submitForm(event: Event) {
 		</div>
 		<div>
 			<label
-				for="s3-endpoint"
+				for="s3_endpoint"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>
 				Endpoint
@@ -136,7 +136,7 @@ async function submitForm(event: Event) {
     </div>
 		<div>
 			<label
-				for="s3-access-id"
+				for="s3_access_id"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>
 				Access ID
@@ -153,7 +153,7 @@ async function submitForm(event: Event) {
 		</div>
 		<div>
 			<label
-				for="s3-secret-key"
+				for="s3_secret_key"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>
 				Secret Key
@@ -187,7 +187,7 @@ async function submitForm(event: Event) {
 		</div>
 		<div>
 			<label
-				for="s3-url-prefix"
+				for="s3_url_prefix"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>
 				URL Prefix
