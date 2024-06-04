@@ -1,8 +1,6 @@
 <script lang="ts">
   import Navbar from "$components/Navbar.svelte";
   import Footer from "$components/Footer.svelte";
-
-  export let data;
 </script>
 
 <svelte:head></svelte:head>

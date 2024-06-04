@@ -20,7 +20,8 @@
 		if (fetchError) {
 			console.error(fetchError);
 			toastStore.trigger({
-				message: "Failed to fetch languages."
+				message: "Failed to fetch languages.",
+				background: 'variant-filled-error'
 			});
 		}
 		languages = data;
@@ -35,23 +36,29 @@
 		await supabase.from('language').update({ is_default: true }).eq('lang', lang);
 		await getLanguages();
 		toastStore.trigger({
-			message: $t('language-set-default')
+			message: $t('language-set-default'),
+			hideDismiss: true,
+			background: 'variant-filled-success',
 		});
 	};
 
 	// 添加语言
 	const addLanguage = async (lang, locale) => {
-		const { data, error: dataError } = await
+		const { error: dataError } = await
 			supabase.from('language').insert({ lang, locale }).select();
 		if (dataError) {
 			console.error(dataError);
 			toastStore.trigger({
-				message: $t('language-add-fail')
+				message: $t('language-add-fail'),
+				hideDismiss: true,
+				background: 'variant-filled-error'
 			});
 		}
 		await getLanguages();
 		toastStore.trigger({
-			message: $t('language-added')
+			message: $t('language-added'),
+			hideDismiss: true,
+			background: 'variant-filled-success',
 		});
 	};
 
@@ -63,12 +70,16 @@
 		if (deleteError) {
 			console.error(deleteError);
 			toastStore.trigger({
-				message: $t('language-delete-fail')
+				message: $t('language-delete-fail'),
+				hideDismiss: true,
+				background: 'variant-filled-error',
 			});
 		}
 		await getLanguages();
 		toastStore.trigger({
-			message: $t('language-deleted')
+			message: $t('language-deleted'),
+			hideDismiss: true,
+			background: 'variant-filled-success',
 		});
 	};
 
