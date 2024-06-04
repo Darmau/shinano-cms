@@ -11,7 +11,7 @@
   <nav class = "sidebar">
     <Navbar/>
   </nav>
-  <main class = "main">
+  <main class = "main bg-white">
     <slot/>
   </main>
   <footer class = "footer border-t">
