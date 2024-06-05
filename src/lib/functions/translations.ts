@@ -1,7 +1,5 @@
 type Translation = {
-	[key: string]: {
-		[key: string]: string;
-	};
+	[key: string]: string | Translation;
 };
 
 const translations: Translation = {
@@ -23,7 +21,8 @@ const translations: Translation = {
 		"set-default": "设为默认",
 		"language": "语言",
 		"media-storage": "媒体存储",
-		"location": "位置",
+		"api": "API",
+		"ai": "AI",
 		"email": "邮箱",
 		"username": "用户名",
 		"username-description": "将作为对外显示的用户名",
@@ -41,6 +40,10 @@ const translations: Translation = {
 		"language-set-default": "默认语言已切换",
 		"language-add-fail": "添加语言失败",
 		"language-delete-fail": "删除语言失败，请检查是否还有关联的内容",
+		"api-unsplash": "如果你希望利用Unsplash API为文章添加图片，需要在此填写Unsplash API Key",
+		"api-amap": "如果你的图片在中国拍摄，建议使用高德地图API",
+		"api-google": "如果你的图片在国外拍摄，建议使用Google Map API",
+		"api-perspective": "该服务用于鉴别评论是否为恶意评论",
 	},
 	"en": {
 		"home": "Home",
@@ -60,7 +63,7 @@ const translations: Translation = {
 		"set-default": "Set Default",
 		"language": "Language",
 		"media-storage": "Media Storage",
-		"location": "Location",
+		"api": "API",
 		"email": "Email",
 		"username": "Username",
 		"username-description": "Will be displayed as username",
@@ -78,6 +81,10 @@ const translations: Translation = {
 		"language-set-default": "Default language switched",
 		"language-add-fail": "Failed to add language",
 		"language-delete-fail": "Failed to delete language, please check if there are still associated contents",
+		"api-unsplash": "If you want to use Unsplash API to add images to articles, you need to fill in Unsplash API Key here",
+		"api-amap": "If your images are taken in China, it is recommended to use Amap API",
+		"api-google": "If your images are taken overseas, it is recommended to use Google Map API",
+		"api-perspective": "This service is used to identify whether comments are malicious comments",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -97,7 +104,7 @@ const translations: Translation = {
 		"set-default": "設為默認",
 		"language": "語言",
 		"media-storage": "媒體存儲",
-		"location": "位置",
+		"api": "API",
 		"email": "郵箱",
 		"username": "用戶名",
 		"username-description": "將作為對外顯示的用戶名",
@@ -115,6 +122,10 @@ const translations: Translation = {
 		"language-set-default": "默認語言已切換",
 		"language-add-fail": "添加語言失敗",
 		"language-delete-fail": "刪除語言失敗，請檢查是否還有關聯的內容",
+		"api-unsplash": "如果你希望利用Unsplash API為文章添加圖片，需要在此填寫Unsplash API Key",
+		"api-amap": "如果你的圖片在中國拍攝，建議使用高德地圖API",
+		"api-google": "如果你的圖片在國外拍攝，建議使用Google Map API",
+		"api-perspective": "該服務用於鑑別評論是否為惡意評論",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -134,7 +145,7 @@ const translations: Translation = {
 		"set-default": "デフォルトに設定",
 		"language": "言語",
 		"media-storage": "メディアストレージ",
-		"location": "場所",
+		"api": "API",
 		"email": "メール",
 		"username": "ユーザー名",
 		"username-description": "外部に表示されるユーザー名",
@@ -152,6 +163,10 @@ const translations: Translation = {
 		"language-set-default": "デフォルト言語が切り替わりました",
 		"language-add-fail": "言語の追加に失敗しました",
 		"language-delete-fail": "言語の削除に失敗しました。関連コンテンツがまだあるかどうかを確認してください",
+		"api-unsplash": "記事に画像を追加するためにUnsplash APIを使用する場合は、ここにUnsplash APIキーを入力する必要があります",
+		"api-amap": "写真が中国で撮影された場合、Amap APIを使用することをお勧めします",
+		"api-google": "写真が海外で撮影された場合、Google Map APIを使用することをお勧めします",
+		"api-perspective": "このサービスは、コメントが悪意のあるコメントかどうかを識別するために使用されます",
 	}
 }
 

@@ -1,7 +1,8 @@
 <script>
   import Language from '$components/setting/Language.svelte';
   import Storage from '$components/setting/ObjectStorage.svelte';
-  import Location from '$components/setting/Location.svelte';
+  import APIs from '$components/setting/APIs.svelte';
+  import AI from '$components/setting/AI.svelte';
   import { t } from '$lib/functions/i18n'
 
   // 该方法负责切换下方显示的组件
@@ -10,7 +11,8 @@
   const settingTabs = [
     {name: 'language', component: Language},
     {name: 'media-storage', component: Storage},
-    {name: 'location', component: Location},
+    {name: 'ai', component: AI},
+    {name: 'api', component: APIs},
   ]
 
   export let data;

@@ -104,7 +104,7 @@ async function submitForm(event: Event) {
 				placeholder="S3 region, like us-west-1"
 				bind:value={STORAGE.S3_REGION}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -121,7 +121,7 @@ async function submitForm(event: Event) {
 				placeholder="https://s3.us-west-1.amazonaws.com"
 				bind:value={STORAGE.S3_ENDPOINT}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
     </div>
 		<div>
@@ -138,7 +138,7 @@ async function submitForm(event: Event) {
 				placeholder="Access ID for S3 bucket"
 				bind:value={STORAGE.S3_ACCESS_ID}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -155,7 +155,7 @@ async function submitForm(event: Event) {
 				placeholder="Secret Key for S3 bucket"
 				bind:value={STORAGE.S3_SECRET_KEY}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -172,7 +172,7 @@ async function submitForm(event: Event) {
 				placeholder="Bucket Name"
 				bind:value={STORAGE.S3_BUCKET}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -189,7 +189,7 @@ async function submitForm(event: Event) {
 				placeholder="URL Prefix for visit actual file"
 				bind:value={STORAGE.S3_URL_PREFIX}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
     <button
