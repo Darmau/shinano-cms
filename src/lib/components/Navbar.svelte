@@ -23,7 +23,7 @@
     {name: 'thought', href: '/admin/thought', icon: Memo},
     {name: 'comment', href: '/admin/comment', icon: Comment},
     {name: 'user', href: '/admin/user', icon: User},
-    {name: 'tag', href: '/admin/tag', icon: Tag},
+    {name: 'topic', href: '/admin/topic', icon: Tag},
     {name: 'setting', href: '/admin/setting', icon: Setting},
   ];
 

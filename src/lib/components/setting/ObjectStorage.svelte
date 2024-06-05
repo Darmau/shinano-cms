@@ -2,7 +2,7 @@
 import { t } from '$lib/functions/i18n';
 import { onMount } from 'svelte';
 import { getToastStore } from '@skeletonlabs/skeleton';
-import { ProgressRadial } from '@skeletonlabs/skeleton';
+import { StorageConfigs } from '$lib/types/storageConfigs';
 
 const toastStore = getToastStore();
 
@@ -10,23 +10,9 @@ export let data;
 let { supabase } = data;
 $: ({ supabase } = data);
 
-let STORAGE = {
-	'S3_REGION': '',
-	'S3_ENDPOINT': '',
-	'S3_ACCESS_ID': '',
-	'S3_SECRET_KEY': '',
-	'S3_BUCKET': '',
-	'S3_URL_PREFIX': ''
-}
-
-const KEYS = [
-	'S3_REGION',
-	'S3_ENDPOINT',
-	'S3_ACCESS_ID',
-	'S3_SECRET_KEY',
-	'S3_BUCKET',
-	'S3_URL_PREFIX'
-]
+const storageConfigs = new StorageConfigs();
+let STORAGE = storageConfigs.emptyObject();
+const KEYS = storageConfigs.array();
 
 // 从config表中获取S3配置 name, value
 const getS3Config = async () => {
@@ -52,6 +38,9 @@ const getS3Config = async () => {
 onMount(async () => {
 	await getS3Config();
 });
+
+// 该变量负责记录表单是否被修改，如果修改，则为true
+let isFormChanged = false;
 
 // 提交表单
 async function submitForm(event: Event) {
@@ -98,6 +87,7 @@ async function submitForm(event: Event) {
   <form
 	  method="POST"
 		on:submit={submitForm}
+		on:input={() => isFormChanged = true}
 		class="space-y-6"
 	>
 		<div>
@@ -114,7 +104,7 @@ async function submitForm(event: Event) {
 				placeholder="S3 region, like us-west-1"
 				bind:value={STORAGE.S3_REGION}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -131,7 +121,7 @@ async function submitForm(event: Event) {
 				placeholder="https://s3.us-west-1.amazonaws.com"
 				bind:value={STORAGE.S3_ENDPOINT}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
     </div>
 		<div>
@@ -148,7 +138,7 @@ async function submitForm(event: Event) {
 				placeholder="Access ID for S3 bucket"
 				bind:value={STORAGE.S3_ACCESS_ID}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -165,7 +155,7 @@ async function submitForm(event: Event) {
 				placeholder="Secret Key for S3 bucket"
 				bind:value={STORAGE.S3_SECRET_KEY}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -182,7 +172,7 @@ async function submitForm(event: Event) {
 				placeholder="Bucket Name"
 				bind:value={STORAGE.S3_BUCKET}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
 		<div>
@@ -199,13 +189,14 @@ async function submitForm(event: Event) {
 				placeholder="URL Prefix for visit actual file"
 				bind:value={STORAGE.S3_URL_PREFIX}
 				required
-				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 		</div>
     <button
 			type="submit"
+			disabled={!isFormChanged}
 			class =
-				"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+				"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-gray-200"
 		>
 			{$t('submit')}
 		</button>
