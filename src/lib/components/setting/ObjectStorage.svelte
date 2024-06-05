@@ -79,6 +79,7 @@ async function submitForm(event: Event) {
 		background: 'variant-filled-success'
 	});
 
+	isFormChanged = false;
 	await getS3Config();
 }
 </script>
