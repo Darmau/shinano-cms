@@ -2,7 +2,7 @@
 import { t } from '$lib/functions/i18n';
 import { onMount } from 'svelte';
 import { getToastStore } from '@skeletonlabs/skeleton';
-import { ProgressRadial } from '@skeletonlabs/skeleton';
+import { StorageConfigs } from '$lib/types/storageConfigs';
 
 const toastStore = getToastStore();
 
@@ -10,23 +10,9 @@ export let data;
 let { supabase } = data;
 $: ({ supabase } = data);
 
-let STORAGE = {
-	'S3_REGION': '',
-	'S3_ENDPOINT': '',
-	'S3_ACCESS_ID': '',
-	'S3_SECRET_KEY': '',
-	'S3_BUCKET': '',
-	'S3_URL_PREFIX': ''
-}
-
-const KEYS = [
-	'S3_REGION',
-	'S3_ENDPOINT',
-	'S3_ACCESS_ID',
-	'S3_SECRET_KEY',
-	'S3_BUCKET',
-	'S3_URL_PREFIX'
-]
+const storageConfigs = new StorageConfigs();
+let STORAGE = storageConfigs.emptyObject();
+const KEYS = storageConfigs.array();
 
 // 从config表中获取S3配置 name, value
 const getS3Config = async () => {
