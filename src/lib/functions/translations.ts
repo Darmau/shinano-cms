@@ -1,5 +1,7 @@
 type Translation = {
-	[key: string]: string | Translation;
+	[key: string]: {
+		[key: string]: string;
+	};
 };
 
 const translations: Translation = {
