@@ -39,6 +39,9 @@ onMount(async () => {
 	await getS3Config();
 });
 
+// 该变量负责记录表单是否被修改，如果修改，则为true
+let isFormChanged = false;
+
 // 提交表单
 async function submitForm(event: Event) {
 	event.preventDefault();
@@ -84,6 +87,7 @@ async function submitForm(event: Event) {
   <form
 	  method="POST"
 		on:submit={submitForm}
+		on:input={() => isFormChanged = true}
 		class="space-y-6"
 	>
 		<div>
@@ -190,8 +194,9 @@ async function submitForm(event: Event) {
 		</div>
     <button
 			type="submit"
+			disabled={!isFormChanged}
 			class =
-				"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+				"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:bg-gray-200"
 		>
 			{$t('submit')}
 		</button>
