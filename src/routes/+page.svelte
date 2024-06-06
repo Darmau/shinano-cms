@@ -1,1 +1,3 @@
-<h1>默认页面</h1>
+<main>
+	<a href="/admin">进入首页</a>
+</main>
