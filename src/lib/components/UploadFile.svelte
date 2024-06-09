@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { ImageProcess } from '$lib/types/imageProcess';
 	import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 	import { onMount } from 'svelte';
@@ -61,6 +61,8 @@
 		await getS3Config();
 	});
 
+	let isLoading = false;
+
 	// 上传文件
 	async function uploadFile(event: Event) {
 		event.preventDefault();
@@ -82,6 +84,7 @@
 
 		// upload
 		try {
+			isLoading = true;
 			await S3.send(command);
 		} catch (error) {
 			console.error(error);
@@ -139,6 +142,7 @@
 			});
 		}
 		console.log('File uploaded successfully.');
+		isLoading = false;
 		toastStore.trigger({
 			message: 'File uploaded successfully.',
 			hideDismiss: true,
@@ -148,5 +152,13 @@
 </script>
 
 <div>
-	<FileDropzone name = "files" bind:files = {files} on:change = {uploadFile} />
+	{#if isLoading}
+		<div class = "flex justify-center items-center min-h-32">
+			<ProgressRadial value = {undefined} width = "w-12" />
+		</div>
+	{:else}
+		<FileDropzone
+			name = "files" bind:files = {files} on:change = {uploadFile}
+		/>
+	{/if}
 </div>
