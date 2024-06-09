@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { StorageConfigs } from '$lib/types/storageConfigs';
+	import { ImageProcess } from '$lib/types/imageProcess';
 	import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 	import { onMount } from 'svelte';
 	import exifr from 'exifr';
 	import { v4 as uuidv4 } from 'uuid';
 	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
+	import getLocation from '$lib/functions/mapbox';
 
 	export let data;
 	let { supabase } = data;
@@ -15,7 +16,7 @@
 	let files: FileList;
 	const toastStore = getToastStore();
 
-	const storageConfigs = new StorageConfigs();
+	const storageConfigs = new ImageProcess();
 	let CONFIGS = storageConfigs.emptyObject();
 	const KEYS = storageConfigs.array();
 
@@ -95,6 +96,13 @@
 		// extract EXIF info from image
 		const EXIF = await exifr.parse(file);
 
+		// 如果有GPS信息，请求Mapbox接口获取地理位置信息
+		let location: string = null;
+		if (EXIF?.latitude && EXIF?.longitude && CONFIGS.MAPBOX) {
+			location = await getLocation(EXIF.latitude, EXIF.longitude,
+				CONFIGS.MAPBOX);
+		}
+
 		// save data into supabase
 		const { error: insertError } = await
 			supabase.from('image').insert({
@@ -117,7 +125,7 @@
 					latitude: EXIF?.latitude,
 					longitude: EXIF?.longitude
 				},
-				location: null,
+				location: location,
 				taken_at: EXIF?.DateTimeOriginal,
 				size: file.size,
 				storage_key: storageKey
