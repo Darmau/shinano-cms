@@ -69,10 +69,7 @@ CREATE TABLE
     "gps" JSON,
     "location" TEXT,
     "taken_at" TIMESTAMPTZ,
-    "width" SMALLINT,
-    "height" SMALLINT,
     "size" INT,
-    "has_alpha" BOOLEAN DEFAULT false,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "storage_key" UUID NOT NULL DEFAULT uuid_generate_v4 (),
     UNIQUE ("date", "file_name", "format")

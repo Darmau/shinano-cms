@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { FileDropzone, getToastStore } from '@skeletonlabs/skeleton';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { StorageConfigs } from '$lib/types/storageConfigs';
 	import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 	import { onMount } from 'svelte';
+	import exifr from 'exifr';
 	import { v4 as uuidv4 } from 'uuid';
+	import getDateFormat from '$lib/functions/dateFormat';
+	import FileDropzone from '$components/FileDropzone.svelte';
 
 	export let data;
 	let { supabase } = data;
@@ -38,7 +41,7 @@
 		if (fetchError) {
 			console.error(fetchError);
 			toastStore.trigger({
-				message: "Failed to fetch S3 config.",
+				message: 'Failed to fetch S3 config.',
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});
@@ -48,10 +51,10 @@
 			if (key.name in CONFIGS) {
 				CONFIGS[key.name] = key.value;
 			}
-		})
+		});
 
 		initS3Client();
-	}
+	};
 
 	onMount(async () => {
 		await getS3Config();
@@ -60,12 +63,13 @@
 	// 上传文件
 	async function uploadFile(event: Event) {
 		event.preventDefault();
+		const storageKey = uuidv4();
 		const target = event.target as HTMLInputElement;
 		const file = target.files[0];
 
 		const command = new PutObjectCommand({
 			Bucket: CONFIGS.S3_BUCKET,
-			Key: uuidv4(),
+			Key: storageKey,
 			Body: file,
 			ContentType: file.type,
 			Metadata: {
@@ -77,19 +81,64 @@
 
 		// upload
 		try {
-			const response = await S3.send(command);
-			console.log(response);
+			await S3.send(command);
 		} catch (error) {
 			console.error(error);
 			toastStore.trigger({
-				message: "Failed to upload file.",
+				message: 'Failed to upload file.',
 				hideDismiss: true,
 				background: 'variant-filled-error'
-			})
+			});
+			return false;
 		}
+
+		// extract EXIF info from image
+		const EXIF = await exifr.parse(file);
+
+		// save data into supabase
+		const { error: insertError } = await
+			supabase.from('image').insert({
+				folder: 'default',
+				file_name: file.name,
+				format: file.type.split('/')[1],
+				alt: '',
+				caption: '',
+				date: getDateFormat(), // 当天日期 2024-12-16
+				exif: {
+					maker: EXIF?.Make,
+					model: EXIF?.Model,
+					exposure_time: EXIF?.ExposureTime,
+					aperture: EXIF?.FNumber,
+					iso: EXIF?.ISO,
+					focal_length: EXIF?.FocalLength,
+					lens_model: EXIF?.LensModel
+				},
+				gps: {
+					latitude: EXIF?.latitude,
+					longitude: EXIF?.longitude
+				},
+				location: null,
+				taken_at: EXIF?.DateTimeOriginal,
+				size: file.size,
+				storage_key: storageKey
+			}).select();
+		if (insertError) {
+			console.error(insertError);
+			toastStore.trigger({
+				message: 'Failed to insert image data.',
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+		}
+		console.log('File uploaded successfully.');
+		toastStore.trigger({
+			message: 'File uploaded successfully.',
+			hideDismiss: true,
+			background: 'variant-filled-success'
+		});
 	}
 </script>
 
 <div>
-	<FileDropzone name="files" bind:files={files} on:change={uploadFile} />
+	<FileDropzone name = "files" bind:files = {files} on:change = {uploadFile} />
 </div>
