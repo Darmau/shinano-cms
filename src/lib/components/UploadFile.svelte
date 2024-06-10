@@ -63,91 +63,126 @@
 
 	let isLoading = false;
 
-	// 上传文件
-	async function uploadFile(event: Event) {
-		event.preventDefault();
-		const storageKey = uuidv4();
-		const target = event.target as HTMLInputElement;
-		const file = target.files[0];
+	function getImageDimensions(file: File): Promise<{
+		width: number;
+		height: number
+	}> {
+		return new Promise((resolve, reject) => {
+			const img = new Image();
+			img.onload = () => {
+				resolve({ width: img.width, height: img.height });
+			};
+			img.onerror = reject;
 
-		const command = new PutObjectCommand({
-			Bucket: CONFIGS.S3_BUCKET,
-			Key: storageKey,
-			Body: file,
-			ContentType: file.type,
-			Metadata: {
-				'file-name': file.name,
-				'file-size': file.size.toString(),
-				'file-type': file.type
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				img.src = e.target.result as string;
+			};
+			reader.onerror = reject;
+			reader.readAsDataURL(file);
+		});
+	}
+
+	// 上传文件
+	async function uploadFiles(event: Event) {
+		isLoading = true;
+		event.preventDefault();
+		const target = event.target as HTMLInputElement;
+		if (!target.files?.length) {
+			return;
+		}
+		const files = Array.from(target.files);
+
+		// 超过10个文件禁止上传
+		if (files.length > 10) {
+			toastStore.trigger({
+				message: 'You can only upload up to 10 files at a time.',
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+			return;
+		}
+
+		const uploadPromises = files.map(async (file) => {
+			const storageKey = uuidv4();
+			const dimensions = await getImageDimensions(file);
+			let encoder = new TextEncoder();
+			const command = new PutObjectCommand({
+				Bucket: CONFIGS.S3_BUCKET,
+				Key: storageKey,
+				Body: file,
+				ContentType: file.type,
+				Metadata: {
+					'file-size': file.size.toString(),
+					'file-type': file.type,
+					'width': dimensions.width.toString(),
+					'height': dimensions.height.toString()
+				}
+			});
+
+			// Attempt upload
+			try {
+				await S3.send(command);
+				const EXIF = await exifr.parse(file);
+				let location: string = null;
+				if (EXIF?.latitude && EXIF?.longitude) {
+					location = await getLocation(EXIF.latitude, EXIF.longitude,
+						CONFIGS.GOOGLE_MAPS); // Ensure this function supports async execution
+				}
+
+				// Prepare data for batch insertion
+				return {
+					folder: 'default',
+					file_name: file.name,
+					format: file.type.split('/')[1],
+					alt: '',
+					caption: '',
+					date: getDateFormat(),
+					exif: EXIF || null,
+					gps: EXIF ? {
+						latitude: EXIF.latitude,
+						longitude: EXIF.longitude
+					} : null,
+					location,
+					taken_at: EXIF?.DateTimeOriginal,
+					size: file.size,
+					width: dimensions.width,
+					height: dimensions.height,
+					storage_key: storageKey
+				};
+			} catch (error) {
+				console.error(error);
+				toastStore.trigger({
+					message: error.message || `Failed to upload ${file.name}.`,
+					hideDismiss: true,
+					background: 'variant-filled-error'
+				});
 			}
 		});
 
-		// upload
 		try {
-			isLoading = true;
-			await S3.send(command);
+			const records = await Promise.all(uploadPromises);
+			const { error: insertError } = await
+				supabase.from('image').insert(records).select();
+			if (insertError) {
+				console.error(insertError);
+			}
+
+			console.log('Files uploaded successfully.');
+			toastStore.trigger({
+				message: 'Files uploaded successfully.',
+				hideDismiss: true,
+				background: 'variant-filled-success'
+			});
 		} catch (error) {
-			console.error(error);
 			toastStore.trigger({
-				message: 'Failed to upload file.',
+				message: error.message || 'An error occurred during file upload.',
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});
-			return false;
+		} finally {
+			isLoading = false; // Ensure isLoading is declared at the right scope to control loading state
 		}
-
-		// extract EXIF info from image
-		const EXIF = await exifr.parse(file);
-
-		// 如果有GPS信息，请求Mapbox接口获取地理位置信息
-		let location: string = null;
-		if (EXIF?.latitude && EXIF?.longitude && CONFIGS.GOOGLE_MAPS) {
-			location = await getLocation(EXIF.latitude, EXIF.longitude,
-				CONFIGS.GOOGLE_MAPS);
-		}
-
-		// save data into supabase
-		const { error: insertError } = await
-			supabase.from('image').insert({
-				folder: 'default',
-				file_name: file.name,
-				format: file.type.split('/')[1],
-				alt: '',
-				caption: '',
-				date: getDateFormat(), // 当天日期 2024-12-16
-				exif: {
-					maker: EXIF?.Make,
-					model: EXIF?.Model,
-					exposure_time: EXIF?.ExposureTime,
-					aperture: EXIF?.FNumber,
-					iso: EXIF?.ISO,
-					focal_length: EXIF?.FocalLength,
-					lens_model: EXIF?.LensModel
-				},
-				gps: {
-					latitude: EXIF?.latitude,
-					longitude: EXIF?.longitude
-				},
-				location: location,
-				taken_at: EXIF?.DateTimeOriginal,
-				size: file.size,
-				storage_key: storageKey
-			}).select();
-		if (insertError) {
-			console.error(insertError);
-			toastStore.trigger({
-				message: 'Failed to insert image data.',
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-		}
-		console.log('File uploaded successfully.');
-		isLoading = false;
-		toastStore.trigger({
-			message: 'File uploaded successfully.',
-			hideDismiss: true,
-			background: 'variant-filled-success'
-		});
 	}
 </script>
 
@@ -158,7 +193,7 @@
 		</div>
 	{:else}
 		<FileDropzone
-			name = "files" bind:files = {files} on:change = {uploadFile}
+			name = "files" bind:files = {files} on:change = {uploadFiles}
 		/>
 	{/if}
 </div>
