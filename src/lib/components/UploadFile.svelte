@@ -106,7 +106,6 @@
 		const uploadPromises = files.map(async (file) => {
 			const storageKey = uuidv4();
 			const dimensions = await getImageDimensions(file);
-			let encoder = new TextEncoder();
 			const command = new PutObjectCommand({
 				Bucket: CONFIGS.S3_BUCKET,
 				Key: storageKey,
@@ -127,7 +126,8 @@
 				let location: string = null;
 				if (EXIF?.latitude && EXIF?.longitude) {
 					location = await getLocation(EXIF.latitude, EXIF.longitude,
-						CONFIGS.GOOGLE_MAPS); // Ensure this function supports async execution
+						CONFIGS.GOOGLE_MAPS, CONFIGS.AMAP);
+					// Ensure this function supports async execution
 				}
 
 				// Prepare data for batch insertion
@@ -139,7 +139,7 @@
 					caption: '',
 					date: getDateFormat(),
 					exif: EXIF || null,
-					gps: EXIF ? {
+					gps: EXIF.latitude ? {
 						latitude: EXIF.latitude,
 						longitude: EXIF.longitude
 					} : null,
