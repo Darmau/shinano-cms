@@ -7,7 +7,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
-	import getLocation from '$lib/functions/mapbox';
+	import getLocation from '$lib/functions/google-maps';
 
 	export let data;
 	let { supabase } = data;
@@ -101,9 +101,9 @@
 
 		// 如果有GPS信息，请求Mapbox接口获取地理位置信息
 		let location: string = null;
-		if (EXIF?.latitude && EXIF?.longitude && CONFIGS.MAPBOX) {
+		if (EXIF?.latitude && EXIF?.longitude && CONFIGS.GOOGLE_MAPS) {
 			location = await getLocation(EXIF.latitude, EXIF.longitude,
-				CONFIGS.MAPBOX);
+				CONFIGS.GOOGLE_MAPS);
 		}
 
 		// save data into supabase

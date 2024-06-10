@@ -43,7 +43,8 @@ const translations: Translation = {
 		"language-add-fail": "添加语言失败",
 		"language-delete-fail": "删除语言失败，请检查是否还有关联的内容",
 		"api-unsplash": "如果你希望利用Unsplash API为文章添加图片，需要在此填写Unsplash API Key",
-		"api-mapbox": "用于查找图片的拍摄地点",
+		"api-google-maps": "用于查找图片的拍摄地点",
+		"api-amap": "如果你的图片在中国拍摄，建议使用高德地图API",
 		"api-perspective": "该服务用于鉴别评论是否为恶意评论",
 	},
 	"en": {
