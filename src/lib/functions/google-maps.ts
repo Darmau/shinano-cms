@@ -20,17 +20,20 @@ export default async function getLocation(latitude: number, longitude: number, g
 		return error(400, 'No google api provided');
 	}
 
-	const location = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${google}`)
+	// 检查国家
+	const country = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${google}&result_type=country`)
 	.then((res) => res.json());
 
-	if (location.results.length === 0) {
-		return error(404, 'Unknown location');
+	if (country.results.length === 0) {
+		return 'Failed to get location';
 	}
 
 	// 如果国家为中国，则使用高德地图api获取地址
-	if (amap && isChina(location)) {
+	if (amap && isChina(country)) {
 		return await getChinaLocation(Number(latitude), Number(longitude), amap);
 	} else {
+		const location = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${google}`)
+		.then((res) => res.json());
 		return location.results[0].formatted_address;
 	}
 }
@@ -42,6 +45,7 @@ function isChina(location: Location) {
 			return address.short_name === 'CN';
 		}
 	}
+	return false
 }
 
 // 获取国内地址
