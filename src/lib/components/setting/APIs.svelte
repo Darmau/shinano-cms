@@ -128,47 +128,25 @@
 				/>
 			</div>
 		</div>
-		<div class="border-b border-gray-900/10 pb-12 space-y-4">
-			<div>
-				<label
-					for="map_amap"
-					class = "block text-sm font-medium leading-6 text-gray-900"
-				>
-					高德地图
-				</label>
-				<input
-					type="text"
-					id="map_amap"
-					name="map_amap"
-					bind:value={API.MAP_AMAP}
-					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-				/>
-				<p
-					class="mt-2 text-sm text-gray-500"
-				>
-					{$t('api-amap')}
-				</p>
-			</div>
-			<div>
-				<label
-					for="map_google"
-					class = "block text-sm font-medium leading-6 text-gray-900"
-				>
-					Google Map
-				</label>
-				<input
-					type="text"
-					id="MAP_GOOGLE"
-					name="MAP_GOOGLE"
-					bind:value={API.MAP_GOOGLE}
-					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
-				/>
-				<p
-					class="mt-2 text-sm text-gray-500"
-				>
-					{$t('api-google')}
-				</p>
-			</div>
+		<div>
+			<label
+				for="mapbox"
+				class = "block text-sm font-medium leading-6 text-gray-900"
+			>
+				Mapbox
+			</label>
+			<input
+				type="text"
+				id="mapbox"
+				name="mapbox"
+				bind:value={API.MAPBOX}
+				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+			/>
+			<p
+				class="mt-2 text-sm text-gray-500"
+			>
+				{$t('api-mapbox')}
+			</p>
 		</div>
 		<div>
 			<label

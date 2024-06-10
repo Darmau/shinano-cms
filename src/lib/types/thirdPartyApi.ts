@@ -3,8 +3,7 @@ export class ThirdPartyAPIs {
 		['UNSPLASH_ACCESS_KEY', ''],
 		['UNSPLASH_SECRET_KEY', ''],
 		['PERSPECTIVE', ''],
-		['MAP_AMAP', ''],
-		['MAP_GOOGLE', '']
+		['MAPBOX', ''],
 	])
 
 	public array() {
