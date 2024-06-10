@@ -53,6 +53,7 @@
 		bind:files
 		bind:this={fileInput}
 		type="file"
+		multiple
 		{name}
 		class="dropzone-input {classesInput}"
 		{...prunedRestProps()}

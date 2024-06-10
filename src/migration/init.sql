@@ -73,6 +73,8 @@ CREATE TABLE
     "location" TEXT,
     "taken_at" TIMESTAMPTZ,
     "size" INT,
+    "width" INT,
+    "height" INT,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "storage_key" UUID NOT NULL DEFAULT uuid_generate_v4 (),
     UNIQUE ("date", "file_name", "format")
