@@ -16,7 +16,7 @@
   const navItems = [
     {name: 'home', href: '/admin', icon: Home},
     {name: 'message', href: '/admin/message', icon: Message},
-    {name: 'media', href: '/admin/media', icon: Media},
+    {name: 'media', href: '/admin/media/1', icon: Media},
     {name: 'article', href: '/admin/article', icon: Article},
     {name: 'photo', href: '/admin/photo', icon: Photo},
     {name: 'video', href: '/admin/video', icon: Video},
@@ -33,7 +33,8 @@
 <div>
   <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
   <div
-    class = "relative z-50 p-4 bg-white border-b flex items-center lg:hidden" role =
+    class = "relative z-30 p-4 bg-white border-b flex items-center lg:hidden"
+    role =
     "dialog"
     aria-modal = "true"
   >
@@ -135,7 +136,7 @@
 
   <!-- Static sidebar for desktop -->
   <div
-    class = "hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col"
+    class = "hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72 lg:flex-col"
   >
     <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div
