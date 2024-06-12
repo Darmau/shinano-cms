@@ -8,7 +8,7 @@ export const load: PageServerLoad = async ({ depends, url,params: { page }, loca
 	const { data: prefix } = await supabase.from('config').select('value').eq('name', 'S3_URL_PREFIX');
 	const { data: images, error } = await supabase
 		.from('image')
-		.select('file_name, location, size, storage_key')
+		.select()
 	  .range((pageNumber - 1) * limit, pageNumber * limit - 1)
 	  .order('id', { ascending: false });
 	if (error) {

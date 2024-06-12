@@ -47,6 +47,7 @@ const translations: Translation = {
 		"api-amap": "如果你的图片在中国拍摄，建议使用高德地图API",
 		"api-perspective": "该服务用于鉴别评论是否为恶意评论",
 		"upload-photo": "上传照片",
+		"shooting-time": "拍摄时间",
 	},
 	"en": {
 		"home": "Home",
@@ -89,6 +90,7 @@ const translations: Translation = {
 		"api-google": "If your images are taken overseas, it is recommended to use Google Map API",
 		"api-perspective": "This service is used to identify whether comments are malicious comments",
 		"upload-photo": "Upload Photo",
+		"shooting-time": "Shooting Time",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -131,6 +133,7 @@ const translations: Translation = {
 		"api-google": "如果你的圖片在國外拍攝，建議使用Google Map API",
 		"api-perspective": "該服務用於鑑別評論是否為惡意評論",
 		"upload-photo": "上傳照片",
+		"shooting-time": "拍攝時間",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -173,6 +176,7 @@ const translations: Translation = {
 		"api-google": "写真が海外で撮影された場合、Google Map APIを使用することをお勧めします",
 		"api-perspective": "このサービスは、コメントが悪意のあるコメントかどうかを識別するために使用されます",
 		"upload-photo": "写真をアップロード",
+		"shooting-time": "撮影時間",
 	}
 }
 

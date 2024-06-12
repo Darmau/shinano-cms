@@ -1,6 +1,7 @@
 <script lang="ts">
 	import UploadFile from '$components/image/UploadFile.svelte';
 	import PageTitle from '$components/PageTitle.svelte';
+	import ImageGrid from '$components/image/ImageGrid.svelte';
 
 	export let data;
 	export let title = "图片";
@@ -13,8 +14,5 @@
 <div>
 	<PageTitle title={title} />
 	<UploadFile data={data} />
-	{#each data.images as image}
-		<img
-			src={`${data.prefix}/cdn-cgi/image/format=avif,width=480/${data.prefix}/${image.storage_key}`} alt="test" />
-	{/each}
+	<ImageGrid data={data} />
 </div>
