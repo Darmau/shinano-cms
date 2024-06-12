@@ -7,7 +7,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
-	import getLocation from '$lib/functions/google-maps';
+	import getLocation from '$lib/functions/googleMaps';
 
 	export let data;
 	let { supabase } = data;
