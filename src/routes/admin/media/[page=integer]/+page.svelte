@@ -1,5 +1,5 @@
 <script lang="ts">
-	import UploadFile from '$components/UploadFile.svelte';
+	import UploadFile from '$components/image/UploadFile.svelte';
 	import PageTitle from '$components/PageTitle.svelte';
 
 	export let data;

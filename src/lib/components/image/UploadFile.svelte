@@ -186,7 +186,7 @@
 	}
 </script>
 
-<div>
+<div class="my-8">
 	{#if isLoading}
 		<div class = "flex justify-center items-center min-h-32">
 			<ProgressRadial value = {undefined} width = "w-12" />

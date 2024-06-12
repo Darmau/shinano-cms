@@ -9,7 +9,8 @@ export const load: PageServerLoad = async ({ depends, url,params: { page }, loca
 	const { data: images, error } = await supabase
 		.from('image')
 		.select('file_name, location, size, storage_key')
-	  .range((pageNumber - 1) * limit, pageNumber * limit - 1);
+	  .range((pageNumber - 1) * limit, pageNumber * limit - 1)
+	  .order('id', { ascending: false });
 	if (error) {
 		throw error;
 	}
