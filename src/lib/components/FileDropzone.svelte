@@ -30,7 +30,8 @@
 	/** Provide arbitrary styles for meta text slot container. */
 	export let slotMeta: CssClasses = 'opacity-75';
 
-	const cBase = 'textarea relative flex justify-center items-center';
+	const cBase =
+		'textarea relative flex justify-center items-center bg-gray-200';
 	const cInput = 'w-full absolute top-0 left-0 right-0 bottom-0 z-[1] opacity-0 disabled:!opacity-0 cursor-pointer';
 	const cInterface = 'flex justify-center items-center text-center';
 
