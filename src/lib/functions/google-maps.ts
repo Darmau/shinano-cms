@@ -25,7 +25,8 @@ export default async function getLocation(latitude: number, longitude: number, g
 	.then((res) => res.json());
 
 	if (country.results.length === 0) {
-		return 'Failed to get location';
+		console.error('无法获取国家信息', country);
+		return null;
 	}
 
 	// 如果国家为中国，则使用高德地图api获取地址
@@ -55,7 +56,8 @@ async function getChinaLocation(latitude: number, longitude: number, key: string
 	).then((res) => res.json());
 
 	if (response.status === 0) {
-		return 'Failed to get location';
+		console.error('高德地图api请求失败', response);
+		return null;
 	}
 
 	return response.regeocode.formatted_address;
