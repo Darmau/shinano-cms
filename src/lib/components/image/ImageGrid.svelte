@@ -2,6 +2,7 @@
 	import { fileSize } from '$lib/functions/fileSize';
 	import { t } from '$lib/functions/i18n';
 	import { localTime } from '$lib/functions/localTime';
+	import shutterSpeed from '$lib/functions/shutterSpeed';
 
 	export let data;
 </script>
@@ -10,25 +11,79 @@
 	{#each data.images as image}
 		<div
 			data-image-id={image.id}
-			class="bg-white border rounded-xl p-4 hover:shadow-md transition-all duration-150 space-y-2">
+			class="bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2">
 			<div class="object-contain aspect-square">
 				<img
 					src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
-					class="img-bg h-full w-full object-contain rounded"
+					class="img-bg h-full w-full object-contain"
 					alt={image.alt} />
 			</div>
-			<h3 class="font-medium">{image.file_name}</h3>
-			<p class="bg-gray-50 p-2 rounded text-sm">{image.caption}</p>
-			<p class="text-gray-700 text-sm">{image.alt}</p>
-			<p>{$t('shooting-time')}: {localTime(image.taken_at)}</p>
-			<small>
-				<span>{image.width}</span>
-				×
-				<span>{image.height}</span>
-				|
-				<span>{fileSize(image.size)}</span>
-			</small>
-			<p class="text-sm">{image.location}</p>
+			<div class="p-4 space-y-4">
+				<h3 class="font-medium">{image.file_name}</h3>
+				<small>
+					<span>{image.width}</span>
+					×
+					<span>{image.height}</span>
+					|
+					<span>{fileSize(image.size)}</span>
+				</small>
+				<div class="space-y-1">
+					<h4 class="font-medium text-sm mb-1">alt</h4>
+					{#if image.alt}
+					<p class="text-gray-700 text-sm">{image.alt}</p>
+					{:else}
+					<p class="text-gray-400 text-sm">No alt</p>
+					{/if}
+				</div>
+				<div class="space-y-1">
+					<h4 class="font-medium text-sm mb-1">{$t('image-caption')}</h4>
+					{#if image.caption}
+						<p class="text-gray-700 text-sm">{image.caption}</p>
+					{:else}
+						<p class="text-gray-400 text-sm">No description</p>
+					{/if}
+				</div>
+				{#if image.taken_at}
+					<div>
+						<h4 class="font-medium text-sm mb-1">{$t('shooting-time')}</h4>
+						<p class="text-sm text-gray-700">{localTime(image.taken_at)}</p>
+					</div>
+				{/if}
+				{#if image.location}
+					<div>
+						<h4 class="font-medium text-sm mb-1">拍摄地点</h4>
+						<p class="text-sm text-gray-700">{image.location}</p>
+					</div>
+				{/if}
+				{#if image.exif}
+					<ul class="space-y-1">
+						<li class="flex justify-between">
+							<h4 class="font-medium text-sm mb-1">{$t('brand')}</h4>
+							<p class="text-sm text-gray-700">{image.exif.Make}</p>
+						</li>
+						<li class="flex justify-between">
+							<h4 class="font-medium text-sm mb-1">{$t('model')}</h4>
+							<p class="text-sm text-gray-700">{image.exif.Model}</p>
+						</li>
+						<li class="flex justify-between">
+							<h4 class="font-medium text-sm mb-1">{$t('lens')}</h4>
+							<p class="text-sm text-gray-700">{image.exif.LensModel}</p>
+						</li>
+						<li class="flex justify-between">
+							<h4 class="font-medium text-sm mb-1">{$t('aperture')}</h4>
+							<p class="text-sm text-gray-700">{image.exif.FNumber}</p>
+						</li>
+						<li class="flex justify-between">
+							<h4 class="font-medium text-sm mb-1">{$t('shutter-speed')}</h4>
+							<p class="text-sm text-gray-700">{shutterSpeed(image.exif.ExposureTime)}</p>
+						</li>
+						<li class="flex justify-between">
+							<h4 class="font-medium text-sm mb-1">{$t('iso')}</h4>
+							<p class="text-sm text-gray-700">{image.exif.ISO}</p>
+						</li>
+					</ul>
+				{/if}
+			</div>
 		</div>
 	{/each}
 </div>
