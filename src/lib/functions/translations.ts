@@ -56,6 +56,7 @@ const translations: Translation = {
 		"shutter-speed": "快门速度",
 		"iso": "ISO",
 		"image-caption": "图片描述",
+		"selected": "已选择",
 	},
 	"en": {
 		"home": "Home",
@@ -107,6 +108,7 @@ const translations: Translation = {
 		"shutter-speed": "Shutter Speed",
 		"iso": "ISO",
 		"image-caption": "Image Caption",
+		"selected": "Selected",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -158,6 +160,7 @@ const translations: Translation = {
 		"shutter-speed": "快門速度",
 		"iso": "ISO",
 		"image-caption": "圖片描述",
+		"selected": "已選擇",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -209,6 +212,7 @@ const translations: Translation = {
 		"shutter-speed": "シャッタースピード",
 		"iso": "ISO",
 		"image-caption": "画像の説明",
+		"selected": "選択済み",
 	}
 }
 
