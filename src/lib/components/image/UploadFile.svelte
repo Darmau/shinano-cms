@@ -8,6 +8,7 @@
 	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
 	import getLocation from '$lib/functions/googleMaps';
+	import { invalidateAll } from '$app/navigation'
 
 	export let data;
 	let { supabase } = data;
@@ -181,7 +182,8 @@
 				background: 'variant-filled-error'
 			});
 		} finally {
-			isLoading = false; // Ensure isLoading is declared at the right scope to control loading state
+			isLoading = false;
+			await invalidateAll()
 		}
 	}
 </script>
