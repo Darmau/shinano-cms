@@ -5,12 +5,60 @@
 	import shutterSpeed from '$lib/functions/shutterSpeed';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { invalidateAll } from '$app/navigation'
+	import { ImageProcess } from '$lib/types/imageProcess';
+	import { onMount } from 'svelte';
+	import { DeleteObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 
 	export let data;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
 	const toastStore = getToastStore();
+
+	// S3配置
+	const storageConfigs = new ImageProcess();
+	let CONFIGS = storageConfigs.emptyObject();
+	const KEYS = storageConfigs.array();
+
+	let S3: S3Client | undefined;
+
+	function initS3Client() {
+		S3 = new S3Client({
+			region: CONFIGS.S3_REGION,
+			endpoint: CONFIGS.S3_ENDPOINT,
+			credentials: {
+				accessKeyId: CONFIGS.S3_ACCESS_ID,
+				secretAccessKey: CONFIGS.S3_SECRET_KEY
+			}
+		});
+	}
+
+	// 获取S3配置，并存储到CONFIGS中
+	const getS3Config = async () => {
+		const { data: storageKeys, error: fetchError } = await
+			supabase.from('config').select('name, value').in('name', KEYS);
+
+		if (fetchError) {
+			console.error(fetchError);
+			toastStore.trigger({
+				message: 'Failed to fetch S3 config.',
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+		}
+
+		storageKeys.forEach(key => {
+			if (key.name in CONFIGS) {
+				CONFIGS[key.name] = key.value;
+			}
+		});
+
+		initS3Client();
+	};
+
+	onMount(async () => {
+		await getS3Config();
+	});
 
 	let deleteImageList = []; // ids of images to be deleted
 	let selectedImages = `${deleteImageList.length} ${$t('selected')}`;
@@ -25,7 +73,19 @@
 	async function deleteImages() {
 		const { error: deleteError } = await
 			supabase.from('image').delete().in('id', deleteImageList);
-		if (deleteError) {
+
+		// 查找data.images中id与deleteImageList的id一致的条目，提取storage_key
+		const command = new DeleteObjectsCommand({
+			Bucket: CONFIGS.S3_BUCKET,
+			Delete: {
+				Objects: data.images.filter((image) => deleteImageList.includes(image.id)).map((image) => {
+					return { Key: image.storage_key };
+				})
+			}
+		});
+		const s3response = await S3.send(command);
+
+		if (deleteError || s3response.Deleted.length <= 0) {
 			console.error(deleteError);
 			toastStore.trigger({
 				message: 'Failed to delete images.',

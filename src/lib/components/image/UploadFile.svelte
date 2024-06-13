@@ -32,7 +32,6 @@
 				secretAccessKey: CONFIGS.S3_SECRET_KEY
 			}
 		});
-
 	}
 
 	// 获取S3配置，并存储到CONFIGS中
