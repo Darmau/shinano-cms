@@ -1,13 +1,10 @@
 <script lang="ts">
+	import Media from '$assets/icons/photo.svelte';
 	export let files: FileList | undefined = undefined;
 	/**
 	 * File input reference.
 	 */
 	export let fileInput: HTMLInputElement | undefined = undefined;
-	/**
-	 * Required. Set a unique name for the file input.
-	 * @type {string}
-	 */
 	export let name: string;
 	/** Provide classes to set the border styles. */
 	export let border: CssClasses = 'border-2 border-dashed';
@@ -16,21 +13,8 @@
 	/** Provide classes to set the box radius styles. */
 	export let rounded: CssClasses = 'rounded-container-token';
 
-	// Props (regions)
-	/** Provide arbitrary styles for the UI region. */
-	export let regionInterface: CssClasses = '';
-	/** Provide arbitrary styles for the UI text region. */
-	export let regionInterfaceText: CssClasses = '';
-
-	// Props (slots)
-	/** Provide arbitrary styles for lead slot container. */
-	export let slotLead: CssClasses = 'mb-4';
-	/** Provide arbitrary styles for message slot container. */
-	export let slotMessage: CssClasses = '';
-	/** Provide arbitrary styles for meta text slot container. */
-	export let slotMeta: CssClasses = 'opacity-75';
-
-	const cBase = 'textarea relative flex justify-center items-center';
+	const cBase =
+		'textarea relative flex justify-center items-center bg-gray-200';
 	const cInput = 'w-full absolute top-0 left-0 right-0 bottom-0 z-[1] opacity-0 disabled:!opacity-0 cursor-pointer';
 	const cInterface = 'flex justify-center items-center text-center';
 
@@ -72,16 +56,8 @@
 		accept="image/png, image/jpeg, image/gif, image/webp, image/svg+xml"
 	/>
 	<!-- Interface -->
-	<div class="dropzone-interface {classesInterface} {regionInterface}">
-		<div class="dropzone-interface-text {regionInterfaceText}">
-			<!-- Lead -->
-			{#if $$slots.lead}<div class="dropzone-lead {slotLead}"><slot name="lead" /></div>{/if}
-			<!-- Message -->
-			<div class="dropzone-message {slotMessage}">
-				<slot name="message"><strong>Upload a file</strong> or drag and drop</slot>
-			</div>
-			<!-- Meta Text -->
-			{#if $$slots.meta}<small class="dropzone-meta {slotMeta}"><slot name="meta" /></small>{/if}
+		<div class="w-full flex justify-center items-center gap-4">
+			<Media classList="w-12 h-12" />
+			<div><strong>Upload an image</strong> or drag and drop</div>
 		</div>
-	</div>
 </div>

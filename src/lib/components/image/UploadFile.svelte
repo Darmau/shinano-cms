@@ -7,7 +7,7 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
-	import getLocation from '$lib/functions/google-maps';
+	import getLocation from '$lib/functions/googleMaps';
 
 	export let data;
 	let { supabase } = data;
@@ -186,7 +186,7 @@
 	}
 </script>
 
-<div>
+<div class="my-8">
 	{#if isLoading}
 		<div class = "flex justify-center items-center min-h-32">
 			<ProgressRadial value = {undefined} width = "w-12" />
