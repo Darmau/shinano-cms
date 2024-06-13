@@ -139,18 +139,14 @@
 					alt: '',
 					caption: '',
 					date: getDateFormat(),
-					exif: EXIF || null,
-					gps: EXIF.latitude ? {
-						latitude: EXIF.latitude,
-						longitude: EXIF.longitude
-					} : null,
+					exif: EXIF,
 					location,
 					taken_at: EXIF?.DateTimeOriginal,
 					size: file.size,
 					width: dimensions.width,
 					height: dimensions.height,
 					storage_key: storageKey
-				};
+				}
 			} catch (error) {
 				console.error(error);
 				toastStore.trigger({
