@@ -53,7 +53,7 @@
 		on:focus
 		on:focusin
 		on:focusout
-		accept="image/png, image/jpeg, image/gif, image/webp, image/svg+xml"
+		accept="image/png, image/jpeg, image/gif, image/webp, image/svg+xml, image/avifw"
 	/>
 	<!-- Interface -->
 		<div class="w-full flex justify-center items-center gap-4">
