@@ -15,49 +15,17 @@
 
 	const toastStore = getToastStore();
 
-	// S3配置
-	const storageConfigs = new ImageProcess();
-	let CONFIGS = storageConfigs.emptyObject();
-	const KEYS = storageConfigs.array();
-
 	let S3: S3Client | undefined;
 
-	function initS3Client() {
-		S3 = new S3Client({
-			region: CONFIGS.S3_REGION,
-			endpoint: CONFIGS.S3_ENDPOINT,
-			credentials: {
-				accessKeyId: CONFIGS.S3_ACCESS_ID,
-				secretAccessKey: CONFIGS.S3_SECRET_KEY
-			}
-		});
-	}
-
-	// 获取S3配置，并存储到CONFIGS中
-	const getS3Config = async () => {
-		const { data: storageKeys, error: fetchError } = await
-			supabase.from('config').select('name, value').in('name', KEYS);
-
-		if (fetchError) {
-			console.error(fetchError);
-			toastStore.trigger({
-				message: 'Failed to fetch S3 config.',
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-		}
-
-		storageKeys.forEach(key => {
-			if (key.name in CONFIGS) {
-				CONFIGS[key.name] = key.value;
-			}
-		});
-
-		initS3Client();
-	};
-
 	onMount(async () => {
-		await getS3Config();
+		S3 = new S3Client({
+			region: data.configs.S3_REGION,
+			endpoint: data.configs.S3_ENDPOINT,
+			credentials: {
+				accessKeyId: data.configs.S3_ACCESS_ID,
+				secretAccessKey: data.configs.S3_SECRET_KEY
+			}
+		});
 	});
 
 	let deleteImageList = []; // ids of images to be deleted
@@ -151,7 +119,7 @@
 					alt = {image.alt}
 				/>
 			</div>
-			<div class = "p-4 space-y-4">
+			<div class = "p-4 space-y-4 break-words">
 				<h3 class = "font-medium">{image.file_name}</h3>
 				<small>
 					<span>{image.width}</span>
