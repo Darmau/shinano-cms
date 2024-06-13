@@ -10,24 +10,12 @@
 	import { invalidateAll } from '$app/navigation';
 
 	export let data;
+	export let s3;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
 	let files: FileList;
 	const toastStore = getToastStore();
-
-	let S3: S3Client | undefined;
-
-	onMount(async () => {
-		S3 = new S3Client({
-			region: data.configs.S3_REGION,
-			endpoint: data.configs.S3_ENDPOINT,
-			credentials: {
-				accessKeyId: data.configs.S3_ACCESS_ID,
-				secretAccessKey: data.configs.S3_SECRET_KEY
-			}
-		});
-	});
 
 	let isLoading = false;
 
@@ -89,7 +77,7 @@
 
 			// Attempt upload
 			try {
-				await S3.send(command);
+				await s3.send(command);
 				const EXIF =
 					['image/jpeg', 'image/png', 'image/avif'].includes(file.type) ? await
 							exifr.parse(file) :

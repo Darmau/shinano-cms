@@ -5,28 +5,14 @@
 	import shutterSpeed from '$lib/functions/shutterSpeed';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { invalidateAll } from '$app/navigation'
-	import { ImageProcess } from '$lib/types/imageProcess';
-	import { onMount } from 'svelte';
 	import { DeleteObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 
 	export let data;
+	export let s3;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
 	const toastStore = getToastStore();
-
-	let S3: S3Client | undefined;
-
-	onMount(async () => {
-		S3 = new S3Client({
-			region: data.configs.S3_REGION,
-			endpoint: data.configs.S3_ENDPOINT,
-			credentials: {
-				accessKeyId: data.configs.S3_ACCESS_ID,
-				secretAccessKey: data.configs.S3_SECRET_KEY
-			}
-		});
-	});
 
 	let deleteImageList = []; // ids of images to be deleted
 	let selectedImages = `${deleteImageList.length} ${$t('selected')}`;
@@ -44,14 +30,14 @@
 
 		// 查找data.images中id与deleteImageList的id一致的条目，提取storage_key
 		const command = new DeleteObjectsCommand({
-			Bucket: CONFIGS.S3_BUCKET,
+			Bucket: data.configs.S3_BUCKET,
 			Delete: {
 				Objects: data.images.filter((image) => deleteImageList.includes(image.id)).map((image) => {
 					return { Key: image.storage_key };
 				})
 			}
 		});
-		const s3response = await S3.send(command);
+		const s3response = await s3.send(command);
 
 		if (deleteError || s3response.Deleted.length <= 0) {
 			console.error(deleteError);
