@@ -14,7 +14,7 @@
 			<div class="object-contain aspect-square">
 				<img
 					src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
-					class="h-full w-full object-contain bg-gray-100 rounded"
+					class="img-bg h-full w-full object-contain rounded"
 					alt={image.alt} />
 			</div>
 			<h3 class="font-medium">{image.file_name}</h3>
@@ -32,3 +32,9 @@
 		</div>
 	{/each}
 </div>
+
+<style>
+	.img-bg {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='200' height='400'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Crect fill='black' x='0' y='0' width='10' height='10' opacity='0.1'/%3E%3Crect fill='white' x='10' y='0' width='10' height='10'/%3E%3Crect fill='black' x='10' y='10' width='10' height='10' opacity='0.1'/%3E%3Crect fill='white' x='0' y='10' width='10' height='10'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23grid)' x='0' y='0' width='100%25' height='100%25'/%3E%3C/svg%3E");
+	}
+</style>
