@@ -56,6 +56,12 @@ const translations: Translation = {
 		"shutter-speed": "快门速度",
 		"iso": "ISO",
 		"image-caption": "图片描述",
+		"selected": "已选择",
+		"edit-image": "编辑图片信息",
+		"file-name": "文件名",
+		"alt-text": "替代文本",
+		"alt-text-description": "出于无障碍考虑，建议填写替代文本",
+		"folder": "文件夹",
 	},
 	"en": {
 		"home": "Home",
@@ -107,6 +113,12 @@ const translations: Translation = {
 		"shutter-speed": "Shutter Speed",
 		"iso": "ISO",
 		"image-caption": "Image Caption",
+		"selected": "Selected",
+		"edit-image": "Edit Image Information",
+		"file-name": "File Name",
+		"alt-text": "Alt Text",
+		"alt-text-description": "For accessibility consideration, it is recommended to fill in alt text",
+		"folder": "Folder",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -158,6 +170,12 @@ const translations: Translation = {
 		"shutter-speed": "快門速度",
 		"iso": "ISO",
 		"image-caption": "圖片描述",
+		"selected": "已選擇",
+		"edit-image": "編輯圖片信息",
+		"file-name": "文件名",
+		"alt-text": "替代文本",
+		"alt-text-description": "出於無障礙考慮，建議填寫替代文本",
+		"folder": "文件夾",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -209,6 +227,12 @@ const translations: Translation = {
 		"shutter-speed": "シャッタースピード",
 		"iso": "ISO",
 		"image-caption": "画像の説明",
+		"selected": "選択済み",
+		"edit-image": "画像情報を編集",
+		"file-name": "ファイル名",
+		"alt-text": "代替テキスト",
+		"alt-text-description": "アクセシビリティを考慮して、代替テキストを記入することをお勧めします",
+		"folder": "フォルダ",
 	}
 }
 
