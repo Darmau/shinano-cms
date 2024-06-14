@@ -7,6 +7,7 @@
 	import { invalidateAll } from '$app/navigation'
 	import { DeleteObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 	import EditImage from '$components/image/EditImage.svelte';
+	import Edit from '$assets/icons/edit.svelte';
 
 	export let data;
 	export let s3;
@@ -60,9 +61,22 @@
 		}
 	}
 
+	// 打开图片编辑窗口
+	let isEditing = false;
+	let imageData = {};
+	function closeEdit() {
+		isEditing = false;
+	}
+
+	function openEdit(image) {
+		isEditing = true;
+		imageData = image;
+	}
 </script>
 
-<!--<EditImage data={data} />-->
+{#if isEditing}
+	<EditImage data={data} {closeEdit} imageData={imageData} />
+{/if}
 
 <div class = "flex justify-between items-center my-8">
 	<p>{selectedImages}</p>
@@ -103,6 +117,12 @@
 							"h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 					>
 				</div>
+				<button
+					class = "absolute right-4 top-4 flex h-6 items-center"
+					on:click = {() => openEdit(image)}
+				>
+					<Edit classList="h-6 w-6 text-gray-400 hover:text-cyan-600" />
+				</button>
 				<img
 					src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
 					class = "img-bg h-full w-full object-contain"
