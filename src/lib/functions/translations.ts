@@ -61,6 +61,7 @@ const translations: Translation = {
 		"file-name": "文件名",
 		"alt-text": "替代文本",
 		"alt-text-description": "出于无障碍考虑，建议填写替代文本",
+		"folder": "文件夹",
 	},
 	"en": {
 		"home": "Home",
@@ -117,6 +118,7 @@ const translations: Translation = {
 		"file-name": "File Name",
 		"alt-text": "Alt Text",
 		"alt-text-description": "For accessibility consideration, it is recommended to fill in alt text",
+		"folder": "Folder",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -173,6 +175,7 @@ const translations: Translation = {
 		"file-name": "文件名",
 		"alt-text": "替代文本",
 		"alt-text-description": "出於無障礙考慮，建議填寫替代文本",
+		"folder": "文件夾",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -229,6 +232,7 @@ const translations: Translation = {
 		"file-name": "ファイル名",
 		"alt-text": "代替テキスト",
 		"alt-text-description": "アクセシビリティを考慮して、代替テキストを記入することをお勧めします",
+		"folder": "フォルダ",
 	}
 }
 
