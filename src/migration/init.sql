@@ -69,7 +69,6 @@ CREATE TABLE
     "date" TEXT,
     "format" TEXT,
     "exif" JSON,
-    "gps" JSON,
     "location" TEXT,
     "taken_at" TIMESTAMPTZ,
     "size" INT,
