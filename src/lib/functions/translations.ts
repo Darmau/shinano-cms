@@ -57,6 +57,9 @@ const translations: Translation = {
 		"iso": "ISO",
 		"image-caption": "图片描述",
 		"selected": "已选择",
+		"edit-image": "编辑图片信息",
+		"file-name": "文件名",
+		"alt-text": "替代文本",
 	},
 	"en": {
 		"home": "Home",
@@ -109,6 +112,7 @@ const translations: Translation = {
 		"iso": "ISO",
 		"image-caption": "Image Caption",
 		"selected": "Selected",
+		"edit-image": "Edit Image Information"
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -161,6 +165,7 @@ const translations: Translation = {
 		"iso": "ISO",
 		"image-caption": "圖片描述",
 		"selected": "已選擇",
+		"edit-image": "編輯圖片信息"
 	},
 	"jp": {
 		"home": "ホーム",
@@ -213,6 +218,7 @@ const translations: Translation = {
 		"iso": "ISO",
 		"image-caption": "画像の説明",
 		"selected": "選択済み",
+		"edit-image": "画像情報を編集"
 	}
 }
 
