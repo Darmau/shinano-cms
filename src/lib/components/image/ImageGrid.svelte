@@ -5,7 +5,7 @@
 	import shutterSpeed from '$lib/functions/shutterSpeed';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { invalidateAll } from '$app/navigation'
-	import { DeleteObjectsCommand, S3Client } from '@aws-sdk/client-s3';
+	import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
 	import EditImage from '$components/image/EditImage.svelte';
 	import Edit from '$assets/icons/edit.svelte';
 

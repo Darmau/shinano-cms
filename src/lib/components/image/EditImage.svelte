@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { t } from '$lib/functions/i18n';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { invalidateAll } from '$app/navigation'
 
 	export let data;
 	let { supabase } = data;
@@ -7,9 +9,58 @@
 	export let imageData;
 	export let closeEdit: () => void;
 
+	const toastStore = getToastStore();
+
+	// 将拍摄时间处理为可读格式
 	imageData.taken_at = imageData.taken_at ?
 		imageData.taken_at.toString().slice(0,16) :
 		new Date().toISOString().slice(0, 16);
+
+	function getISODate(date: string) {
+		return new Date().toISOString();
+	}
+
+	// 该变量负责记录表单是否被修改，如果修改，则为true
+	let isFormChanged = false;
+
+	// 提交更新数据
+	async function submitForm(event: Event) {
+		event.preventDefault();
+		const formData = new FormData(event.target as HTMLFormElement);
+		const updatedImage = Object.fromEntries(formData.entries());
+
+		const { error: updateError } = await supabase
+		  .from('image')
+		  .update({
+				file_name: updatedImage.file_name,
+				alt: updatedImage.alt,
+				folder: updatedImage.folder,
+				caption: updatedImage.caption,
+				location: updatedImage.location,
+				taken_at: updatedImage.taken_at
+			})
+		  .eq('id', imageData.id)
+		  .select();
+
+		if (updateError) {
+			console.error(updateError);
+			toastStore.trigger({
+				message: 'Failed to update image.',
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+		}
+
+		isFormChanged = false;
+		closeEdit();
+		invalidateAll();
+
+		toastStore.trigger({
+			message: 'Image updated successfully.',
+			hideDismiss: true,
+			background: 'variant-filled-success'
+		});
+	}
 </script>
 
 <div
@@ -42,9 +93,13 @@
 								class = "img-bg w-full aspect-square object-contain md:col-span-1"
 								alt = {imageData.alt}
 							/>
-
 						</div>
-						<form class="flex flex-col gap-6 md:col-span-2">
+						<form
+							method="POST"
+							class="flex flex-col gap-6 md:col-span-2"
+							on:submit = {submitForm}
+							on:input = {() => isFormChanged = true}
+						>
 							<div>
 								<label
 									for = "file_name"
@@ -93,30 +148,30 @@
 							</div>
 							<div>
 								<label
-									for = "image-caption"
+									for = "caption"
 									class = "block text-sm font-medium leading-6 text-gray-900"
 								>
 									{$t('image-caption')}
 								</label>
 								<input
 									type = "text"
-									id = "image-caption"
-									name = "image-caption"
+									id = "caption"
+									name = "caption"
 									bind:value = {imageData.caption}
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
 							</div>
 							<div>
 								<label
-									for = "shooting-time"
+									for = "taken_at"
 									class = "block text-sm font-medium leading-6 text-gray-900"
 								>
 									{$t('shooting-time')}
 								</label>
 								<input
 									type = "datetime-local"
-									id = "shooting-time"
-									name = "shooting-time"
+									id = "taken_at"
+									name = "taken_at"
 									bind:value = {imageData.taken_at}
 									on:change = {() => console.log(imageData.taken_at)}
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
@@ -137,20 +192,24 @@
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
 							</div>
+							<div class = "mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+								<button
+									type = "submit"
+									disabled={!isFormChanged}
+									class =
+										"inline-flex w-full justify-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 sm:ml-3 sm:w-auto disabled:bg-gray-200"
+								>
+									{$t('submit')}
+								</button>
+								<button
+									type = "button"
+									on:click = {closeEdit}
+									class =
+										"mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto "
+								>{$t('cancel')}</button>
+							</div>
 						</form>
 					</div>
-				</div>
-				<div class = "mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-					<button
-						type = "button"
-						class =
-							"inline-flex w-full justify-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 sm:ml-3 sm:w-auto"
-					>{$t('submit')}</button>
-					<button
-						type = "button"
-						on:click = {closeEdit}
-						class = "mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-					>{$t('cancel')}</button>
 				</div>
 			</div>
 		</div>
