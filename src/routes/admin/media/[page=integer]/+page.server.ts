@@ -20,6 +20,9 @@ export const load: PageServerLoad = async ({ depends, url,params: { page }, loca
 	  .range((pageNumber - 1) * limit, pageNumber * limit - 1)
 	  .order('id', { ascending: false });
 
+	// 获取image表中数据的条目数
+	const { count } = await supabase.from('image').select('id', { count: 'exact' });
+
 	if (error || fetchError) {
 		throw error;
 	}
@@ -30,10 +33,16 @@ export const load: PageServerLoad = async ({ depends, url,params: { page }, loca
 		}
 	});
 
+	// 获取url中域名开始到page之间的字符串
+	const path = url.pathname.substring(0, url.pathname.indexOf(page) - 1);
+
 	return {
 		page: pageNumber,
 		images: images ?? [],
 		prefix: CONFIGS.S3_URL_PREFIX,
 		configs: CONFIGS,
+		count: count ?? 0,
+		limit: limit,
+		path: path
 	};
 };

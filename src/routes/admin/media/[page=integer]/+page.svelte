@@ -4,8 +4,10 @@
 	import ImageGrid from '$components/image/ImageGrid.svelte';
 	import { S3Client } from '@aws-sdk/client-s3';
 	import { onMount } from 'svelte';
+	import Pagination from '$components/Pagination.svelte';
+
 	export let data;
-	export let title = "图片";
+	export let title = '图片';
 
 	let S3: S3Client | undefined;
 
@@ -26,7 +28,12 @@
 </svelte:head>
 
 <div>
-	<PageTitle title={title} />
-	<UploadFile data={data} s3={S3} />
-	<ImageGrid data={data} s3={S3} />
+	<p>{data.path}</p>
+	<PageTitle title = {title} />
+	<UploadFile data = {data} s3 = {S3} />
+	<ImageGrid data = {data} s3 = {S3} />
+	<Pagination
+		count = {data.count} page = {data.page} limit = {data.limit}
+		path = {data.path}
+	/>
 </div>
