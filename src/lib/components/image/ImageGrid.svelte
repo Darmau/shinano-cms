@@ -6,6 +6,7 @@
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { invalidateAll } from '$app/navigation'
 	import { DeleteObjectsCommand, S3Client } from '@aws-sdk/client-s3';
+	import EditImage from '$components/image/EditImage.svelte';
 
 	export let data;
 	export let s3;
@@ -47,6 +48,7 @@
 				background: 'variant-filled-error'
 			});
 		} else {
+			// 根据id，
 			deleteImageList = [];
 			updateSelectedImages();
 			await invalidateAll();
@@ -59,6 +61,8 @@
 	}
 
 </script>
+
+<!--<EditImage data={data} />-->
 
 <div class = "flex justify-between items-center my-8">
 	<p>{selectedImages}</p>
@@ -73,7 +77,7 @@
 	</div>
 </div>
 <div class = "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-	{#each data.images as image}
+	{#each data.images as image (image.id)}
 		<div
 			data-image-id = {image.id}
 			class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
