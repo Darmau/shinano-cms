@@ -20,6 +20,18 @@ dependencies:
   '@tiptap/core':
     specifier: ^2.4.0
     version: 2.4.0(@tiptap/pm@2.4.0)
+  '@tiptap/extension-blockquote':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
+  '@tiptap/extension-bold':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
+  '@tiptap/extension-code':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
+  '@tiptap/extension-heading':
+    specifier: ^2.4.0
+    version: 2.4.0(@tiptap/core@2.4.0)
   '@tiptap/pm':
     specifier: ^2.4.0
     version: 2.4.0
