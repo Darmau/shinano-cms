@@ -28,7 +28,6 @@
 </svelte:head>
 
 <div>
-	<p>{data.path}</p>
 	<PageTitle title = {title} />
 	<UploadFile data = {data} s3 = {S3} />
 	<ImageGrid data = {data} s3 = {S3} />
