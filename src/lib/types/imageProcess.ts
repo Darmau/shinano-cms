@@ -6,7 +6,7 @@ export class ImageProcess {
 		['S3_SECRET_KEY', ''],
 		['S3_BUCKET', ''],
 		['S3_URL_PREFIX', ''],
-		['GOOGLE_MAPS', ''],
+		['MAPBOX', ''],
 		['AMAP', ''],
 		['OPENAI_API_KEY', ''],
 		['PROMPT_IMAGE_ALT', ''],

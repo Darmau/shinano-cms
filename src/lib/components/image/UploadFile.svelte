@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-	import { onMount } from 'svelte';
 	import exifr from 'exifr';
 	import { v4 as uuidv4 } from 'uuid';
 	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
-	import getLocation from '$lib/functions/googleMaps';
 	import { invalidateAll } from '$app/navigation';
 
 	export let data;
@@ -84,9 +82,9 @@
 						null;
 				let location: string = null;
 				if (EXIF?.latitude && EXIF?.longitude) {
-					location = await getLocation(EXIF.latitude, EXIF.longitude,
-						data.configs.GOOGLE_MAPS, data.configs.AMAP);
-					// Ensure this function supports async execution
+					location = await
+						fetch(`/api/location?latitude=${EXIF.latitude}&longitude=${EXIF.longitude}&mapbox=${data.configs.MAPBOX}&amap=${data.configs.AMAP}`)
+							.then((res) => res.json())
 				}
 
 				// Prepare data for batch insertion

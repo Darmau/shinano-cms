@@ -103,11 +103,9 @@
 							if (deleteImageList.includes(image.id)) {
 								deleteImageList = deleteImageList.filter((id) => id !== image.id);
 								updateSelectedImages()
-								console.log(deleteImageList)
 							} else {
 								deleteImageList.push(image.id);
 								updateSelectedImages()
-								console.log(deleteImageList)
 							}
 						}}
 						id = {image.id} aria-describedby = {image.alt}

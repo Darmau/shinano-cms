@@ -131,22 +131,22 @@
 		<div class="border-b border-gray-900/10 pb-12 space-y-4">
 			<div>
 				<label
-					for="google_maps"
+					for="mapbox"
 					class = "block text-sm font-medium leading-6 text-gray-900"
 				>
-					Google Maps
+					Mapbox
 				</label>
 				<input
 					type="text"
-					id="google_maps"
-					name="google_maps"
-					bind:value={API.GOOGLE_MAPS}
+					id="mapbox"
+					name="mapbox"
+					bind:value={API.MAPBOX}
 					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 				/>
 				<p
 					class="mt-2 text-sm text-gray-500"
 				>
-					{$t('api-google-maps')}
+					{$t('api-mapbox')}
 				</p>
 			</div>
 			<div>
