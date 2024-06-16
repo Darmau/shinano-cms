@@ -18,6 +18,11 @@
 			extensions: [
 				StarterKit,
 			],
+			editorProps: {
+				attributes: {
+					class: 'prose lg:prose-xl'
+				}
+			},
 			content: '<p>Hello World! 🌍️ </p>',
 			onTransaction: () => {
 				// force re-render so `editor.isActive` works as expected
@@ -46,17 +51,11 @@
 
 {#if editor}
 	<div class = "border mt-8">
-		<pre class = "mb-4 border-b">
-			{JSON.stringify(editor.getJSON(), null, 2)}
-		</pre>
+		<pre class = "mb-4 border-b">{JSON.stringify(editor.getJSON(), null, 2)}</pre>
 
-		<pre class = "font-mono bg-gray-200 mb-4">
-			{editor.getHTML()}
-		</pre>
+		<pre class = "font-mono bg-gray-200 mb-4">{editor.getHTML()}</pre>
 
-		<div class = "bg-indigo-100">
-		{$contentStore}
-	  </div>
+		<div class = "bg-indigo-100">{$contentStore}</div>
 	</div>
 {/if}
 
@@ -65,4 +64,9 @@
     background: black;
     color: white;
   }
+
+	.tiptap h1 {
+		font-size: 2em;
+		font-weight: bold;
+	}
 </style>
