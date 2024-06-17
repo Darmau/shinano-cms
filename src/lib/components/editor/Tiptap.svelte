@@ -24,6 +24,18 @@
 	import CodeBlockIcon from '$assets/icons/editor/codeblock.svelte';
 	import HardBreakIcon from '$assets/icons/editor/break.svelte';
 	import DividerIcon from '$assets/icons/editor/divider.svelte';
+	import InsertTable from '$assets/icons/editor/insertTable.svelte';
+	import InsertColumnBefore from
+			'$assets/icons/editor/tableColumnBefore.svelte';
+	import InsertColumnAfter from '$assets/icons/editor/tableColumnAfter.svelte';
+	import DeleteColumn from '$assets/icons/editor/tableColumnDelete.svelte';
+	import InsertRowBefore from '$assets/icons/editor/tableRowBefore.svelte';
+	import InsertRowAfter from '$assets/icons/editor/tableRowAfter.svelte';
+	import DeleteRow from '$assets/icons/editor/tableRowDelete.svelte';
+	import { Table } from '@tiptap/extension-table';
+	import TableCell from '@tiptap/extension-table-cell'
+	import TableHeader from '@tiptap/extension-table-header'
+	import TableRow from '@tiptap/extension-table-row'
 
 	// import { SvelteCounterExtension, SvelteEditableExtension } from './_components/SvelteExtension';
 
@@ -37,7 +49,11 @@
 				Link.configure({
 					protocols: ['http', 'https', 'mailto'],
 					defaultProtocol: 'https',
-				})
+				}),
+				Table,
+				TableRow,
+				TableCell,
+				TableHeader,
 			],
 			content: `
         <p>This is still the text editor you're used to, but enriched with node views.</p>
@@ -128,6 +144,35 @@
 
 	const setDivider = () => {
 		$editor.chain().focus().setHorizontalRule().run();
+	};
+
+	const insertTable = () => {
+		$editor.chain().focus().insertTable({ rows: 3, cols: 3,
+			withHeaderRow: true}).run();
+	};
+
+	const addColumnBefore = () => {
+		$editor.chain().focus().addColumnBefore().run();
+	};
+
+	const addColumnAfter = () => {
+		$editor.chain().focus().addColumnAfter().run();
+	};
+
+	const deleteColumn = () => {
+		$editor.chain().focus().deleteColumn().run();
+	};
+
+	const addRowBefore = () => {
+		$editor.chain().focus().addRowBefore().run();
+	};
+
+	const addRowAfter = () => {
+		$editor.chain().focus().addRowAfter().run();
+	};
+
+	const deleteRow = () => {
+		$editor.chain().focus().deleteRow().run();
 	};
 
 	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
@@ -235,14 +280,54 @@
 			content: DividerIcon,
 			active: () => isActive('horizontalRule'),
 		},
+		{
+			name: 'insert-table',
+			command: insertTable,
+			content: InsertTable,
+			active: () => isActive('table'),
+		},
+		{
+			name: 'insert-column-before',
+			command: addColumnBefore,
+			content: InsertColumnBefore,
+			active: () => isActive('tableColumnBefore'),
+		},
+		{
+			name: 'insert-column-after',
+			command: addColumnAfter,
+			content: InsertColumnAfter,
+			active: () => isActive('tableColumnAfter'),
+		},
+		{
+			name: 'delete-column',
+			command: deleteColumn,
+			content: DeleteColumn,
+			active: () => isActive('tableColumnDelete'),
+		},
+		{
+			name: 'insert-row-before',
+			command: addRowBefore,
+			content: InsertRowBefore,
+			active: () => isActive('tableRowBefore'),
+		},
+		{
+			name: 'insert-row-after',
+			command: addRowAfter,
+			content: InsertRowAfter,
+			active: () => isActive('tableRowAfter'),
+		},
+		{
+			name: 'delete-row',
+			command: deleteRow,
+			content: DeleteRow,
+			active: () => isActive('tableRowDelete'),
+		},
 	];
 </script>
 
 <svelte:head>
 	<title>Tiptap Svelte</title>
 </svelte:head>
-
-<h1 class="mb-2 font-bold">Editor with Nodeview Renderer</h1>
 
 {#if editor}
 	<div
@@ -266,3 +351,4 @@
 {#if editor}
 	<pre class="json-output">{JSON.stringify($editor.getJSON(), null, 2)}</pre>
 {/if}
+
