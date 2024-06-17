@@ -7,6 +7,23 @@
 	import { Editor } from '$lib/functions/Editor';
 	import EditorContent from '$components/editor/EditorContent.svelte';
 	import createEditor from '$lib/functions/createEditor';
+	import H2Icon from '$assets/icons/editor/heading2.svelte';
+	import H3Icon from '$assets/icons/editor/heading3.svelte';
+	import H4Icon from '$assets/icons/editor/heading4.svelte';
+	import BoldIcon from '$assets/icons/editor/bold.svelte';
+	import ItalicIcon from '$assets/icons/editor/italic.svelte';
+	import StrikeIcon from '$assets/icons/editor/strike.svelte';
+	import CodeIcon from '$assets/icons/editor/code.svelte';
+	import HighlightIcon from '$assets/icons/editor/highlight.svelte';
+	import LinkIcon from '$assets/icons/editor/link.svelte';
+	import UnlinkIcon from '$assets/icons/editor/linkoff.svelte';
+	import ParagraphIcon from '$assets/icons/editor/paragraph.svelte';
+	import BlockquoteIcon from '$assets/icons/editor/quote.svelte';
+	import BulletListIcon from '$assets/icons/editor/ulist.svelte';
+	import OrderedListIcon from '$assets/icons/editor/olist.svelte';
+	import CodeBlockIcon from '$assets/icons/editor/codeblock.svelte';
+	import HardBreakIcon from '$assets/icons/editor/break.svelte';
+	import DividerIcon from '$assets/icons/editor/divider.svelte';
 
 	// import { SvelteCounterExtension, SvelteEditableExtension } from './_components/SvelteExtension';
 
@@ -63,6 +80,10 @@
 		$editor.chain().focus().toggleHighlight().run();
 	};
 
+	const toggleBlockquote = () => {
+		$editor.chain().focus().toggleBlockquote().run();
+	};
+
 	const setLink = () => {
 		const previousUrl = $editor.getAttributes('link').href
 		const url = window.prompt('URL', previousUrl)
@@ -115,97 +136,103 @@
 		{
 			name: 'heading-2',
 			command: toggleHeading(2),
-			content: 'H2',
+			content: H2Icon,
 			active: () => isActive('heading', { level: 2 }),
 		},
 		{
 			name: 'heading-3',
 			command: toggleHeading(3),
-			content: 'H3',
+			content: H3Icon,
 			active: () => isActive('heading', { level: 3 }),
 		},
 		{
 			name: 'heading-4',
 			command: toggleHeading(4),
-			content: 'H4',
+			content: H4Icon,
 			active: () => isActive('heading', { level: 4 }),
 		},
 		{
 			name: 'bold',
 			command: toggleBold,
-			content: 'B',
+			content: BoldIcon,
 			active: () => isActive('bold'),
 		},
 		{
 			name: 'italic',
 			command: toggleItalic,
-			content: 'I',
+			content: ItalicIcon,
 			active: () => isActive('italic'),
 		},
 		{
 			name: 'strike',
 			command: toggleStrike,
-			content: 'S',
+			content: StrikeIcon,
 			active: () => isActive('strike'),
 		},
 		{
 			name: 'inline-code',
 			command: toggleInlineCode,
-			content: 'Code',
+			content: CodeIcon,
 			active: () => isActive('code'),
 		},
 		{
 			name: 'highlight',
 			command: toggleHighlight,
-			content: 'H',
+			content: HighlightIcon,
 			active: () => isActive('highlight'),
 		},
 		{
 			name: 'link',
 			command: setLink,
-			content: 'Link',
+			content: LinkIcon,
 			active: () => isActive('link'),
 		},
 		{
 			name: 'unlink',
 			command: () => $editor.chain().focus().unsetLink().run(),
-			content: 'Unlink',
+			content: UnlinkIcon,
 			active: () => isActive('unlink'),
 		},
 		{
 			name: 'paragraph',
 			command: setParagraph,
-			content: 'P',
+			content: ParagraphIcon,
 			active: () => isActive('paragraph'),
+		},
+		{
+			name: 'blockquote',
+			command: toggleBlockquote,
+			content: BlockquoteIcon,
+			active: () => isActive('blockquote'),
 		},
 		{
 			name: 'bullet-list',
 			command: toggleBulletList,
-			content: 'UL',
+			content: BulletListIcon,
 			active: () => isActive('bulletList'),
 		},
 		{
 			name: 'ordered-list',
 			command: toggleOrderedList,
-			content: 'OL',
+			content: OrderedListIcon,
 			active: () => isActive('orderedList'),
 		},
 		{
 			name: 'code-block',
 			command: toggleCodeBlock,
-			content: '```',
+			content: CodeBlockIcon,
 			active: () => isActive('codeBlock'),
 		},
 		{
 			name: 'hard-break',
 			command: setHardBreak,
-			content: '<br>',
+			content: HardBreakIcon,
 			active: () => isActive('hardBreak'),
 		},
 		{
 			name: 'divider',
 			command: setDivider,
-			content: '---',
+			content: DividerIcon,
 			active: () => isActive('horizontalRule'),
 		},
 	];
@@ -218,15 +245,17 @@
 <h1 class="mb-2 font-bold">Editor with Nodeview Renderer</h1>
 
 {#if editor}
-	<div class="border-black border-2 border-b-0 rounded-t-md p-2 flex gap-1">
+	<div
+		class="border-black border-2 border-b-0 rounded-t-md p-2 flex gap-1 flex-wrap">
 		{#each menuItems as item (item.name)}
 			<button
 				type="button"
+				title={item.name}
 				class="hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
 				? 'bg-black text-white' : ''}"
 				on:click={item.command}
 			>
-				{item.content}
+				<svelte:component this={item.content} classList="w-6 h-6" />
 			</button>
 		{/each}
 	</div>
