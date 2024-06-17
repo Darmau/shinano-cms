@@ -9,5 +9,6 @@
 	<path
 		fill-rule = "evenodd" clip-rule = "evenodd"
 		d = "M5 11.25H8V12.75H5V11.25ZM10.5 11.25H13.5V12.75H10.5V11.25ZM19 11.25H16V12.75H19V11.25Z"
+		fill="currentColor"
 	/>
 </svg>
