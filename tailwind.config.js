@@ -19,7 +19,8 @@ export default {
 		skeleton({
 			themes: { preset: [ "skeleton" ] }
 		}),
-		forms
+		forms,
+		require('@tailwindcss/typography')
 	]
 };
 
