@@ -44,5 +44,5 @@
 	});
 </script>
 
-<div class="prose prose-zinc max-w-none" bind:this={element} />
+<div bind:this={element} />
 <slot />

@@ -24,10 +24,26 @@
 	import CodeBlockIcon from '$assets/icons/editor/codeblock.svelte';
 	import HardBreakIcon from '$assets/icons/editor/break.svelte';
 	import DividerIcon from '$assets/icons/editor/divider.svelte';
-
-	// import { SvelteCounterExtension, SvelteEditableExtension } from './_components/SvelteExtension';
+	import InsertTable from '$assets/icons/editor/insertTable.svelte';
+	import InsertColumnBefore
+		from '$assets/icons/editor/tableColumnBefore.svelte';
+	import InsertColumnAfter from '$assets/icons/editor/tableColumnAfter.svelte';
+	import DeleteColumn from '$assets/icons/editor/tableColumnDelete.svelte';
+	import InsertRowBefore from '$assets/icons/editor/tableRowBefore.svelte';
+	import InsertRowAfter from '$assets/icons/editor/tableRowAfter.svelte';
+	import DeleteRow from '$assets/icons/editor/tableRowDelete.svelte';
+	import Undo from '$assets/icons/editor/undo.svelte';
+	import Redo from '$assets/icons/editor/redo.svelte';
+	import { Table } from '@tiptap/extension-table';
+	import TableCell from '@tiptap/extension-table-cell';
+	import TableHeader from '@tiptap/extension-table-header';
+	import TableRow from '@tiptap/extension-table-row';
+	import { CustomCodeBlock } from '$components/editor/CustomCodeBlock';
+	import Check from '$assets/icons/check.svelte';
+	import { Typography } from '@tiptap/extension-typography';
 
 	let editor: Readable<Editor>;
+	let codeLanguage = 'javascript';
 
 	onMount(() => {
 		editor = createEditor({
@@ -36,21 +52,40 @@
 				Highlight,
 				Link.configure({
 					protocols: ['http', 'https', 'mailto'],
-					defaultProtocol: 'https',
-				})
+					defaultProtocol: 'https'
+				}),
+				Table.configure({
+					HTMLAttributes: {
+						class: 'not-prose min-w-full divide-y divide-gray-300'
+					}
+				}),
+				TableRow,
+				TableCell.configure({
+					HTMLAttributes: {
+						class:
+							'border whitespace-nowrap py-4 pl-4 pr-3 text-sm text-black sm:pl-6'
+					}
+				}),
+				TableHeader.configure({
+					HTMLAttributes: {
+						class:
+							'text-left bg-gray-50 border whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6'
+					}
+				}),
+				Typography,
+				CustomCodeBlock
 			],
 			content: `
         <p>This is still the text editor you're used to, but enriched with node views.</p>
-        <svelte-counter-component count="0"></svelte-counter-component>
         <p>This is an editable component</p>
-        <svelte-editable-component>This is editable</svelte-editable-component>
         <p>Did you see that? That's a Svelte component. We are really living in the future.</p>
       `,
 			editorProps: {
 				attributes: {
-					class: 'border-2 border-black rounded-b-md p-3 outline-none',
-				},
-			},
+					class:
+						'prose prose-zinc max-w-none border-2 border-black rounded-b-md p-3 outline-none'
+				}
+			}
 		});
 	});
 
@@ -85,25 +120,25 @@
 	};
 
 	const setLink = () => {
-		const previousUrl = $editor.getAttributes('link').href
-		const url = window.prompt('URL', previousUrl)
+		const previousUrl = $editor.getAttributes('link').href;
+		const url = window.prompt('URL', previousUrl);
 
 		// cancelled
 		if (url === null) {
-			return
+			return;
 		}
 
 		// empty
 		if (url === '') {
 			$editor.chain().focus().extendMarkRange('link').unsetLink()
-			.run()
+			.run();
 
-			return
+			return;
 		}
 
 		// update link
 		$editor.chain().focus().extendMarkRange('link').setLink({ href: url })
-		.run()
+		.run();
 	};
 
 	const setParagraph = () => {
@@ -130,6 +165,50 @@
 		$editor.chain().focus().setHorizontalRule().run();
 	};
 
+	const insertTable = () => {
+		$editor.chain().focus().insertTable({
+			rows: 3, cols: 3,
+			withHeaderRow: true
+		}).run();
+	};
+
+	const addColumnBefore = () => {
+		$editor.chain().focus().addColumnBefore().run();
+	};
+
+	const addColumnAfter = () => {
+		$editor.chain().focus().addColumnAfter().run();
+	};
+
+	const deleteColumn = () => {
+		$editor.chain().focus().deleteColumn().run();
+	};
+
+	const addRowBefore = () => {
+		$editor.chain().focus().addRowBefore().run();
+	};
+
+	const addRowAfter = () => {
+		$editor.chain().focus().addRowAfter().run();
+	};
+
+	const deleteRow = () => {
+		$editor.chain().focus().deleteRow().run();
+	};
+
+	const undo = () => {
+		$editor.chain().focus().undo().run();
+	};
+
+	const redo = () => {
+		$editor.chain().focus().redo().run();
+	};
+
+	const setCodeLanguage = () => {
+		$editor.chain().focus().updateAttributes('codeBlock',
+			{ 'data-language': codeLanguage, 'language': codeLanguage }).run();
+	};
+
 	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
 
 	$: menuItems = [
@@ -137,104 +216,161 @@
 			name: 'heading-2',
 			command: toggleHeading(2),
 			content: H2Icon,
-			active: () => isActive('heading', { level: 2 }),
+			active: () => isActive('heading', { level: 2 })
 		},
 		{
 			name: 'heading-3',
 			command: toggleHeading(3),
 			content: H3Icon,
-			active: () => isActive('heading', { level: 3 }),
+			active: () => isActive('heading', { level: 3 })
 		},
 		{
 			name: 'heading-4',
 			command: toggleHeading(4),
 			content: H4Icon,
-			active: () => isActive('heading', { level: 4 }),
+			active: () => isActive('heading', { level: 4 })
 		},
 		{
 			name: 'bold',
 			command: toggleBold,
 			content: BoldIcon,
-			active: () => isActive('bold'),
+			active: () => isActive('bold')
 		},
 		{
 			name: 'italic',
 			command: toggleItalic,
 			content: ItalicIcon,
-			active: () => isActive('italic'),
+			active: () => isActive('italic')
 		},
 		{
 			name: 'strike',
 			command: toggleStrike,
 			content: StrikeIcon,
-			active: () => isActive('strike'),
+			active: () => isActive('strike')
 		},
 		{
 			name: 'inline-code',
 			command: toggleInlineCode,
 			content: CodeIcon,
-			active: () => isActive('code'),
+			active: () => isActive('code')
 		},
 		{
 			name: 'highlight',
 			command: toggleHighlight,
 			content: HighlightIcon,
-			active: () => isActive('highlight'),
+			active: () => isActive('highlight')
 		},
 		{
 			name: 'link',
 			command: setLink,
 			content: LinkIcon,
-			active: () => isActive('link'),
+			active: () => isActive('link')
 		},
 		{
 			name: 'unlink',
 			command: () => $editor.chain().focus().unsetLink().run(),
 			content: UnlinkIcon,
-			active: () => isActive('unlink'),
+			active: () => isActive('unlink')
 		},
 		{
 			name: 'paragraph',
 			command: setParagraph,
 			content: ParagraphIcon,
-			active: () => isActive('paragraph'),
+			active: () => isActive('paragraph')
 		},
 		{
 			name: 'blockquote',
 			command: toggleBlockquote,
 			content: BlockquoteIcon,
-			active: () => isActive('blockquote'),
+			active: () => isActive('blockquote')
 		},
 		{
 			name: 'bullet-list',
 			command: toggleBulletList,
 			content: BulletListIcon,
-			active: () => isActive('bulletList'),
+			active: () => isActive('bulletList')
 		},
 		{
 			name: 'ordered-list',
 			command: toggleOrderedList,
 			content: OrderedListIcon,
-			active: () => isActive('orderedList'),
+			active: () => isActive('orderedList')
 		},
 		{
 			name: 'code-block',
 			command: toggleCodeBlock,
 			content: CodeBlockIcon,
-			active: () => isActive('codeBlock'),
+			active: () => isActive('codeBlock')
 		},
 		{
 			name: 'hard-break',
 			command: setHardBreak,
 			content: HardBreakIcon,
-			active: () => isActive('hardBreak'),
+			active: () => isActive('hardBreak')
 		},
 		{
 			name: 'divider',
 			command: setDivider,
 			content: DividerIcon,
-			active: () => isActive('horizontalRule'),
+			active: () => isActive('horizontalRule')
 		},
+		{
+			name: 'undo',
+			command: undo,
+			content: Undo,
+			active: () => isActive('undo')
+		},
+		{
+			name: 'redo',
+			command: redo,
+			content: Redo,
+			active: () => isActive('redo')
+		}
+	];
+
+	$: tableItems = [
+		{
+			name: 'insert-table',
+			command: insertTable,
+			content: InsertTable,
+			active: () => isActive('table')
+		},
+		{
+			name: 'insert-column-before',
+			command: addColumnBefore,
+			content: InsertColumnBefore,
+			active: () => isActive('tableColumnBefore')
+		},
+		{
+			name: 'insert-column-after',
+			command: addColumnAfter,
+			content: InsertColumnAfter,
+			active: () => isActive('tableColumnAfter')
+		},
+		{
+			name: 'delete-column',
+			command: deleteColumn,
+			content: DeleteColumn,
+			active: () => isActive('tableColumnDelete')
+		},
+		{
+			name: 'insert-row-before',
+			command: addRowBefore,
+			content: InsertRowBefore,
+			active: () => isActive('tableRowBefore')
+		},
+		{
+			name: 'insert-row-after',
+			command: addRowAfter,
+			content: InsertRowAfter,
+			active: () => isActive('tableRowAfter')
+		},
+		{
+			name: 'delete-row',
+			command: deleteRow,
+			content: DeleteRow,
+			active: () => isActive('tableRowDelete')
+		}
 	];
 </script>
 
@@ -242,27 +378,54 @@
 	<title>Tiptap Svelte</title>
 </svelte:head>
 
-<h1 class="mb-2 font-bold">Editor with Nodeview Renderer</h1>
-
 {#if editor}
-	<div
-		class="border-black border-2 border-b-0 rounded-t-md p-2 flex gap-1 flex-wrap">
-		{#each menuItems as item (item.name)}
-			<button
-				type="button"
-				title={item.name}
-				class="hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
+	<div class = "border-black border-2 border-b-0 rounded-t-md ">
+		<div
+			class = "p-2 flex gap-1 flex-wrap"
+		>
+			{#each menuItems as item (item.name)}
+				<button
+					type = "button"
+					title = {item.name}
+					class = "hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
 				? 'bg-black text-white' : ''}"
-				on:click={item.command}
-			>
-				<svelte:component this={item.content} classList="w-6 h-6" />
+					on:click = {item.command}
+				>
+					<svelte:component this = {item.content} classList = "w-6 h-6" />
+				</button>
+			{/each}
+		</div>
+		<div
+			class = "p-2 flex gap-1 flex-wrap"
+		>
+			{#each tableItems as item (item.name)}
+				<button
+					type = "button"
+					title = {item.name}
+					class = "hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
+				? 'bg-black text-white' : ''}"
+					on:click = {item.command}
+				>
+					<svelte:component this = {item.content} classList = "w-6 h-6" />
+				</button>
+			{/each}
+		</div>
+		<div class = "p-2 flex items-center gap-2">
+			<input
+				type = "text" bind:value = {codeLanguage}
+				placeholder = "Enter language"
+				class = "rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+			/>
+			<button on:click = {setCodeLanguage}>
+				<Check classList = "w-5 h-5" />
 			</button>
-		{/each}
+		</div>
 	</div>
 {/if}
 
-<EditorContent editor={$editor} />
+<EditorContent editor = {$editor} />
 
-{#if editor}
-	<pre class="json-output">{JSON.stringify($editor.getJSON(), null, 2)}</pre>
-{/if}
+<!--{#if editor}-->
+<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
+<!--	<pre class="break-words">{$editor.getHTML()}</pre>-->
+<!--{/if}-->
