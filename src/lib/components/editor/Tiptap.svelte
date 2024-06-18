@@ -41,6 +41,7 @@
 	import { CustomCodeBlock } from '$components/editor/CustomCodeBlock';
 	import Check from '$assets/icons/check.svelte';
 	import { Typography } from '@tiptap/extension-typography';
+	import { HeadingWithID } from '$components/editor/HeadingWithId';
 
 	let editor: Readable<Editor>;
 	let codeLanguage = 'javascript';
@@ -49,6 +50,7 @@
 		editor = createEditor({
 			extensions: [
 				StarterKit,
+				HeadingWithID,
 				Highlight,
 				Link.configure({
 					protocols: ['http', 'https', 'mailto'],
@@ -425,7 +427,7 @@
 
 <EditorContent editor = {$editor} />
 
-<!--{#if editor}-->
-<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
-<!--	<pre class="break-words">{$editor.getHTML()}</pre>-->
-<!--{/if}-->
+{#if editor}
+	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
+	<pre class="break-words">{$editor.getHTML()}</pre>
+{/if}
