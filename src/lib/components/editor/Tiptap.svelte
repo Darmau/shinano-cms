@@ -38,10 +38,13 @@
 	import TableCell from '@tiptap/extension-table-cell';
 	import TableHeader from '@tiptap/extension-table-header';
 	import TableRow from '@tiptap/extension-table-row';
+	import { CustomCodeBlock } from '$components/editor/CustomCodeBlock';
+  import Check from '$assets/icons/check.svelte';
 
 	// import { SvelteCounterExtension, SvelteEditableExtension } from './_components/SvelteExtension';
 
 	let editor: Readable<Editor>;
+	let codeLanguage = 'javascript';
 
 	onMount(() => {
 		editor = createEditor({
@@ -56,6 +59,7 @@
 				TableRow,
 				TableCell,
 				TableHeader,
+				CustomCodeBlock
 			],
 			content: `
         <p>This is still the text editor you're used to, but enriched with node views.</p>
@@ -184,6 +188,11 @@
 	const redo = () => {
 		$editor.chain().focus().redo().run();
 	};
+
+	const setCodeLanguage = () => {
+		$editor.chain().focus().updateAttributes('codeBlock',
+			{ 'data-language': codeLanguage, 'language': codeLanguage }).run();
+	}
 
 	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
 
@@ -352,25 +361,36 @@
 </svelte:head>
 
 {#if editor}
-	<div
-		class="border-black border-2 border-b-0 rounded-t-md p-2 flex gap-1 flex-wrap">
-		{#each menuItems as item (item.name)}
-			<button
-				type="button"
-				title={item.name}
-				class="hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
+	<div class="border-black border-2 border-b-0 rounded-t-md ">
+		<div
+			class="p-2 flex gap-1 flex-wrap">
+			{#each menuItems as item (item.name)}
+				<button
+					type="button"
+					title={item.name}
+					class="hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
 				? 'bg-black text-white' : ''}"
-				on:click={item.command}
-			>
-				<svelte:component this={item.content} classList="w-6 h-6" />
-			</button>
-		{/each}
+					on:click={item.command}
+				>
+					<svelte:component this={item.content} classList="w-6 h-6" />
+				</button>
+			{/each}
+		</div>
+		<div class="p-2 flex items-center gap-2">
+			<input
+				type="text" bind:value={codeLanguage}
+				placeholder="Enter language"
+				class="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+			/>
+			<button on:click={setCodeLanguage}><Check classList="w-5 h-5" /></button>
+		</div>
 	</div>
 {/if}
 
 <EditorContent editor={$editor} />
 
 {#if editor}
-	<pre class="json-output">{JSON.stringify($editor.getJSON(), null, 2)}</pre>
+	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
+	<pre class="break-words">{$editor.getHTML()}</pre>
 {/if}
 

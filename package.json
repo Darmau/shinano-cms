@@ -55,6 +55,7 @@
 		"@supabase/supabase-js": "^2.43.4",
 		"@tiptap/core": "^2.4.0",
 		"@tiptap/extension-character-count": "^2.4.0",
+		"@tiptap/extension-code-block": "^2.4.0",
 		"@tiptap/extension-color": "^2.4.0",
 		"@tiptap/extension-highlight": "^2.4.0",
 		"@tiptap/extension-link": "^2.4.0",
