@@ -25,17 +25,19 @@
 	import HardBreakIcon from '$assets/icons/editor/break.svelte';
 	import DividerIcon from '$assets/icons/editor/divider.svelte';
 	import InsertTable from '$assets/icons/editor/insertTable.svelte';
-	import InsertColumnBefore from
-			'$assets/icons/editor/tableColumnBefore.svelte';
+	import InsertColumnBefore
+		from '$assets/icons/editor/tableColumnBefore.svelte';
 	import InsertColumnAfter from '$assets/icons/editor/tableColumnAfter.svelte';
 	import DeleteColumn from '$assets/icons/editor/tableColumnDelete.svelte';
 	import InsertRowBefore from '$assets/icons/editor/tableRowBefore.svelte';
 	import InsertRowAfter from '$assets/icons/editor/tableRowAfter.svelte';
 	import DeleteRow from '$assets/icons/editor/tableRowDelete.svelte';
+	import Undo from '$assets/icons/editor/undo.svelte';
+	import Redo from '$assets/icons/editor/redo.svelte';
 	import { Table } from '@tiptap/extension-table';
-	import TableCell from '@tiptap/extension-table-cell'
-	import TableHeader from '@tiptap/extension-table-header'
-	import TableRow from '@tiptap/extension-table-row'
+	import TableCell from '@tiptap/extension-table-cell';
+	import TableHeader from '@tiptap/extension-table-header';
+	import TableRow from '@tiptap/extension-table-row';
 
 	// import { SvelteCounterExtension, SvelteEditableExtension } from './_components/SvelteExtension';
 
@@ -173,6 +175,14 @@
 
 	const deleteRow = () => {
 		$editor.chain().focus().deleteRow().run();
+	};
+
+	const undo = () => {
+		$editor.chain().focus().undo().run();
+	};
+
+	const redo = () => {
+		$editor.chain().focus().redo().run();
 	};
 
 	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
@@ -322,6 +332,18 @@
 			content: DeleteRow,
 			active: () => isActive('tableRowDelete'),
 		},
+		{
+			name: 'undo',
+			command: undo,
+			content: Undo,
+			active: () => isActive('undo'),
+		},
+		{
+			name: 'redo',
+			command: redo,
+			content: Redo,
+			active: () => isActive('redo'),
+		}
 	];
 </script>
 
