@@ -42,6 +42,9 @@
 	import Check from '$assets/icons/check.svelte';
 	import { Typography } from '@tiptap/extension-typography';
 	import { HeadingWithID } from '$components/editor/HeadingWithId';
+	import ImagesModel from '$components/editor/ImagesModel.svelte';
+
+	export let data;
 
 	let editor: Readable<Editor>;
 	let codeLanguage = 'javascript';
@@ -427,6 +430,7 @@
 
 <EditorContent editor = {$editor} />
 
+<!--<ImagesModel {data} />-->
 {#if editor}
 	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
 	<pre class="break-words">{$editor.getHTML()}</pre>
