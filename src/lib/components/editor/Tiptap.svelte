@@ -430,8 +430,7 @@
 
 <EditorContent editor = {$editor} />
 
-<!--<ImagesModel {data} />-->
+<ImagesModel {data} />
 {#if editor}
 	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
-	<pre class="break-words">{$editor.getHTML()}</pre>
 {/if}

@@ -7,9 +7,6 @@ export interface CustomHeadingOptions {
 
 export const HeadingWithID = Heading.extend({
 	name: 'headingWithID',
-	defaultOptions: {
-		levels: [1, 2, 3, 4, 5, 6],
-	},
 	addAttributes() {
 		return {
 			...this.parent?.(),
