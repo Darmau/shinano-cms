@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import ImageGrid from '$components/image/ImageGrid.svelte';
 	import { S3Client } from '@aws-sdk/client-s3';
-	import { invalidateAll } from '$app/navigation';
 
 	const toastStore = getToastStore();
 
@@ -16,8 +14,8 @@
 	export let isOpen = false;
 	export let onSelect;
 
-	function handleSelect(index) {
-		onSelect(index);
+	function handleSelect(id, alt, storage_key, prefix) {
+		onSelect(id, alt, storage_key, prefix);
 		isOpen = false;
 	}
 
@@ -68,7 +66,8 @@
 		<div>
 			{#each data.images as image, index}
 				<div
-					on:click={() => handleSelect(index)}
+					on:click={() => handleSelect(image.id, image.alt, image.storage_key,
+					data.prefix)}
 					class="relative inline-block w-24 h-24 m-2 bg-gray-200 rounded-md cursor-pointer"
 				>
 					<img

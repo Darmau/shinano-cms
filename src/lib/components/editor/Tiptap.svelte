@@ -43,7 +43,7 @@
 	import { Typography } from '@tiptap/extension-typography';
 	import { HeadingWithID } from '$components/editor/HeadingWithId';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
-	import Gallery from '$components/editor/Gallery';
+	import Image from '$components/editor/Image';
 
 	export let data;
 
@@ -81,7 +81,7 @@
 				}),
 				Typography,
 				CustomCodeBlock,
-				Gallery
+				Image
 			],
 			content: `
         <p>This is still the text editor you're used to, but enriched with node views.</p>
@@ -385,8 +385,9 @@
 		isModalOpen = true;
 	}
 
-	function handleSelect(index) {
-		$editor.chain().focus().setNode('gallery', { index }).run();
+	function handleSelect(id, alt, storage_key, prefix) {
+		$editor.chain().focus().setNode('image',
+			{ id, alt, storage_key, prefix }).run();
 	}
 </script>
 
@@ -444,6 +445,6 @@
 {#if isModalOpen}
 	<ImagesModel {data} {isModalOpen} onSelect={handleSelect} />
 {/if}
-<!--{#if editor}-->
-<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
-<!--{/if}-->
+{#if editor}
+	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
+{/if}
