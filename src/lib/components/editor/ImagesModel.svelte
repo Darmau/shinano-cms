@@ -13,6 +13,14 @@
 	let S3: S3Client | undefined;
 	let afterFetch = false;
 
+	export let isOpen = false;
+	export let onSelect;
+
+	function handleSelect(index) {
+		onSelect(index);
+		isOpen = false;
+	}
+
 	// 获取图片信息
 	const getImages = async (page: number = 1) => {
 		const { data: images, error: fetchError } = await
@@ -57,7 +65,20 @@
 
 <div>
 	{#if afterFetch}
-		<ImageGrid {data} s3={S3} />
+		<div>
+			{#each data.images as image, index}
+				<div
+					on:click={() => handleSelect(index)}
+					class="relative inline-block w-24 h-24 m-2 bg-gray-200 rounded-md cursor-pointer"
+				>
+					<img
+						src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
+						alt={image.file_name}
+						class="w-full h-full object-cover rounded-md"
+					/>
+				</div>
+			{/each}
+		</div>
 		<div>
 			<button
 				on:click={prevPage}

@@ -43,11 +43,13 @@
 	import { Typography } from '@tiptap/extension-typography';
 	import { HeadingWithID } from '$components/editor/HeadingWithId';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
+	import Gallery from '$components/editor/Gallery';
 
 	export let data;
 
 	let editor: Readable<Editor>;
 	let codeLanguage = 'javascript';
+	let isModalOpen = false;
 
 	onMount(() => {
 		editor = createEditor({
@@ -78,7 +80,8 @@
 					}
 				}),
 				Typography,
-				CustomCodeBlock
+				CustomCodeBlock,
+				Gallery
 			],
 			content: `
         <p>This is still the text editor you're used to, but enriched with node views.</p>
@@ -377,6 +380,14 @@
 			active: () => isActive('tableRowDelete')
 		}
 	];
+
+	function openModal() {
+		isModalOpen = true;
+	}
+
+	function handleSelect(index) {
+		$editor.chain().focus().setNode('gallery', { index }).run();
+	}
 </script>
 
 <svelte:head>
@@ -429,8 +440,10 @@
 {/if}
 
 <EditorContent editor = {$editor} />
-
-<ImagesModel {data} />
-{#if editor}
-	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
+<button on:click={openModal}>Open Modal</button>
+{#if isModalOpen}
+	<ImagesModel {data} {isModalOpen} onSelect={handleSelect} />
 {/if}
+<!--{#if editor}-->
+<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
+<!--{/if}-->

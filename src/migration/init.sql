@@ -311,7 +311,7 @@ CREATE TABLE
     "upload_picture" INT DEFAULT 0,
     "comment" INT DEFAULT 0,
     "message" INT DEFAULT 0,
-    "new_user" INT DEFAULT 0,
+    "user" INT DEFAULT 0,
     "character" INT DEFAULT 0
   );
 
@@ -586,4 +586,18 @@ with
       select
         auth.uid ()
     ) = user_id
+  );
+
+SELECT cron.schedule('daily_stats_update', '0 3 * * *', $$
+  INSERT INTO stats (post_article, post_photo, post_video, thought, comment, message, user, upload_picture)
+  SELECT
+    (SELECT COUNT(*) FROM article),
+    (SELECT COUNT(*) FROM photo),
+    (SELECT COUNT(*) FROM video),
+    (SELECT COUNT(*) FROM thought),
+    (SELECT COUNT(*) FROM comment),
+    (SELECT COUNT(*) FROM message),
+    (SELECT COUNT(*) FROM users),
+    (SELECT COUNT(*) FROM image)
+    $$
   );
