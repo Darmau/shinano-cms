@@ -53,6 +53,7 @@
 		"@aws-sdk/s3-request-presigner": "^3.598.0",
 		"@supabase/ssr": "^0.3.0",
 		"@supabase/supabase-js": "^2.43.5",
+		"@tailwindcss/container-queries": "^0.1.1",
 		"@tiptap/core": "^2.4.0",
 		"@tiptap/extension-character-count": "^2.4.0",
 		"@tiptap/extension-code-block": "^2.4.0",

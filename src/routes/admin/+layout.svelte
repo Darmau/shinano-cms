@@ -22,7 +22,7 @@
     min-height: 100vh;
     width: 100%;
     display: grid;
-    grid-template-columns: 288px 1fr;
+    grid-template-columns: 240px 1fr;
     grid-template-rows: 1fr auto;
     grid-template-areas:
     "sidebar main"
@@ -32,6 +32,7 @@
   .sidebar {
     grid-area: sidebar;
     height: 100vh;
+    width: 100%;
   }
 
   .main {

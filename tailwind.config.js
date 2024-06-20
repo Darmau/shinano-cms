@@ -13,12 +13,17 @@ export default {
 		)
 	],
 	theme: {
-		extend: {}
+		extend: {
+			screens: {
+				'3xl': '1600px'
+			}
+		}
 	},
 	plugins: [
 		skeleton({
-			themes: { preset: [ "skeleton" ] }
+			themes: { preset: ['skeleton'] }
 		}),
+		require('@tailwindcss/container-queries'),
 		forms,
 		require('@tailwindcss/typography')
 	]
