@@ -61,20 +61,23 @@
 
 </script>
 
-<div>
+<div class="@container">
 	{#if afterFetch}
-		<div>
-			{#each data.images as image, index}
+		<div class = "grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-4 @6xl:grid-cols-6 gap-4">
+			{#each data.images as image (image.id)}
 				<div
 					on:click={() => handleSelect(image.id, image.alt, image.storage_key,
 					data.prefix)}
-					class="relative inline-block w-24 h-24 m-2 bg-gray-200 rounded-md cursor-pointer"
+					data-image-id = {image.id}
+					class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
 				>
-					<img
-						src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
-						alt={image.file_name}
-						class="w-full h-full object-cover rounded-md"
-					/>
+					<div>
+						<img
+							src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
+							class = "img-bg h-full w-full object-contain"
+							alt = {image.alt}
+						/>
+					</div>
 				</div>
 			{/each}
 		</div>
@@ -94,3 +97,9 @@
 		</div>
 	{/if}
 </div>
+
+<style>
+  .img-bg {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='200' height='400'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Crect fill='black' x='0' y='0' width='10' height='10' opacity='0.05'/%3E%3Crect fill='white' x='10' y='0' width='10' height='10'/%3E%3Crect fill='black' x='10' y='10' width='10' height='10' opacity='0.05'/%3E%3Crect fill='white' x='0' y='10' width='10' height='10'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23grid)' x='0' y='0' width='100%25' height='100%25'/%3E%3C/svg%3E");
+  }
+</style>
