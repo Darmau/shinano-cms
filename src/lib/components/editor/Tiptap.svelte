@@ -24,6 +24,7 @@
 	import CodeBlockIcon from '$assets/icons/editor/codeblock.svelte';
 	import HardBreakIcon from '$assets/icons/editor/break.svelte';
 	import DividerIcon from '$assets/icons/editor/divider.svelte';
+	import ImageIcon from '$assets/icons/editor/image.svelte';
 	import InsertTable from '$assets/icons/editor/insertTable.svelte';
 	import InsertColumnBefore
 		from '$assets/icons/editor/tableColumnBefore.svelte';
@@ -221,6 +222,12 @@
 
 	$: menuItems = [
 		{
+			name: 'image',
+			command: () => openImageModal(),
+			content: ImageIcon,
+			active: () => isActive('image')
+		},
+		{
 			name: 'heading-2',
 			command: toggleHeading(2),
 			content: H2Icon,
@@ -381,7 +388,7 @@
 		}
 	];
 
-	function openModal() {
+	function openImageModal() {
 		isModalOpen = true;
 	}
 
@@ -450,7 +457,6 @@
 {/if}
 
 <EditorContent editor = {$editor} />
-<button on:click={openModal}>Open Modal</button>
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
 {/if}
