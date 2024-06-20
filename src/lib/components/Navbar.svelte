@@ -136,7 +136,7 @@
 
   <!-- Static sidebar for desktop -->
   <div
-    class = "hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72 lg:flex-col"
+    class = "hidden h-screen lg:flex lg:flex-col"
   >
     <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div
@@ -182,7 +182,7 @@
       </nav>
       <select
         bind:value={$locale}
-        class="rounded-md border bg-white p-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
+        class="justify-self-end rounded-md border bg-white p-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
       >
         {#each locales as language}
           <option value={language.lang}>{language.locale}</option>

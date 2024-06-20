@@ -62,6 +62,9 @@ const translations: Translation = {
 		"alt-text": "替代文本",
 		"alt-text-description": "出于无障碍考虑，建议填写替代文本",
 		"folder": "文件夹",
+		"close": "关闭",
+		"next-page": "下一页",
+		"previous-page": "上一页",
 	},
 	"en": {
 		"home": "Home",
@@ -119,6 +122,9 @@ const translations: Translation = {
 		"alt-text": "Alt Text",
 		"alt-text-description": "For accessibility consideration, it is recommended to fill in alt text",
 		"folder": "Folder",
+		"close": "Close",
+		"next-page": "Next",
+		"previous-page": "Previous",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -176,6 +182,9 @@ const translations: Translation = {
 		"alt-text": "替代文本",
 		"alt-text-description": "出於無障礙考慮，建議填寫替代文本",
 		"folder": "文件夾",
+		"close": "關閉",
+		"next-page": "下一頁",
+		"previous-page": "上一頁",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -233,6 +242,9 @@ const translations: Translation = {
 		"alt-text": "代替テキスト",
 		"alt-text-description": "アクセシビリティを考慮して、代替テキストを記入することをお勧めします",
 		"folder": "フォルダ",
+		"close": "閉じる",
+		"next-page": "次へ",
+		"previous-page": "前へ",
 	}
 }
 

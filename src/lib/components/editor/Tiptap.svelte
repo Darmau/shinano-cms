@@ -24,6 +24,7 @@
 	import CodeBlockIcon from '$assets/icons/editor/codeblock.svelte';
 	import HardBreakIcon from '$assets/icons/editor/break.svelte';
 	import DividerIcon from '$assets/icons/editor/divider.svelte';
+	import ImageIcon from '$assets/icons/editor/image.svelte';
 	import InsertTable from '$assets/icons/editor/insertTable.svelte';
 	import InsertColumnBefore
 		from '$assets/icons/editor/tableColumnBefore.svelte';
@@ -41,14 +42,21 @@
 	import { CustomCodeBlock } from '$components/editor/CustomCodeBlock';
 	import Check from '$assets/icons/check.svelte';
 	import { Typography } from '@tiptap/extension-typography';
+	import { HeadingWithID } from '$components/editor/HeadingWithId';
+	import ImagesModel from '$components/editor/ImagesModel.svelte';
+	import Image from '$components/editor/Image';
+
+	export let data;
 
 	let editor: Readable<Editor>;
 	let codeLanguage = 'javascript';
+	let isModalOpen = false;
 
 	onMount(() => {
 		editor = createEditor({
 			extensions: [
 				StarterKit,
+				HeadingWithID,
 				Highlight,
 				Link.configure({
 					protocols: ['http', 'https', 'mailto'],
@@ -73,7 +81,8 @@
 					}
 				}),
 				Typography,
-				CustomCodeBlock
+				CustomCodeBlock,
+				Image
 			],
 			content: `
         <p>This is still the text editor you're used to, but enriched with node views.</p>
@@ -212,6 +221,12 @@
 	$: isActive = (name: string, attrs = {}) => $editor.isActive(name, attrs);
 
 	$: menuItems = [
+		{
+			name: 'image',
+			command: () => openImageModal(),
+			content: ImageIcon,
+			active: () => isActive('image')
+		},
 		{
 			name: 'heading-2',
 			command: toggleHeading(2),
@@ -372,6 +387,24 @@
 			active: () => isActive('tableRowDelete')
 		}
 	];
+
+	function openImageModal() {
+		isModalOpen = true;
+	}
+
+	function closeModel() {
+		isModalOpen = false;
+	}
+
+	function handleSelect(images) {
+		const nodeLists = images.map(image => {
+			return {
+				type: 'image',
+				attrs: image
+			};
+		});
+		$editor.chain().focus().insertContent(nodeLists).run();
+	}
 </script>
 
 <svelte:head>
@@ -424,8 +457,9 @@
 {/if}
 
 <EditorContent editor = {$editor} />
-
-<!--{#if editor}-->
-<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
-<!--	<pre class="break-words">{$editor.getHTML()}</pre>-->
-<!--{/if}-->
+{#if isModalOpen}
+	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
+{/if}
+{#if editor}
+	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
+{/if}

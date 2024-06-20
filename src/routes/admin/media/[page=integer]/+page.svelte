@@ -27,7 +27,7 @@
 	<title>{title}</title>
 </svelte:head>
 
-<div>
+<div class="@container">
 	<PageTitle title = {title} />
 	<UploadFile data = {data} s3 = {S3} />
 	<ImageGrid data = {data} s3 = {S3} />
