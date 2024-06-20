@@ -385,9 +385,18 @@
 		isModalOpen = true;
 	}
 
-	function handleSelect(id, alt, storage_key, prefix) {
-		$editor.chain().focus().setNode('image',
-			{ id, alt, storage_key, prefix }).run();
+	function closeModel() {
+		isModalOpen = false;
+	}
+
+	function handleSelect(images) {
+		const nodeLists = images.map(image => {
+			return {
+				type: 'image',
+				attrs: image
+			};
+		});
+		$editor.chain().focus().insertContent(nodeLists).run();
 	}
 </script>
 
@@ -443,7 +452,7 @@
 <EditorContent editor = {$editor} />
 <button on:click={openModal}>Open Modal</button>
 {#if isModalOpen}
-	<ImagesModel {data} {isModalOpen} onSelect={handleSelect} />
+	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
 {/if}
 {#if editor}
 	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
