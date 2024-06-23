@@ -84,7 +84,7 @@ CREATE INDEX ON image ("date", "file_name", "format");
 CREATE UNIQUE INDEX ON image ("storage_key");
 
 ALTER TABLE image
-ADD CONSTRAINT unique_image UNIQUE (storege_key);
+ADD CONSTRAINT unique_image UNIQUE (storage_key);
 
 CREATE TABLE
   topic (

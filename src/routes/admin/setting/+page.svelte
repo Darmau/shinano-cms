@@ -1,6 +1,5 @@
 <script>
   import Language from '$components/setting/Language.svelte';
-  import Storage from '$components/setting/ObjectStorage.svelte';
   import APIs from '$components/setting/APIs.svelte';
   import AI from '$components/setting/AI.svelte';
   import { t } from '$lib/functions/i18n'

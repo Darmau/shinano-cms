@@ -1,9 +1,9 @@
 export class AI {
 	private readonly prompts: Map<string, string> = new Map([
-		['OPENAI_API_KEY', ''],
-		['PROMPT_SEO', ''],
-		['PROMPT_SLUG', ''],
-		['PROMPT_IMAGE_ALT', ''],
+		['config_OPENAI', ''],
+		['prompt_SEO', ''],
+		['prompt_SLUG', ''],
+		['prompt_IMAGE_ALT', ''],
 	]);
 
 	public array() {

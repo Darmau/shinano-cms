@@ -1,10 +1,10 @@
 export class ThirdPartyAPIs {
 	private readonly apiNames: Map<string, string> = new Map([
-		['UNSPLASH_ACCESS_KEY', ''],
-		['UNSPLASH_SECRET_KEY', ''],
-		['PERSPECTIVE', ''],
-		['MAPBOX', ''],
-		['AMAP', ''],
+		['config_UNSPLASH_ACCESS_KEY', ''],
+		['config_UNSPLASH_SECRET_KEY', ''],
+		['config_PERSPECTIVE', ''],
+		['config_MAPBOX', ''],
+		['config_AMAP', ''],
 	])
 
 	public array() {
