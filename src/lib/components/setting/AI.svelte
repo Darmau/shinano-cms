@@ -16,22 +16,16 @@
 
 	// 从config表中获取AI配置
 	const getAIConfig = async () => {
-		const { data: prompts, error: fetchError } = await
-			supabase.from('config').select('name, value').in('name', KEYS);
+		const prompts = await fetch('/api/kv', {
+			method: 'POST',
+			body: JSON.stringify({
+				keys: KEYS
+			})
+		}).then(res => res.json())
 
-		if (fetchError) {
-			console.error(fetchError);
-			toastStore.trigger({
-				message: 'Failed to fetch AI config.',
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-		}
-
-		prompts.forEach(key => {
-			if (key.name in AIObj) {
-				AIObj[key.name] = key.value;
-			}
+		prompts.forEach(item => {
+			const key = Object.keys(item)[0];
+			AIObj[key] = item[key];
 		});
 	}
 
@@ -48,39 +42,28 @@
 		const formData = new FormData(event.target as HTMLFormElement);
 		const storageData = Object.fromEntries(formData.entries());
 
-		// bulk upsert
-		const upsertData = Object.keys(storageData).map(key => {
-			return {
-				name: key.toUpperCase(),
-				value: storageData[key]
-			}
-		});
+		// 将对象中的key-value转换成独立的对象，最后拼接成数组
+		const arrayData = Object.entries(storageData).map(([key, value]) => ({
+			[key]: value }));
 
-		// 将数组批量存储到config表中，如果有重复的name则更新
-		const { error: upsertError } =
-			await supabase.from('config').upsert(upsertData, {
-				returning: 'minimal',
-				onConflict: ['name']
-			}).select();
-
-		if (upsertError) {
-			console.error(upsertError);
-			toastStore.trigger({
-				message: "Failed to update S3 config.",
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-			return false;
-		}
+		const response = await fetch('/api/kv', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				kv: arrayData
+			})
+		}).then(res => res.text());
 
 		toastStore.trigger({
-			message: "S3 config updated.",
+			message: response,
 			hideDismiss: true,
 			background: 'variant-filled-success'
 		});
 
 		isFormChanged = false;
-		await getAPIConfig();
+		await getAIConfig();
 	}
 </script>
 
@@ -102,8 +85,8 @@
 				<input
 					type="text"
 					id="openai_api_key"
-					name="openai_api_key"
-					bind:value={AIObj.OPENAI_API_KEY}
+					name="config_OPENAI"
+					bind:value={AIObj.config_OPENAI}
 					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 				/>
 			</div>
@@ -118,8 +101,8 @@
 			<textarea
 				type="text"
 				id="prompt_slug"
-				name="prompt_slug"
-				bind:value={AIObj.PROMPT_SLUG}
+				name="prompt_SLUG"
+				bind:value={AIObj.prompt_SLUG}
 				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			></textarea>
 		</div>
@@ -133,8 +116,8 @@
 			<textarea
 				type="text"
 				id="prompt_seo"
-				name="prompt_seo"
-				bind:value={AIObj.PROMPT_SEO}
+				name="prompt_SEO"
+				bind:value={AIObj.prompt_SEO}
 				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			></textarea>
 		</div>
@@ -148,8 +131,8 @@
 			<textarea
 				type="text"
 				id="prompt_image_alt"
-				name="prompt_image_alt"
-				bind:value={AIObj.PROMPT_IMAGE_ALT}
+				name="prompt_IMAGE_ALT"
+				bind:value={AIObj.prompt_IMAGE_ALT}
 				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			></textarea>
 		</div>
