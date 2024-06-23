@@ -16,22 +16,16 @@
 
 	// 从config表中获取API配置
 	const getAPIConfig = async () => {
-		const { data: apiKeys, error: fetchError } = await
-			supabase.from('config').select('name, value').in('name', KEYS);
+		const apiKeys = await fetch('/api/kv', {
+			method: 'POST',
+			body: JSON.stringify({
+				keys: KEYS
+			})
+		}).then(res => res.json())
 
-		if (fetchError) {
-			console.error(fetchError);
-			toastStore.trigger({
-				message: 'Failed to fetch API config.',
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-		}
-
-		apiKeys.forEach(key => {
-			if (key.name in API) {
-				API[key.name] = key.value;
-			}
+		apiKeys.forEach(item => {
+			const key = Object.keys(item)[0];
+			API[key] = item[key];
 		});
 	};
 
@@ -48,33 +42,22 @@
 		const formData = new FormData(event.target as HTMLFormElement);
 		const storageData = Object.fromEntries(formData.entries());
 
-		// bulk upsert
-		const upsertData = Object.keys(storageData).map(key => {
-			return {
-				name: key.toUpperCase(),
-				value: storageData[key]
-			}
-		});
+		// 将对象中的key-value转换成独立的对象，最后拼接成数组
+		const arrayData = Object.entries(storageData).map(([key, value]) => ({
+			[key]: value }));
 
-		// 将数组批量存储到config表中，如果有重复的name则更新
-		const { error: upsertError } =
-			await supabase.from('config').upsert(upsertData, {
-				returning: 'minimal',
-				onConflict: ['name']
-			}).select();
-
-		if (upsertError) {
-			console.error(upsertError);
-			toastStore.trigger({
-				message: "Failed to update S3 config.",
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-			return false;
-		}
+		const response = await fetch('/api/kv', {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				kv: arrayData
+			})
+		}).then(res => res.text());
 
 		toastStore.trigger({
-			message: "S3 config updated.",
+			message: response,
 			hideDismiss: true,
 			background: 'variant-filled-success'
 		});
@@ -102,8 +85,8 @@
 				<input
 					type="text"
 					id="unsplash_access_key"
-					name="unsplash_access_key"
-					bind:value={API.UNSPLASH_ACCESS_KEY}
+					name="config_UNSPLASH_ACCESS_KEY"
+					bind:value={API.config_UNSPLASH_ACCESS_KEY}
 					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 				/>
 				<p
@@ -122,8 +105,8 @@
 				<input
 					type="text"
 					id="unsplash_secret_key"
-					name="unsplash_secret_key"
-					bind:value={API.UNSPLASH_SECRET_KEY}
+					name="config_UNSPLASH_SECRET_KEY"
+					bind:value={API.config_UNSPLASH_SECRET_KEY}
 					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 				/>
 			</div>
@@ -139,8 +122,8 @@
 				<input
 					type="text"
 					id="mapbox"
-					name="mapbox"
-					bind:value={API.MAPBOX}
+					name="config_MAPBOX"
+					bind:value={API.config_MAPBOX}
 					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 				/>
 				<p
@@ -159,8 +142,8 @@
 				<input
 					type="text"
 					id="amap"
-					name="amap"
-					bind:value={API.AMAP}
+					name="config_AMAP"
+					bind:value={API.config_AMAP}
 					class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 				/>
 				<p
@@ -180,8 +163,8 @@
 			<input
 				type="text"
 				id="perspective"
-				name="perspective"
-				bind:value={API.PERSPECTIVE}
+				name="config_PERSPECTIVE"
+				bind:value={API.config_PERSPECTIVE}
 				class="font-mono text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			/>
 			<p

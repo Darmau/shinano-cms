@@ -2,10 +2,10 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { WORKERS_TOKEN, WORKERS_URL } from '$env/static/private';
 
 // GET body: { keys: string[] }
-export const GET: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request }) => {
 	const { keys }: { keys: string[] } = await request.json();
 	const keyValues = await fetch(`${WORKERS_URL}/kv`, {
-		method: 'GET',
+		method: 'POST',
 		headers: {
 			'Authorization': `Bearer ${WORKERS_TOKEN}`,
 			'Content-Type': 'application/json'
@@ -24,19 +24,15 @@ export const GET: RequestHandler = async ({ request }) => {
 
 // PUT body: { kv: {key: value}[] }
 export const PUT: RequestHandler = async ({ request }) => {
-	const { kv } = await request.json();
+	const body = await request.json();
 	const response = await fetch(`${WORKERS_URL}/kv`, {
 		method: 'PUT',
 		headers: {
 			'Authorization': `Bearer ${WORKERS_TOKEN}`,
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({ kv })
-	}).then(res => res.json())
-	.catch(err => {
-		console.error(err);
-		error(502, 'Error putting key-values');
-	});
+		body: JSON.stringify(body)
+	}).then(res => res.text());
 
 	return new Response(response, {
 		headers: { 'Content-Type': 'text/plain' }
