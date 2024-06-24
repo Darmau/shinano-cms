@@ -167,31 +167,36 @@
 				{/if}
 				{#if image.exif}
 					<ul class = "space-y-1">
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('brand')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.Make}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('model')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.Model}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('lens')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.LensModel}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('aperture')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.FNumber}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('shutter-speed')}</h4>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('brand')}</h4>
 							<p
-								class = "text-sm text-gray-700"
+								class = "text-sm text-gray-700 text-right">{image.exif.Make}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('model')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right">{image.exif.Model}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('lens')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right">{image.exif.LensModel}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('aperture')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right">{image.exif.FNumber}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4
+								class = "font-medium text-sm mb-1 shrink-0">{$t('shutter-speed')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right"
 							>{shutterSpeed(image.exif.ExposureTime)}</p>
 						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('iso')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.ISO}</p>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('iso')}</h4>
+							<p class = "text-sm text-gray-700 text-right">{image.exif.ISO}</p>
 						</li>
 					</ul>
 				{/if}
