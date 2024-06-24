@@ -9,7 +9,6 @@
 
   const settingTabs = [
     {name: 'language', component: Language},
-    {name: 'media-storage', component: Storage},
     {name: 'ai', component: AI},
     {name: 'api', component: APIs},
   ]

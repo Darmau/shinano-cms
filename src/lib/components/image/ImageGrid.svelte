@@ -4,13 +4,11 @@
 	import { localTime } from '$lib/functions/localTime';
 	import shutterSpeed from '$lib/functions/shutterSpeed';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { invalidateAll } from '$app/navigation'
-	import { DeleteObjectsCommand } from '@aws-sdk/client-s3';
+	import { invalidateAll } from '$app/navigation';
 	import EditImage from '$components/image/EditImage.svelte';
 	import Edit from '$assets/icons/edit.svelte';
 
 	export let data;
-	export let s3;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -27,43 +25,49 @@
 
 	// 根据id，删除选中图片
 	async function deleteImages() {
-		const { error: deleteError } = await
-			supabase.from('image').delete().in('id', deleteImageList);
+		try {
+			deletable = true;
+			// 从data.images中提取要删除的图片的storage_keys
+			const keysToDelete = data.images
+			.filter(image => deleteImageList.includes(image.id))
+			.map(image => image.storage_key);
 
-		// 查找data.images中id与deleteImageList的id一致的条目，提取storage_key
-		const command = new DeleteObjectsCommand({
-			Bucket: data.configs.S3_BUCKET,
-			Delete: {
-				Objects: data.images.filter((image) => deleteImageList.includes(image.id)).map((image) => {
-					return { Key: image.storage_key };
+			// 并行执行数据库删除和存储删除操作
+			await Promise.all([
+				supabase.from('image').delete().in('id', deleteImageList),
+
+				fetch('/api/image', {
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ keys: keysToDelete })
 				})
-			}
-		});
-		const s3response = await s3.send(command);
+			]);
 
-		if (deleteError || s3response.Deleted.length <= 0) {
-			console.error(deleteError);
-			toastStore.trigger({
-				message: 'Failed to delete images.',
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-		} else {
-			// 根据id，
+			const deletedCount = deleteImageList.length;
 			deleteImageList = [];
 			updateSelectedImages();
 			await invalidateAll();
+
 			toastStore.trigger({
-				message: `${deleteImageList.length} images deleted successfully.`,
+				message: `成功删除${deletedCount}张图片。`,
 				hideDismiss: true,
 				background: 'variant-filled-success'
+			});
+		} catch (error) {
+			console.error('删除图片时出错:', error);
+			toastStore.trigger({
+				message: '删除图片失败。',
+				hideDismiss: true,
+				background: 'variant-filled-error'
 			});
 		}
 	}
 
+
 	// 打开图片编辑窗口
 	let isEditing = false;
 	let imageData = {};
+
 	function closeEdit() {
 		isEditing = false;
 	}
@@ -72,14 +76,32 @@
 		isEditing = true;
 		imageData = image;
 	}
+
+	// 选中所有图片，并且添加到selectedImages数组中
+	function switchSelectAllImages() {
+		const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+		if (deleteImageList.length === data.images.length) {
+			checkboxes.forEach(checkbox => {
+				checkbox.checked = false;
+			});
+			deleteImageList = [];
+		} else {
+			deleteImageList = data.images.map(image => image.id);
+			checkboxes.forEach(checkbox => {
+				checkbox.checked = true;
+			});
+		}
+		updateSelectedImages();
+	}
 </script>
 
 {#if isEditing}
-	<EditImage data={data} {closeEdit} imageData={imageData} />
+	<EditImage data = {data} {closeEdit} imageData = {imageData} />
 {/if}
 
 <div class = "flex justify-between items-center my-8">
 	<p>{selectedImages}</p>
+	<button on:click = {switchSelectAllImages}>Select All</button>
 	<div class = "mt-4 flex md:ml-4 md:mt-0">
 		<button
 			on:click = {deleteImages}
@@ -90,8 +112,10 @@
 		</button>
 	</div>
 </div>
-<div class =
-			 "grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-4 @6xl:grid-cols-6 gap-4">
+<div
+	class =
+		"grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-4 @6xl:grid-cols-6 gap-4"
+>
 	{#each data.images as image (image.id)}
 		<div
 			data-image-id = {image.id}
@@ -120,7 +144,7 @@
 					class = "absolute right-4 top-4 flex h-6 items-center"
 					on:click = {() => openEdit(image)}
 				>
-					<Edit classList="h-6 w-6 text-gray-400 hover:text-cyan-600" />
+					<Edit classList = "h-6 w-6 text-gray-400 hover:text-cyan-600" />
 				</button>
 				<img
 					src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
@@ -167,31 +191,43 @@
 				{/if}
 				{#if image.exif}
 					<ul class = "space-y-1">
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('brand')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.Make}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('model')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.Model}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('lens')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.LensModel}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('aperture')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.FNumber}</p>
-						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('shutter-speed')}</h4>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('brand')}</h4>
 							<p
-								class = "text-sm text-gray-700"
+								class = "text-sm text-gray-700 text-right"
+							>{image.exif.Make}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('model')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right"
+							>{image.exif.Model}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('lens')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right"
+							>{image.exif.LensModel}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4
+								class = "font-medium text-sm mb-1 shrink-0"
+							>{$t('aperture')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right"
+							>{image.exif.FNumber}</p>
+						</li>
+						<li class = "flex justify-between gap-4">
+							<h4
+								class = "font-medium text-sm mb-1 shrink-0"
+							>{$t('shutter-speed')}</h4>
+							<p
+								class = "text-sm text-gray-700 text-right"
 							>{shutterSpeed(image.exif.ExposureTime)}</p>
 						</li>
-						<li class = "flex justify-between">
-							<h4 class = "font-medium text-sm mb-1">{$t('iso')}</h4>
-							<p class = "text-sm text-gray-700">{image.exif.ISO}</p>
+						<li class = "flex justify-between gap-4">
+							<h4 class = "font-medium text-sm mb-1 shrink-0">{$t('iso')}</h4>
+							<p class = "text-sm text-gray-700 text-right">{image.exif.ISO}</p>
 						</li>
 					</ul>
 				{/if}
