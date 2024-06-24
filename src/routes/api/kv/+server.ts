@@ -49,7 +49,7 @@ export const DELETE: RequestHandler = async ({ request }) => {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({ keys })
-	}).then(res => res.json())
+	}).then(res => res.text())
 	.catch(err => {
 		console.error(err);
 		error(502, 'Error deleting key-values');
