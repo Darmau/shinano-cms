@@ -1,16 +1,9 @@
 <script lang="ts">
 	import { getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-	import exifr from 'exifr';
-	import { v4 as uuidv4 } from 'uuid';
-	import getDateFormat from '$lib/functions/dateFormat';
 	import FileDropzone from '$components/FileDropzone.svelte';
 	import { invalidateAll } from '$app/navigation';
 
 	export let data;
-	export let s3;
-	let { supabase } = data;
-	$: ({ supabase } = data);
 
 	let files: FileList;
 	const toastStore = getToastStore();
@@ -38,7 +31,6 @@
 	}
 
 	// 上传文件
-	// TODO: 重构
 	async function uploadFiles(event: Event) {
 		isLoading = true;
 		event.preventDefault();
@@ -48,8 +40,8 @@
 		}
 		const files = Array.from(target.files);
 
-		// 超过10个文件禁止上传
-		if (files.length > 10) {
+		// 超过15个文件禁止上传
+		if (files.length > 15) {
 			toastStore.trigger({
 				message: 'You can only upload up to 10 files at a time.',
 				hideDismiss: true,
@@ -58,85 +50,40 @@
 			return;
 		}
 
-		const uploadPromises = files.map(async (file) => {
-			const storageKey = uuidv4();
-			const dimensions = await getImageDimensions(file);
-			const command = new PutObjectCommand({
-				Bucket: data.configs.S3_BUCKET,
-				Key: storageKey,
-				Body: file,
-				ContentType: file.type,
-				Metadata: {
-					'file-size': file.size.toString(),
-					'file-type': file.type,
-					'width': dimensions.width.toString(),
-					'height': dimensions.height.toString()
+		try {
+			// 分别请求 /api/image POST 需要携带file、width、height
+			const uploadPromises = files.map(async (file) => {
+				const { width, height } = await getImageDimensions(file);
+				const formData = new FormData();
+				formData.append('file', file);
+				formData.append('width', width.toString());
+				formData.append('height', height.toString());
+				const response = await fetch('/api/image', {
+					method: 'POST',
+					body: formData
+				});
+				if (!response.ok) {
+					throw new Error(`上传失败: ${response.statusText}`);
 				}
 			});
 
-			// Attempt upload
-			try {
-				await s3.send(command);
-				const EXIF =
-					['image/jpeg', 'image/png', 'image/avif'].includes(file.type) ? await
-							exifr.parse(file) :
-						null;
-				let location: string = null;
-				if (EXIF?.latitude && EXIF?.longitude) {
-					location = await
-						fetch(`/api/location?latitude=${EXIF.latitude}&longitude=${EXIF.longitude}&mapbox=${data.configs.MAPBOX}&amap=${data.configs.AMAP}`)
-							.then((res) => res.json())
-				}
+			await Promise.all(uploadPromises);
 
-				// Prepare data for batch insertion
-				return {
-					folder: 'default',
-					file_name: file.name,
-					format: file.type.split('/')[1],
-					alt: '',
-					caption: '',
-					date: getDateFormat(),
-					exif: EXIF,
-					location,
-					taken_at: EXIF?.DateTimeOriginal,
-					size: file.size,
-					width: dimensions.width,
-					height: dimensions.height,
-					storage_key: storageKey
-				};
-			} catch (error) {
-				console.error(error);
-				toastStore.trigger({
-					message: error.message || `Failed to upload ${file.name}.`,
-					hideDismiss: true,
-					background: 'variant-filled-error'
-				});
-			}
-		});
-
-		try {
-			const records = await Promise.all(uploadPromises);
-			const { error: insertError } = await
-				supabase.from('image').insert(records).select();
-			if (insertError) {
-				console.error(insertError);
-			}
-
-			console.log('Files uploaded successfully.');
+			isLoading = false;
+			await invalidateAll();
 			toastStore.trigger({
-				message: 'Files uploaded successfully.',
+				message: '图片上传成功',
 				hideDismiss: true,
 				background: 'variant-filled-success'
 			});
 		} catch (error) {
+			isLoading = false;
 			toastStore.trigger({
-				message: error.message || 'An error occurred during file upload.',
+				message: '图片上传失败',
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});
-		} finally {
-			isLoading = false;
-			await invalidateAll();
+			console.error('上传错误:', error);
 		}
 	}
 </script>
