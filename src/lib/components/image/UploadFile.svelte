@@ -38,6 +38,7 @@
 	}
 
 	// 上传文件
+	// TODO: 重构
 	async function uploadFiles(event: Event) {
 		isLoading = true;
 		event.preventDefault();
