@@ -33,8 +33,9 @@
 			.map(image => image.storage_key);
 
 			// 并行执行数据库删除和存储删除操作
-			const [{ error: deleteError }, endpointResponse] = await Promise.all([
+			await Promise.all([
 				supabase.from('image').delete().in('id', deleteImageList),
+
 				fetch('/api/image', {
 					method: 'DELETE',
 					headers: { 'Content-Type': 'application/json' },

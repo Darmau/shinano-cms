@@ -1,25 +1,26 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { DeleteObjectsCommand, S3Client } from '@aws-sdk/client-s3';
 	import Edit from '$assets/icons/edit.svelte';
 	import EditImage from '$components/image/EditImage.svelte';
 	import UploadFile from '$components/image/UploadFile.svelte';
-	import { invalidateAll } from '$app/navigation';
 	import { t } from '$lib/functions/i18n';
+	import { onMount } from 'svelte';
 
 	const toastStore = getToastStore();
 
 	export let data;
 	let { supabase } = data;
 	$: ({ supabase } = data);
-	let S3: S3Client | undefined;
 	let afterFetch = false;
 	let selectedImages = new Map<number, any>();
 	let selectedNumber: number = 0;
 
 	export let closeModel: () => void;
 	export let onSelect;
+
+	onMount(async () => {
+		await getImages();
+	});
 
 	// 获取图片信息
 	const getImages = async (page: number = 1) => {
@@ -49,18 +50,6 @@
 		await getImages(data.page - 1);
 	};
 
-	onMount(async () => {
-		S3 = new S3Client({
-			region: data.configs.S3_REGION,
-			endpoint: data.configs.S3_ENDPOINT,
-			credentials: {
-				accessKeyId: data.configs.S3_ACCESS_ID,
-				secretAccessKey: data.configs.S3_SECRET_KEY
-			}
-		});
-		await getImages();
-	});
-
 	// 处理复选框状态改变
 	const handleCheckboxChange = (image) => {
 		if (selectedImages.has(image.id)) {
@@ -87,6 +76,7 @@
 
 	let isEditing = false;
 	let imageData = {};
+
 	function closeEdit() {
 		isEditing = false;
 	}
@@ -99,35 +89,35 @@
 	// 负责处理删除图片
 	async function deleteImages() {
 		const imageIds = Array.from(selectedImages.keys());
-		const { error: deleteError } = await
-			supabase.from('image').delete().in('id', imageIds);
 		// 查找data.images中id与deleteImageList的id一致的条目，提取storage_key
-		const command = new DeleteObjectsCommand({
-			Bucket: data.configs.S3_BUCKET,
-			Delete: {
-				Objects: data.images.filter((image) => imageIds.includes(image.id)).map((image) => {
-					return { Key: image.storage_key };
-				})
-			}
-		});
-		const s3response = await S3.send(command);
+		const keysToDelete = data.images
+		.filter(image => imageIds.includes(image.id))
+		.map(image => image.storage_key);
 
-		if (deleteError || s3response.Deleted.length <= 0) {
-			console.error(deleteError);
-			toastStore.trigger({
-				message: 'Failed to delete images.',
-				hideDismiss: true,
-				background: 'variant-filled-error'
-			});
-		} else {
-			// 根据id，
+		try {
+			await Promise.all([
+				await supabase.from('image').delete().in('id', imageIds),
+				fetch('/api/image', {
+					method: 'DELETE',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ keys: keysToDelete })
+				})
+			]);
+
 			selectedImages = new Map();
 			selectedNumber = 0;
-			await getImages(data.page);
+			await getImages();
 			toastStore.trigger({
-				message: `${deleteImageList.length} images deleted successfully.`,
+				message: `成功删除${deletedCount}张图片。`,
 				hideDismiss: true,
 				background: 'variant-filled-success'
+			});
+		} catch (error) {
+			console.error('删除图片时出错:', error);
+			toastStore.trigger({
+				message: '删除图片失败。',
+				hideDismiss: true,
+				background: 'variant-filled-error'
 			});
 		}
 	}
@@ -136,19 +126,22 @@
 <div class = "relative z-50">
 	<div class = "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
 		{#if isEditing}
-			<EditImage data={data} {closeEdit} imageData={imageData} />
+			<EditImage data = {data} {closeEdit} imageData = {imageData} />
 		{/if}
-		<div class =
-					 "fixed inset-0 z-10 flex justify-center items-center w-screen overflow-y-auto">
+		<div
+			class =
+				"fixed inset-0 z-10 flex justify-center items-center w-screen overflow-y-auto"
+		>
 			<div
 				class =
 					"w-full max-w-5xl h-5/6 bg-white overflow-scroll rounded-lg shadow-xl"
 			>
 				<div
-					class="flex justify-between items-center sticky top-0 z-50 w-full bg-white p-4">
+					class = "flex justify-between items-center sticky top-0 z-50 w-full bg-white p-4"
+				>
 					<button
-						on:click={deleteImages}
-						class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
+						on:click = {deleteImages}
+						class = "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
 					>
 						{$t('delete')}
 					</button>
@@ -161,7 +154,7 @@
 					</button>
 				</div>
 				<div class = "@container p-4">
-					<UploadFile on:submit={getImages} data = {data} s3 = {S3} />
+					<UploadFile on:submit = {getImages} data = {data} />
 					{#if afterFetch}
 						<div
 							class = "grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-4 @6xl:grid-cols-6 gap-4"
@@ -172,7 +165,8 @@
 									class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
 								>
 									<div class = "object-contain aspect-square relative">
-										<div class = "absolute left-4 top-4 flex h-6 items-center">
+										<div class =
+													 "absolute left-4 top-4 flex gap-2 h-6 items-center">
 											<input
 												on:change = {() => handleCheckboxChange(image)}
 												id = {image.id} aria-describedby = {image.alt}
@@ -181,7 +175,7 @@
 												class =
 													"h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 											>
-											<label for = {image.id}>{image.alt}</label>
+											<label for = {image.id}>{image.file_name}</label>
 										</div>
 										<button
 											class = "absolute right-4 top-4 flex h-6 items-center"
@@ -203,14 +197,15 @@
 					{/if}
 				</div>
 				<div
-					class="sticky bottom-0 p-4 bg-white border-t flex justify-between">
+					class = "sticky bottom-0 p-4 bg-white border-t flex justify-between"
+				>
 					<button
-						on:click={closeModel}
+						on:click = {closeModel}
 						class = "relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
 					>
 						{$t('close')}
 					</button>
-					<div class="space-x-4">
+					<div class = "space-x-4">
 						<button
 							on:click = {prevPage}
 							class = "relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
