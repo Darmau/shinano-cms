@@ -3,8 +3,6 @@
 	import FileDropzone from '$components/FileDropzone.svelte';
 	import { invalidateAll } from '$app/navigation';
 
-	export let data;
-
 	let files: FileList;
 	const toastStore = getToastStore();
 
