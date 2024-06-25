@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ depends, url,params: { page }, loca
 	depends('supabase:db:image')
 
 	const pageNumber = Number(page)
-	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 16
+	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 24
 
 	// 从config表中读取S3_URL_PREFIX
 	const { data: storageKeys, error: fetchError } = await

@@ -61,6 +61,7 @@
 					body: formData
 				});
 				if (!response.ok) {
+					console.error(JSON.stringify(response));
 					throw new Error(`上传失败: ${response.statusText}`);
 				}
 			});
