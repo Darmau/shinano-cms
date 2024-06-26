@@ -84,11 +84,20 @@
 				CustomCodeBlock,
 				Image
 			],
-			content: `
-        <p>This is still the text editor you're used to, but enriched with node views.</p>
-        <p>This is an editable component</p>
-        <p>Did you see that? That's a Svelte component. We are really living in the future.</p>
-      `,
+			content: {
+				"type": "doc",
+				"content": [
+					{
+						"type": "paragraph",
+						"content": [
+							{
+								"type": "text",
+								"text": "开始书写你的文章吧"
+							}
+						]
+					}
+				]
+			},
 			editorProps: {
 				attributes: {
 					class:
@@ -411,55 +420,54 @@
 	<title>Tiptap Svelte</title>
 </svelte:head>
 
-{#if editor}
-	<div class = "border-black border-2 border-b-0 rounded-t-md ">
-		<div
-			class = "p-2 flex gap-1 flex-wrap"
-		>
-			{#each menuItems as item (item.name)}
-				<button
-					type = "button"
-					title = {item.name}
-					class = "hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
+<div>
+	{#if editor}
+		<div class = "border-black border-2 border-b-0 rounded-t-md ">
+			<div
+				class = "p-2 flex gap-1 flex-wrap"
+			>
+				{#each menuItems as item (item.name)}
+					<button
+						type = "button"
+						title = {item.name}
+						class = "hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
 				? 'bg-black text-white' : ''}"
-					on:click = {item.command}
-				>
-					<svelte:component this = {item.content} classList = "w-6 h-6" />
-				</button>
-			{/each}
-		</div>
-		<div
-			class = "p-2 flex gap-1 flex-wrap"
-		>
-			{#each tableItems as item (item.name)}
-				<button
-					type = "button"
-					title = {item.name}
-					class = "hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
+						on:click = {item.command}
+					>
+						<svelte:component this = {item.content} classList = "w-6 h-6" />
+					</button>
+				{/each}
+			</div>
+			<div
+				class = "p-2 flex gap-1 flex-wrap"
+			>
+				{#each tableItems as item (item.name)}
+					<button
+						type = "button"
+						title = {item.name}
+						class = "hover:bg-black hover:text-white w-auto h-7 px-1 rounded {item.active()
 				? 'bg-black text-white' : ''}"
-					on:click = {item.command}
-				>
-					<svelte:component this = {item.content} classList = "w-6 h-6" />
+						on:click = {item.command}
+					>
+						<svelte:component this = {item.content} classList = "w-6 h-6" />
+					</button>
+				{/each}
+			</div>
+			<div class = "p-2 flex items-center gap-2">
+				<input
+					type = "text" bind:value = {codeLanguage}
+					placeholder = "Enter language"
+					class = "rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+				/>
+				<button on:click = {setCodeLanguage}>
+					<Check classList = "w-5 h-5" />
 				</button>
-			{/each}
+			</div>
 		</div>
-		<div class = "p-2 flex items-center gap-2">
-			<input
-				type = "text" bind:value = {codeLanguage}
-				placeholder = "Enter language"
-				class = "rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
-			/>
-			<button on:click = {setCodeLanguage}>
-				<Check classList = "w-5 h-5" />
-			</button>
-		</div>
-	</div>
-{/if}
+	{/if}
 
-<EditorContent editor = {$editor} />
+	<EditorContent editor = {$editor} />
+</div>
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
-{/if}
-{#if editor}
-	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>
 {/if}
