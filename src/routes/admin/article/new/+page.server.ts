@@ -3,24 +3,23 @@ import { ThirdPartyAPIs } from '$lib/types/thirdPartyApi';
 
 const storageConfigs = new ThirdPartyAPIs();
 const CONFIGS = storageConfigs.emptyObject();
-const KEYS = storageConfigs.array();
 
-export const load: PageServerLoad = async ({ locals: {supabase}}) => {
-	const { data: storageKeys, error: fetchError } = await
-		supabase.from('config').select('name, value').in('name', KEYS);
+export const load: PageServerLoad = async ({ fetch}) => {
+	const storageKeys = await fetch('/api/kv', {
+		method: 'POST',
+		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
+	}).then(res => res.json());
 
-	if (fetchError) {
-		throw fetchError;
-	}
-
-	storageKeys.forEach(key => {
-		if (key.name in CONFIGS) {
-			CONFIGS[key.name] = key.value;
-		}
+	storageKeys.forEach((item: Item) => {
+		const key = Object.keys(item)[0];
+		CONFIGS[key] = item[key];
 	});
 
 	return {
-		configs: CONFIGS,
-		prefix: CONFIGS.S3_URL_PREFIX,
+		prefix: CONFIGS.config_URL_PREFIX,
 	}
+}
+
+interface Item {
+	[key: string]: string;
 }
