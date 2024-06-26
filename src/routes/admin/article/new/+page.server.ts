@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
-import { ImageProcess } from '$lib/types/imageProcess';
+import { ThirdPartyAPIs } from '$lib/types/thirdPartyApi';
 
-const storageConfigs = new ImageProcess();
+const storageConfigs = new ThirdPartyAPIs();
 const CONFIGS = storageConfigs.emptyObject();
 const KEYS = storageConfigs.array();
 
