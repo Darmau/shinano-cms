@@ -1,15 +1,6 @@
 export class ImageProcess {
 	private readonly configNames: Map<string, string> = new Map([
-		['S3_REGION', ''],
-		['S3_ENDPOINT', ''],
-		['S3_ACCESS_ID', ''],
-		['S3_SECRET_KEY', ''],
-		['S3_BUCKET', ''],
-		['S3_URL_PREFIX', ''],
-		['MAPBOX', ''],
-		['AMAP', ''],
-		['OPENAI_API_KEY', ''],
-		['PROMPT_IMAGE_ALT', ''],
+		['config_URL_PREFIX', ''],
 	])
 
 	public array() {

@@ -5,6 +5,7 @@ export class ThirdPartyAPIs {
 		['config_PERSPECTIVE', ''],
 		['config_MAPBOX', ''],
 		['config_AMAP', ''],
+		['config_URL_PREFIX', ''],
 	])
 
 	public array() {
