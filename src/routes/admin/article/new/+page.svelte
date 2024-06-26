@@ -1,9 +1,36 @@
 <script lang="ts">
-	import Tiptap from '$components/editor/Tiptap.svelte';
+	import ArticleEditor from '$components/ArticleEditor.svelte';
 
 	export let data;
+
+	const emptyArticle = {
+		title: '',
+		subtitle: '',
+		slug: '',
+		abstract: '',
+		is_top: false,
+		is_draft: true,
+		is_feature: false,
+		is_premium: false,
+		language: data.defaultLanguage,
+		otherVersions: [],
+		content: {
+			"type": "doc",
+			"content": [
+				{
+					"type": "paragraph",
+					"content": [
+						{
+							"type": "text",
+							"text": "开始书写你的文章吧"
+						}
+					]
+				}
+			]
+		}
+	}
 </script>
 
-<div>
-	<Tiptap {data} />
+<div class="@container">
+	<ArticleEditor {data} articleContent={emptyArticle} />
 </div>

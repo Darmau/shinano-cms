@@ -11,7 +11,7 @@
   import Tag from '$assets/icons/tag.svelte';
   import Setting from '$assets/icons/cog.svelte';
   import {page} from '$app/stores';
-  import { t, locale, locales } from '$lib/functions/i18n'
+  import { t, locale, locales } from '$lib/functions/i18n';
 
   const navItems = [
     {name: 'home', href: '/admin', icon: Home},

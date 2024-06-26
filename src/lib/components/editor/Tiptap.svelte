@@ -47,6 +47,7 @@
 	import Image from '$components/editor/Image';
 
 	export let data;
+	export let content;
 
 	let editor: Readable<Editor>;
 	let codeLanguage = 'javascript';
@@ -84,20 +85,7 @@
 				CustomCodeBlock,
 				Image
 			],
-			content: {
-				"type": "doc",
-				"content": [
-					{
-						"type": "paragraph",
-						"content": [
-							{
-								"type": "text",
-								"text": "开始书写你的文章吧"
-							}
-						]
-					}
-				]
-			},
+			content: content,
 			editorProps: {
 				attributes: {
 					class:
