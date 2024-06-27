@@ -8,6 +8,20 @@
 	export let articleContent;
 	export let articleVersions;
 
+	let contentJSON = {};
+	let contentHTML = '';
+	let contentText = '';
+
+	function handleContentUpdate(event) {
+		const { json, html, text } = event.detail;
+		contentJSON = json;
+		contentHTML = html;
+		contentText = text;
+		articleContent.content_json = contentJSON;
+		articleContent.content_html = contentHTML;
+		articleContent.content_text = contentText;
+	}
+
 	// 接收图片选择器返回的图片信息并显示
 	let isModalOpen = false;
 	let coverImage = {};
@@ -92,7 +106,8 @@
 		</div>
 
 		<!--Content-->
-		<Tiptap {data} content = {articleContent.content_json} />
+		<Tiptap on:contentUpdate={handleContentUpdate} {data} content =
+			{articleContent.content_json} />
 	</div>
 
 	<aside class = "@xl:col-span-1 space-y-6">
@@ -171,7 +186,7 @@
 					bind:value = {articleContent.abstract}
 					placeholder = "使用AI为文章生成摘要"
 					class =
-						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
+						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				/>
 			</div>
 		</div>
@@ -220,10 +235,12 @@
 		</div>
 
 		<!--按钮-->
-		<div class = "flex justify-between">
-			<button class = "">{$t('delete')}</button>
-			<button>{$t('save')}</button>
-			<button>{$t('publish')}</button>
+		<div class = "flex justify-end gap-4">
+			<button class =
+								"rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mr-auto">{$t('delete')}</button>
+			<button
+				class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">{$t('save')}</button>
+			<button class="rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600">{$t('publish')}</button>
 		</div>
 	</aside>
 </div>

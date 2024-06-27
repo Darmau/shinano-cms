@@ -45,7 +45,9 @@
 	import { HeadingWithID } from '$components/editor/HeadingWithId';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import Image from '$components/editor/Image';
+	import { createEventDispatcher } from 'svelte';
 
+	const dispatch = createEventDispatcher();
 	export let data;
 	export let content;
 
@@ -91,8 +93,22 @@
 					class:
 						'prose prose-zinc max-w-none border-2 border-black rounded-b-md p-3 outline-none'
 				}
+			},
+			onUpdate: ({ editor }) => {
+				const json = editor.getJSON();
+				const html = editor.getHTML();
+				const text = editor.getText();
+
+				// 触发自定义事件
+				dispatch('contentUpdate', { json, html, text });
 			}
 		});
+
+		return () => {
+			if (editor) {
+				editor.destroy();
+			}
+		};
 	});
 
 	const toggleHeading = (level: 1 | 2) => {
@@ -408,6 +424,9 @@
 	<title>Tiptap Svelte</title>
 </svelte:head>
 
+{#if isModalOpen}
+	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
+{/if}
 <div>
 	{#if editor}
 		<div class = "border-black border-2 border-b-0 rounded-t-md ">
@@ -456,6 +475,6 @@
 
 	<EditorContent editor = {$editor} />
 </div>
-{#if isModalOpen}
-	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
-{/if}
+<!--{#if editor}-->
+<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
+<!--{/if}-->
