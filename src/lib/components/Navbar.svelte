@@ -10,6 +10,7 @@
   import User from '$assets/icons/users.svelte';
   import Tag from '$assets/icons/tag.svelte';
   import Setting from '$assets/icons/cog.svelte';
+  import Category from '$assets/icons/rectangle-stack.svelte';
   import {page} from '$app/stores';
   import { t, locale, locales } from '$lib/functions/i18n';
 
@@ -21,6 +22,7 @@
     {name: 'photo', href: '/admin/photo', icon: Photo},
     {name: 'video', href: '/admin/video', icon: Video},
     {name: 'thought', href: '/admin/thought', icon: Memo},
+    {name: 'category', href: '/admin/category', icon: Category},
     {name: 'comment', href: '/admin/comment', icon: Comment},
     {name: 'user', href: '/admin/user', icon: User},
     {name: 'topic', href: '/admin/topic', icon: Tag},

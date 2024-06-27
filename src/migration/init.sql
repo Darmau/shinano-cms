@@ -92,12 +92,21 @@ CREATE TABLE
     "type" CONTENT DEFAULT 'article',
     FOREIGN KEY ("lang") REFERENCES language ("id") ON UPDATE CASCADE ON DELETE RESTRICT,
     FOREIGN KEY ("cover") REFERENCES image ("id") ON UPDATE CASCADE ON DELETE SET NULL,
-    UNIQUE ("lang", "slug")
+    UNIQUE ("lang", "slug", "type")
   );
 
-CREATE UNIQUE INDEX ON category ("lang", "slug");
+CREATE UNIQUE INDEX ON category ("lang", "slug", "type");
 
 CREATE INDEX ON category ("title");
+
+INSERT INTO category ("lang", "slug", "title", "description", "type")
+VALUES (1, 'default', '默认分类', '所有内容必须归属为一个分类', 'article');
+
+INSERT INTO category ("lang", "slug", "title", "description", "type")
+VALUES (1, 'default', '默认分类', '所有内容必须归属为一个分类', 'photo');
+
+INSERT INTO category ("lang", "slug", "title", "description", "type")
+VALUES (1, 'default', '默认分类', '所有内容必须归属为一个分类', 'video');
 
 CREATE TABLE
   article (
