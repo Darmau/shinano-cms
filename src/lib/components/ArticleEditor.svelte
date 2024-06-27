@@ -106,8 +106,10 @@
 		</div>
 
 		<!--Content-->
-		<Tiptap on:contentUpdate={handleContentUpdate} {data} content =
-			{articleContent.content_json} />
+		<Tiptap
+			on:contentUpdate = {handleContentUpdate} {data} content =
+			{articleContent.content_json}
+		/>
 	</div>
 
 	<aside class = "@xl:col-span-1 space-y-6">
@@ -157,8 +159,10 @@
 					{$t('select')}
 				</button>
 			</header>
-			<div class =
-						 "mt-2 aspect-[4/3] bg-gray-100 w-full rounded-md flex justify-center items-center">
+			<div
+				class =
+					"mt-2 aspect-[4/3] bg-gray-100 w-full rounded-md flex justify-center items-center"
+			>
 				{#if Object.keys(coverImage).length > 0}
 					<img
 						src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.key}`}
@@ -178,7 +182,9 @@
 					for = "abstract"
 					class = "block text-sm font-medium leading-6 text-gray-900"
 				>{$t('abstract')}</label>
-				<button class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600">{$t('generate')}</button>
+				<button
+					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+				>{$t('generate')}</button>
 			</div>
 			<div class = "mt-2">
 				<textarea
@@ -236,11 +242,18 @@
 
 		<!--按钮-->
 		<div class = "flex justify-end gap-4">
-			<button class =
-								"rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mr-auto">{$t('delete')}</button>
 			<button
-				class="rounded bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">{$t('save')}</button>
-			<button class="rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600">{$t('publish')}</button>
+				class =
+					"rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mr-auto"
+			>{$t('delete')}</button>
+			<button
+				class =
+					"rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+			>{$t('save')}</button>
+			<button
+				class =
+					"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+			>{$t('publish')}</button>
 		</div>
 	</aside>
 </div>
