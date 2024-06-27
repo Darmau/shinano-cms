@@ -14,7 +14,7 @@
 		is_premium: false,
 		language: data.defaultLanguage,
 		otherVersions: [],
-		content: {
+		content_json: {
 			"type": "doc",
 			"content": [
 				{

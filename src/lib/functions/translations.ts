@@ -78,6 +78,8 @@ const translations: Translation = {
 		"logged-in-only": "登录后可见",
 		"category": "分类",
 		"generate": "生成",
+		"select": "选择",
+		"reset": "重置",
 	},
 	"en": {
 		"home": "Home",
@@ -151,6 +153,8 @@ const translations: Translation = {
 		"logged-in-only": "Logged in only",
 		"category": "Category",
 		"generate": "Generate",
+		"select": "Select",
+		"reset": "Reset",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -224,6 +228,8 @@ const translations: Translation = {
 		"logged-in-only": "登錄後可見",
 		"category": "分類",
 		"generate": "生成",
+		"select": "選擇",
+		"reset": "重置",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -297,6 +303,8 @@ const translations: Translation = {
 		"logged-in-only": "ログイン後に表示",
 		"category": "カテゴリ",
 		"generate": "生成",
+		"select": "選択",
+		"reset": "リセット",
 	}
 }
 

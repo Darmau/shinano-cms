@@ -2,6 +2,7 @@
 	import Tiptap from '$components/editor/Tiptap.svelte';
 	import { t } from '$lib/functions/i18n';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
+	import PhotoIcon from '$assets/icons/photo.svelte';
 
 	export let data;
 	export let articleContent;
@@ -10,22 +11,29 @@
 	// 接收图片选择器返回的图片信息并显示
 	let isModalOpen = false;
 	let coverImage = {};
+
 	function selectCoverImage(images) {
 		// 只接收第一张图片
 		coverImage = {
 			id: images[0].id,
 			alt: images[0].alt,
-			key: images[0].storage_key,
-		}
+			key: images[0].storage_key
+		};
 		articleContent.cover = coverImage.id;
 	}
+
+	function resetCoverImage() {
+		coverImage = {};
+		articleContent.cover = null;
+	}
+
 	function closeModel() {
 		isModalOpen = false;
 	}
 </script>
 
 {#if isModalOpen}
-	<ImagesModel {data} {closeModel} onSelect={selectCoverImage} />
+	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
 
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
@@ -84,26 +92,31 @@
 		</div>
 
 		<!--Content-->
-		<Tiptap {data} content = {articleContent.content} />
+		<Tiptap {data} content = {articleContent.content_json} />
 	</div>
 
-	<aside class = "@xl:col-span-1 space-y-4">
-    <!--语言-->
+	<aside class = "@xl:col-span-1 space-y-6">
+		<!--语言-->
 		<div>
-			<h2 class="text-sm font-medium leading-6 text-gray-900">{$t('language')}</h2>
-			<ul class="mt-2">
+			<h2
+				class = "text-sm font-medium leading-6 text-gray-900"
+			>{$t('language')}</h2>
+			<ul class = "mt-2">
 				<li
-					class="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700">
+					class = "inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
+				>
 					{articleContent.language.lang}
 				</li>
 				{#each articleContent.otherVersions as version}
 					<li
-						class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+					>
 						{version.lang}
 					</li>
 				{/each}
 				<li
-					class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+					class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+				>
 					+ {$t('add-language')}
 				</li>
 			</ul>
@@ -111,25 +124,52 @@
 
 		<!--封面-->
 		<div>
-			<h2 class="text-sm font-medium leading-6 text-gray-900">{$t('cover')}</h2>
-			<button on:click={()=>{isModalOpen =true}}>select</button>
-			<img src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.key}`} alt = {coverImage.alt} />
+			<header class = "flex justify-end gap-4">
+				<h2
+					class = "text-sm font-medium leading-6 text-gray-900 grow"
+				>{$t('cover')}</h2>
+				<button
+					on:click = {resetCoverImage}
+					disabled = {Object.keys(coverImage).length === 0}
+					class = "rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+				>
+					{$t('reset')}
+				</button>
+				<button
+					on:click = {()=>{isModalOpen =true}}
+					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+				>
+					{$t('select')}
+				</button>
+			</header>
+			<div class =
+						 "mt-2 aspect-[4/3] bg-gray-100 w-full rounded-md flex justify-center items-center">
+				{#if Object.keys(coverImage).length > 0}
+					<img
+						src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.key}`}
+						alt = {coverImage.alt}
+						class = "img-bg h-full w-full object-contain"
+					/>
+				{:else}
+					<PhotoIcon classList = "h-16 w-16 text-gray-400 m-auto" />
+				{/if}
+			</div>
 		</div>
 
 		<!--摘要-->
 		<div>
-			<div class="flex justify-between">
+			<div class = "flex justify-between">
 				<label
 					for = "abstract"
 					class = "block text-sm font-medium leading-6 text-gray-900"
 				>{$t('abstract')}</label>
-				<button>{$t('generate')}</button>
+				<button class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600">{$t('generate')}</button>
 			</div>
 			<div class = "mt-2">
 				<textarea
 					name = "abstract" id = "abstract" rows = "3"
 					bind:value = {articleContent.abstract}
-					placeholder="使用AI为文章生成摘要"
+					placeholder = "使用AI为文章生成摘要"
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				/>
@@ -187,3 +227,9 @@
 		</div>
 	</aside>
 </div>
+
+<style>
+  .img-bg {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='200' height='400'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Crect fill='black' x='0' y='0' width='10' height='10' opacity='0.05'/%3E%3Crect fill='white' x='10' y='0' width='10' height='10'/%3E%3Crect fill='black' x='10' y='10' width='10' height='10' opacity='0.05'/%3E%3Crect fill='white' x='0' y='10' width='10' height='10'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23grid)' x='0' y='0' width='100%25' height='100%25'/%3E%3C/svg%3E");
+  }
+</style>

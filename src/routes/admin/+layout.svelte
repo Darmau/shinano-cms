@@ -31,6 +31,8 @@
 
   .sidebar {
     grid-area: sidebar;
+    position: sticky;
+    top: 0;
     height: 100vh;
     width: 100%;
   }
