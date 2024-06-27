@@ -25,13 +25,26 @@
 		}
 
 		articleContent.updated_at = new Date().toISOString();
+		let returnedData;
+		let saveError;
 
-		// 存储到supabase article表
-		const { data, error } = await
-			supabase.from('article').insert(articleContent).select();
+		// 存储到supabase article表。对于已保存的文章，只更新内容
+		if (isSaved === true) {
+			console.log('It is an existing article.')
+			const { data, error } = await
+				supabase.from('article').update(articleContent).select();
+			returnedData = data;
+			saveError = error;
+		} else {
+			console.log('It is a new article.')
+			const { data, error } = await
+				supabase.from('article').insert(articleContent).select();
+			returnedData = data;
+			saveError = error;
+		}
 
-		if (error) {
-			console.error(error);
+		if (saveError) {
+			console.error(saveError);
 			toastStore.trigger({
 				message: 'Failed to save article.',
 				background: 'variant-filled-error'
@@ -42,14 +55,14 @@
 				background: 'variant-filled-success'
 			});
 			// 跳转到/admin/article/edit/:id
-			await goto(`/admin/article/edit/${data[0].id}`)
+			await goto(`/admin/article/edit/${returnedData[0].id}`)
 		}
 	}
 
-	// 10秒一次执行保存函数
-	// setInterval(() => {
-	// 	saveArticle();
-	// }, 10000);
+	10秒一次执行保存函数
+	setInterval(() => {
+		saveArticle();
+	}, 20000);
 
 	let contentJSON = {};
 	let contentHTML = '';
@@ -96,6 +109,7 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
+<div>{isSaved}</div>
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
 		<div>{JSON.stringify(articleContent)}</div>
