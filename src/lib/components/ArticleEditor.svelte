@@ -3,8 +3,10 @@
 	import { t } from '$lib/functions/i18n';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import PhotoIcon from '$assets/icons/photo.svelte';
+	import AddIcon from '$assets/icons/plus.svelte';
 
 	export let data;
+	export let isSaved = false;
 	export let articleContent;
 	export let articleVersions;
 
@@ -12,6 +14,7 @@
 	let contentHTML = '';
 	let contentText = '';
 
+	// 监控正文变动
 	function handleContentUpdate(event) {
 		const { json, html, text } = event.detail;
 		contentJSON = json;
@@ -137,6 +140,27 @@
 					+ {$t('add-language')}
 				</li>
 			</ul>
+		</div>
+
+		<!--分类-->
+		<div>
+			<header class="flex justify-between">
+				<label
+					class = "text-sm font-medium leading-6 text-gray-900"
+					for="category"
+				>{$t('category')}</label>
+				<button>
+					<AddIcon classList = "h-4 w-4 text-gray-400 hover:text-cyan-600" />
+				</button>
+			</header>
+			<select
+				id="category"
+				name="category"
+				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+				{#each data.categories as category}
+					<option value = {category.id}>{category.title}</option>
+				{/each}
+			</select>
 		</div>
 
 		<!--封面-->

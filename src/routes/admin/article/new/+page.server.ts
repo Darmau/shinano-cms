@@ -13,8 +13,17 @@ export const load: PageServerLoad = async ({ fetch, locals: { supabase }}) => {
 		.eq('is_default', true)
 		.single();
 
+	// 根据defaultLanguage.data.id在category表中获取type为article的分类
+	const defaultLanguageId = defaultLanguage.data?.id ?? 1;
+	const categories = await supabase
+		.from('category')
+		.select('id, title, slug')
+		.eq('lang', defaultLanguageId)
+	  .eq('type', 'article');
+
 	return {
 		prefix: storageKeys[0].config_URL_PREFIX,
-		defaultLanguage: defaultLanguage.data
+		defaultLanguage: defaultLanguage.data,
+		categories: categories.data
 	}
 }

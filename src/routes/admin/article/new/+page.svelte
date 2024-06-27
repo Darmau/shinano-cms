@@ -32,5 +32,6 @@
 </script>
 
 <div class="@container">
-	<ArticleEditor {data} articleContent={emptyArticle} />
+	<div>{JSON.stringify(data.categories)}</div>
+	<ArticleEditor {data} articleContent={emptyArticle} isSaved=false />
 </div>

@@ -103,12 +103,6 @@
 				dispatch('contentUpdate', { json, html, text });
 			}
 		});
-
-		return () => {
-			if (editor) {
-				editor.destroy();
-			}
-		};
 	});
 
 	const toggleHeading = (level: 1 | 2) => {
