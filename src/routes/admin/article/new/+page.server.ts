@@ -4,7 +4,7 @@ import { ThirdPartyAPIs } from '$lib/types/thirdPartyApi';
 const storageConfigs = new ThirdPartyAPIs();
 const CONFIGS = storageConfigs.emptyObject();
 
-export const load: PageServerLoad = async ({ fetch, locals: { supabase }}) => {
+export const load: PageServerLoad = async ({ fetch, locals: { supabase }, url}) => {
 	const storageKeys = await fetch('/api/kv', {
 		method: 'POST',
 		body: JSON.stringify({ keys: ['config_URL_PREFIX']})

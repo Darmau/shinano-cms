@@ -1,11 +1,32 @@
 <script lang="ts">
 	import Tiptap from '$components/editor/Tiptap.svelte';
 	import { t } from '$lib/functions/i18n';
+	import ImagesModel from '$components/editor/ImagesModel.svelte';
 
 	export let data;
 	export let articleContent;
 	export let articleVersions;
+
+	// 接收图片选择器返回的图片信息并显示
+	let isModalOpen = false;
+	let coverImage = {};
+	function selectCoverImage(images) {
+		// 只接收第一张图片
+		coverImage = {
+			id: images[0].id,
+			alt: images[0].alt,
+			key: images[0].storage_key,
+		}
+		articleContent.cover = coverImage.id;
+	}
+	function closeModel() {
+		isModalOpen = false;
+	}
 </script>
+
+{#if isModalOpen}
+	<ImagesModel {data} {closeModel} onSelect={selectCoverImage} />
+{/if}
 
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
@@ -86,6 +107,13 @@
 					+ {$t('add-language')}
 				</li>
 			</ul>
+		</div>
+
+		<!--封面-->
+		<div>
+			<h2 class="text-sm font-medium leading-6 text-gray-900">{$t('cover')}</h2>
+			<button on:click={()=>{isModalOpen =true}}>select</button>
+			<img src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.key}`} alt = {coverImage.alt} />
 		</div>
 
 		<!--摘要-->
