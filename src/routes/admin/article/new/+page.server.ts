@@ -24,6 +24,7 @@ export const load: PageServerLoad = async ({ fetch, locals: { supabase }}) => {
 	return {
 		prefix: storageKeys[0].config_URL_PREFIX,
 		defaultLanguage: defaultLanguage.data,
-		categories: categories.data
+		categories: categories.data,
+		otherVersions: []
 	}
 }

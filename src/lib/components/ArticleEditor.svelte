@@ -4,11 +4,52 @@
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import PhotoIcon from '$assets/icons/photo.svelte';
 	import AddIcon from '$assets/icons/plus.svelte';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
 
 	export let data;
 	export let isSaved = false;
 	export let articleContent;
 	export let articleVersions;
+	let { supabase } = data;
+	$: ({ supabase } = data);
+
+	const toastStore = getToastStore();
+
+	// 保存函数
+	let isChanged = false;
+	async function saveArticle() {
+		if (!isChanged) return;
+		if (articleContent.slug === '') {
+			articleContent.slug = new Date().toISOString();
+		}
+
+		articleContent.updated_at = new Date().toISOString();
+
+		// 存储到supabase article表
+		const { data, error } = await
+			supabase.from('article').insert(articleContent).select();
+
+		if (error) {
+			console.error(error);
+			toastStore.trigger({
+				message: 'Failed to save article.',
+				background: 'variant-filled-error'
+			});
+		} else {
+			toastStore.trigger({
+				message: 'Article saved successfully.',
+				background: 'variant-filled-success'
+			});
+			// 跳转到/admin/article/edit/:id
+			await goto(`/admin/article/edit/${data[0].id}`)
+		}
+	}
+
+	// 10秒一次执行保存函数
+	// setInterval(() => {
+	// 	saveArticle();
+	// }, 10000);
 
 	let contentJSON = {};
 	let contentHTML = '';
@@ -23,6 +64,7 @@
 		articleContent.content_json = contentJSON;
 		articleContent.content_html = contentHTML;
 		articleContent.content_text = contentText;
+		isChanged = true;
 	}
 
 	// 接收图片选择器返回的图片信息并显示
@@ -37,11 +79,13 @@
 			key: images[0].storage_key
 		};
 		articleContent.cover = coverImage.id;
+		isChanged = true;
 	}
 
 	function resetCoverImage() {
 		coverImage = {};
 		articleContent.cover = null;
+		isChanged = true;
 	}
 
 	function closeModel() {
@@ -52,7 +96,6 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
 		<div>{JSON.stringify(articleContent)}</div>
@@ -125,9 +168,9 @@
 				<li
 					class = "inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
 				>
-					{articleContent.language.lang}
+					{data.defaultLanguage.lang}
 				</li>
-				{#each articleContent.otherVersions as version}
+				{#each data.otherVersions as version}
 					<li
 						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
 					>
@@ -272,8 +315,10 @@
 					"rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mr-auto"
 			>{$t('delete')}</button>
 			<button
+				on:click = {saveArticle}
+				disabled = {!isChanged}
 				class =
-					"rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+					"rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
 			>{$t('save')}</button>
 			<button
 				class =

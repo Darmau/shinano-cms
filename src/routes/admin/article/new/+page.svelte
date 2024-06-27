@@ -4,16 +4,15 @@
 	export let data;
 
 	const emptyArticle = {
-		title: '',
+		title: 'title',
 		subtitle: '',
 		slug: '',
 		abstract: '',
 		is_top: false,
 		is_draft: true,
-		is_feature: false,
+		is_featured: false,
 		is_premium: false,
-		language: data.defaultLanguage,
-		otherVersions: [],
+		lang: data.defaultLanguage.id,
 		content_json: {
 			"type": "doc",
 			"content": [
@@ -27,11 +26,12 @@
 					]
 				}
 			]
-		}
+		},
+		content_html: '<p>开始书写你的文章吧</p>',
+		content_text: '开始书写你的文章吧'
 	}
 </script>
 
 <div class="@container">
-	<div>{JSON.stringify(data.categories)}</div>
 	<ArticleEditor {data} articleContent={emptyArticle} isSaved=false />
 </div>
