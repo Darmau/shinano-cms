@@ -57,9 +57,9 @@
 	}
 
 	// 10秒一次执行保存函数
-	// setInterval(() => {
-	// 	saveArticle();
-	// }, 20000);
+	setInterval(() => {
+		saveArticle();
+	}, 20000);
 
 	let contentJSON = {};
 	let contentHTML = '';
@@ -108,7 +108,7 @@
 {/if}
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
-		<div class="break-all">{JSON.stringify(articleContent)}</div>
+
 		<!--title-->
 		<div>
 			<label
