@@ -12,7 +12,7 @@
 	<title>{title}</title>
 </svelte:head>
 
-<div class="@container">
+<div class="">
 	<PageTitle title = {title} />
 	<UploadFile />
 	<ImageGrid data = {data} />

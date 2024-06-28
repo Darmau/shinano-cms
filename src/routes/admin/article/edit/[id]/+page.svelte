@@ -4,6 +4,6 @@
 	export let data;
 </script>
 
-<div class="@container">
+<div>
 	<ArticleEditor {data} isSaved=true />
 </div>

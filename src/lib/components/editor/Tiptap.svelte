@@ -414,14 +414,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Tiptap Svelte</title>
-</svelte:head>
-
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
 {/if}
-<div>
+<div class="relative">
 	{#if editor}
 		<div class =
 					 "sticky top-0 bg-white z-20 border-black border-2 border-b-0 rounded-t-md shadow-md">

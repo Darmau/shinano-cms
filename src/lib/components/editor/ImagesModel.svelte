@@ -25,8 +25,8 @@
 	// 获取图片信息
 	const getImages = async (page: number = 1) => {
 		const { data: images, error: fetchError } = await
-			supabase.from('image').select().range((page - 1) * 16,
-				page * 16 - 1).order('id', { ascending: false });
+			supabase.from('image').select().range((page - 1) * 24,
+				page * 24 - 1).order('id', { ascending: false });
 		if (fetchError) {
 			console.error(fetchError);
 			toastStore.trigger({
@@ -123,101 +123,114 @@
 	}
 </script>
 
-<div class = "relative z-50">
-	<div class = "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
-		{#if isEditing}
-			<EditImage data = {data} {closeEdit} imageData = {imageData} />
-		{/if}
+{#if isEditing}
+	<EditImage data = {data} {closeEdit} imageData = {imageData} />
+{/if}
+
+<div class = "dialog">
+	<div
+		class = "fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+	></div>
+	<div>
 		<div
 			class =
-				"fixed inset-0 z-10 flex justify-center items-center w-screen overflow-y-auto"
+				"fixed inset-0 z-10 sm:w-11/12 mx-auto overflow-y-auto"
 		>
 			<div
 				class =
-					"w-full max-w-5xl h-5/6 bg-white overflow-scroll rounded-lg shadow-xl"
+					"flex items-end justify-center p-4 text-center sm:items-center sm:p-0"
 			>
 				<div
-					class = "flex justify-between items-center sticky top-0 z-50 w-full bg-white p-4"
+					class =
+						"relative transform overflow-y-scroll rounded-lg bg-white px-4 text-left shadow-xl transition-all sm:w-full max-h-screen"
 				>
-					<button
-						on:click = {deleteImages}
-						class = "inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
+					<div
+						class = "flex justify-between items-center sticky top-0 z-50 w-full bg-white p-4"
 					>
-						{$t('delete')}
-					</button>
-					<div>{selectedNumber} Selected</div>
-					<button
-						on:click = {submitSelection}
-						class = "relative inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white hover:bg-cyan-700 focus-visible:outline-offset-0"
-					>
-						{$t('submit')}
-					</button>
-				</div>
-				<div class = "@container p-4">
-					<UploadFile on:submit = {getImages} data = {data} />
-					{#if afterFetch}
-						<div
-							class = "grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-4 @6xl:grid-cols-6 gap-4"
+						<button
+							on:click = {deleteImages}
+							class = "inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
 						>
-							{#each data.images as image (image.id)}
-								<div
-									data-image-id = {image.id}
-									class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
-								>
-									<div class = "object-contain aspect-square relative">
-										<div class =
-													 "absolute left-4 top-4 flex gap-2 h-6 items-center">
-											<input
-												on:change = {() => handleCheckboxChange(image)}
-												id = {image.id} aria-describedby = {image.alt}
-												name = {image.storage_key}
-												type = "checkbox"
+							{$t('delete')}
+						</button>
+						<div>{selectedNumber} Selected</div>
+						<button
+							on:click = {submitSelection}
+							class = "relative inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white hover:bg-cyan-700 focus-visible:outline-offset-0"
+						>
+							{$t('submit')}
+						</button>
+					</div>
+					<div class = "bg-white p-4">
+						<UploadFile on:submit = {getImages} data = {data} />
+						{#if afterFetch}
+							<div
+								class = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6 gap-4"
+							>
+								{#each data.images as image (image.id)}
+									<div
+										data-image-id = {image.id}
+										class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
+									>
+										<div class = "object-contain aspect-square relative">
+											<div
 												class =
-													"h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
+													"absolute left-4 top-4 flex gap-2 h-6 items-center"
 											>
-											<label for = {image.id}>{image.file_name}</label>
-										</div>
-										<button
-											class = "absolute right-4 top-4 flex h-6 items-center"
-											on:click = {() => openEdit(image)}
-										>
-											<Edit
-												classList = "h-6 w-6 text-gray-400 hover:text-cyan-600"
+												<input
+													on:change = {() => handleCheckboxChange(image)}
+													id = {image.id} aria-describedby = {image.alt}
+													name = {image.storage_key}
+													type = "checkbox"
+													class =
+														"h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
+												>
+												<label for = {image.id}>{image.file_name}</label>
+											</div>
+											<button
+												class = "absolute right-4 top-4 flex h-6 items-center"
+												on:click = {() => openEdit(image)}
+											>
+												<Edit
+													classList = "h-6 w-6 text-gray-400 hover:text-cyan-600"
+												/>
+											</button>
+											<img
+												src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
+												class = "img-bg h-full w-full object-contain"
+												alt = {image.alt}
 											/>
-										</button>
-										<img
-											src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
-											class = "img-bg h-full w-full object-contain"
-											alt = {image.alt}
-										/>
+										</div>
 									</div>
-								</div>
-							{/each}
-						</div>
-					{/if}
-				</div>
-				<div
-					class = "sticky bottom-0 p-4 bg-white border-t flex justify-between"
-				>
-					<button
-						on:click = {closeModel}
-						class = "relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+								{/each}
+							</div>
+						{/if}
+					</div>
+					<div
+						class = "sticky bottom-0 p-4 bg-white border-t flex justify-between"
 					>
-						{$t('close')}
-					</button>
-					<div class = "space-x-4">
 						<button
-							on:click = {prevPage}
+							on:click = {closeModel}
 							class = "relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
 						>
-							{$t('previous-page')}
+							{$t('close')}
 						</button>
-						<button
-							on:click = {nextPage}
-							class = "relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
-						>
-							{$t('next-page')}
-						</button>
+						<div class = "space-x-4">
+							<button
+								on:click = {prevPage}
+								disabled = {data.page === 1}
+								class =
+									"relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:opacity-50 disabled:cursor-not-allowed"
+							>
+								{$t('previous-page')}
+							</button>
+							<button
+								on:click = {nextPage}
+								class = "relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0"
+							>
+								{$t('next-page')}
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -228,5 +241,14 @@
 <style>
   .img-bg {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' width='200' height='400'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Crect fill='black' x='0' y='0' width='10' height='10' opacity='0.05'/%3E%3Crect fill='white' x='10' y='0' width='10' height='10'/%3E%3Crect fill='black' x='10' y='10' width='10' height='10' opacity='0.05'/%3E%3Crect fill='white' x='0' y='10' width='10' height='10'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23grid)' x='0' y='0' width='100%25' height='100%25'/%3E%3C/svg%3E");
+  }
+
+  .dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 500;
   }
 </style>
