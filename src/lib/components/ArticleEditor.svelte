@@ -109,7 +109,6 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-<div>{isSaved}</div>
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
 		<div>{JSON.stringify(articleContent)}</div>
