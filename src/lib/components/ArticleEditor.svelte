@@ -9,8 +9,6 @@
 
 	export let data;
 	export let isSaved = false;
-	export let articleContent;
-	export let articleVersions;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -20,11 +18,8 @@
 	let isChanged = false;
 	async function saveArticle() {
 		if (!isChanged) return;
-		if (articleContent.slug === '') {
-			articleContent.slug = new Date().toISOString();
-		}
 
-		articleContent.updated_at = new Date().toISOString();
+		data.articleContent.updated_at = new Date().toISOString();
 		let returnedData;
 		let saveError;
 
@@ -32,13 +27,13 @@
 		if (isSaved === true) {
 			console.log('It is an existing article.')
 			const { data, error } = await
-				supabase.from('article').update(articleContent).select();
+				supabase.from('article').update(data.articleContent).select();
 			returnedData = data;
 			saveError = error;
 		} else {
 			console.log('It is a new article.')
 			const { data, error } = await
-				supabase.from('article').insert(articleContent).select();
+				supabase.from('article').insert(data.articleContent).select();
 			returnedData = data;
 			saveError = error;
 		}
@@ -60,9 +55,9 @@
 	}
 
 	// 10秒一次执行保存函数
-	setInterval(() => {
-		saveArticle();
-	}, 20000);
+	// setInterval(() => {
+	// 	saveArticle();
+	// }, 20000);
 
 	let contentJSON = {};
 	let contentHTML = '';
@@ -74,9 +69,9 @@
 		contentJSON = json;
 		contentHTML = html;
 		contentText = text;
-		articleContent.content_json = contentJSON;
-		articleContent.content_html = contentHTML;
-		articleContent.content_text = contentText;
+		data.articleContent.content_json = contentJSON;
+		data.articleContent.content_html = contentHTML;
+		data.articleContent.content_text = contentText;
 		isChanged = true;
 	}
 
@@ -91,13 +86,13 @@
 			alt: images[0].alt,
 			key: images[0].storage_key
 		};
-		articleContent.cover = coverImage.id;
+		data.articleContent.cover = coverImage.id;
 		isChanged = true;
 	}
 
 	function resetCoverImage() {
 		coverImage = {};
-		articleContent.cover = null;
+		data.articleContent.cover = null;
 		isChanged = true;
 	}
 
@@ -111,7 +106,7 @@
 {/if}
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
-		<div>{JSON.stringify(articleContent)}</div>
+		<div class="break-all">{JSON.stringify(data.articleContent)}</div>
 		<!--title-->
 		<div>
 			<label
@@ -121,7 +116,7 @@
 			<div class = "mt-2">
 				<input
 					type = "text" name = "title" id = "title"
-					bind:value = {articleContent.title}
+					bind:value = {data.articleContent.title}
 					required
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -139,7 +134,7 @@
 			<div class = "mt-2">
 				<input
 					type = "text" name = "slug" id = "slug"
-					bind:value = {articleContent.slug}
+					bind:value = {data.articleContent.slug}
 					required
 					class =
 						"block font-mono w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -156,7 +151,7 @@
 			<div class = "mt-2">
 				<input
 					type = "text" name = "subtitle" id = "subtitle"
-					bind:value = {articleContent.subtitle}
+					bind:value = {data.articleContent.subtitle}
 					required
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -167,7 +162,7 @@
 		<!--Content-->
 		<Tiptap
 			on:contentUpdate = {handleContentUpdate} {data} content =
-			{articleContent.content_json}
+			{data.articleContent.content_json}
 		/>
 	</div>
 
@@ -187,7 +182,7 @@
 					<li
 						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
 					>
-						{version.lang}
+						{version.lang.lang}
 					</li>
 				{/each}
 				<li
@@ -210,7 +205,7 @@
 				</button>
 			</header>
 			<select
-				bind:value={articleContent.category}
+				bind:value={data.articleContent.category}
 				id="category"
 				name="category"
 				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -270,7 +265,7 @@
 			<div class = "mt-2">
 				<textarea
 					name = "abstract" id = "abstract" rows = "3"
-					bind:value = {articleContent.abstract}
+					bind:value = {data.articleContent.abstract}
 					placeholder = "使用AI为文章生成摘要"
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-2 ring-inset ring-gray-900 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -282,7 +277,7 @@
 		<div class = "flex gap-4 flex-wrap my-4">
 			<div class = "flex h-6 items-center gap-2">
 				<input
-					bind:checked = {articleContent.is_top}
+					bind:checked = {data.articleContent.is_top}
 					id = "is_top" aria-describedby = "是否置顶文章"
 					name = "is_top" type = "checkbox"
 					class =
@@ -295,7 +290,7 @@
 			</div>
 			<div class = "flex h-6 items-center gap-2">
 				<input
-					bind:checked = {articleContent.is_feature}
+					bind:checked = {data.articleContent.is_feature}
 					id = "is_feature" aria-describedby = "是否设置为推荐文章"
 					name = "is_feature" type = "checkbox"
 					class =
@@ -308,7 +303,7 @@
 			</div>
 			<div class = "flex h-6 items-center gap-2">
 				<input
-					bind:checked = {articleContent.is_premium}
+					bind:checked = {data.articleContent.is_premium}
 					id = "is_premium" aria-describedby = "是否登录后可见"
 					name = "is_premium" type = "checkbox"
 					class =

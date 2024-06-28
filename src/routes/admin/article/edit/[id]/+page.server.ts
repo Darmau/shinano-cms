@@ -14,13 +14,13 @@ export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 		  content_json,
 		  content_html,
 		  content_text,
-		  abstract
-		  language:lang (*)
+		  abstract,
+		  lang (lang, locale)
 		`)
 		.eq('id', articleId)
 		.single();
 	return {
 		id: articleId,
-		articleContent: articleData?.content_json,
+		articleContent: articleData!.content_json,
 	}
 }
