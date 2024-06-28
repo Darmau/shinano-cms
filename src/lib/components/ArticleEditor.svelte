@@ -5,7 +5,7 @@
 	import PhotoIcon from '$assets/icons/photo.svelte';
 	import AddIcon from '$assets/icons/plus.svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	export let data;
 	export let isSaved = false;
@@ -183,7 +183,12 @@
 					<li
 						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
 					>
-						<a href= {`/admin/article/edit/${version.id}`}>{version.lang.lang}</a>
+						<a
+							data-sveltekit-reload
+							href= {`/admin/article/edit/${version.id}`}
+						>
+							{version.lang.lang}
+						</a>
 					</li>
 				{/each}
 				<li
