@@ -114,7 +114,7 @@
 </div>
 <div
 	class =
-		"grid grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-4 @6xl:grid-cols-6 gap-4"
+		"grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6 gap-4"
 >
 	{#each data.images as image (image.id)}
 		<div

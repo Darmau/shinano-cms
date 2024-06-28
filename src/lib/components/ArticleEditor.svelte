@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 
 	export let data;
-	export let isSaved = false;
+	export let isSaved: boolean = false;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -22,44 +22,49 @@
 
 		articleContent.updated_at = new Date().toISOString();
 		articleContent.cover = coverImage.id;
-		let returnedData;
-		let saveError;
 
 		// 存储到supabase article表。对于已保存的文章，只更新内容
 		if (isSaved === true) {
 			console.log('It is an existing article.')
-			const { data, error } = await
-				supabase.from('article').update(articleContent).select();
-			returnedData = data;
-			saveError = error;
+			const { error } = await
+				supabase.from('article').update(articleContent).eq('id',
+					articleContent.id).select();
+			if (error) {
+				console.error(error);
+				toastStore.trigger({
+					message: 'Failed to save article.',
+					background: 'variant-filled-error'
+				});
+			} else {
+				toastStore.trigger({
+					message: 'Article saved successfully.',
+					background: 'variant-filled-success'
+				});
+				isSaved = true;
+				isChanged = false;
+			}
 		} else {
-			console.log('It is a new article.')
 			const { data, error } = await
 				supabase.from('article').insert(articleContent).select();
-			returnedData = data;
-			saveError = error;
-		}
 
-		if (saveError) {
-			console.error(saveError);
-			toastStore.trigger({
-				message: 'Failed to save article.',
-				background: 'variant-filled-error'
-			});
-		} else {
-			toastStore.trigger({
-				message: 'Article saved successfully.',
-				background: 'variant-filled-success'
-			});
-			// 跳转到/admin/article/edit/:id
-			await goto(`/admin/article/edit/${returnedData[0].id}`)
+			if (error) {
+				console.error(saveError);
+				toastStore.trigger({
+					message: 'Failed to save article.',
+					background: 'variant-filled-error'
+				});
+				isChanged = false;
+			} else {
+				toastStore.trigger({
+					message: 'Article saved successfully.',
+					background: 'variant-filled-success'
+				});
+				// 跳转到/admin/article/edit/:id
+				isSaved = true;
+				await goto(`/admin/article/edit/${data[0].id}`)
+			}
 		}
 	}
-
-	// 10秒一次执行保存函数
-	setInterval(() => {
-		saveArticle();
-	}, 20000);
 
 	let contentJSON = {};
 	let contentHTML = '';
@@ -101,14 +106,35 @@
 	function closeModel() {
 		isModalOpen = false;
 	}
+
+	// 发布文章
+	async function publishArticle() {
+		articleContent.is_draft = false;
+		const { error } = await
+			supabase.from('article').update(articleContent).eq('id',
+				articleContent.id).select();
+		if (error) {
+			console.error(error);
+			toastStore.trigger({
+				message: 'Failed to save article.',
+				background: 'variant-filled-error'
+			});
+		} else {
+			toastStore.trigger({
+				message: 'Article published successfully.',
+				background: 'variant-filled-success'
+			});
+			isSaved = true;
+			isChanged = false;
+		}
+	}
 </script>
 
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-<div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
-	<div class = "space-y-6 @xl:col-span-3">
-
+<div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
+	<div class = "space-y-6 xl:col-span-3">
 		<!--title-->
 		<div>
 			<label
@@ -168,7 +194,7 @@
 		/>
 	</div>
 
-	<aside class = "@xl:col-span-1 space-y-6">
+	<aside class = "col-span-1 space-y-6">
 		<!--语言-->
 		<div>
 			<h2
@@ -192,11 +218,13 @@
 						</a>
 					</li>
 				{/each}
-				<li
-					class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
-				>
-					+ {$t('add-language')}
-				</li>
+				{#if articleContent.id}
+					<li
+						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+					>
+						+ {$t('add-language')}
+					</li>
+				{/if}
 			</ul>
 		</div>
 
@@ -337,6 +365,7 @@
 					"rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
 			>{$t('save')}</button>
 			<button
+				on:click = {publishArticle}
 				class =
 					"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 			>{$t('publish')}</button>

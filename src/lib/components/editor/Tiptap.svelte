@@ -46,6 +46,7 @@
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import Image from '$components/editor/Image';
 	import { createEventDispatcher } from 'svelte';
+	import Gapcursor from '@tiptap/extension-gapcursor'
 
 	const dispatch = createEventDispatcher();
 	export let data;
@@ -85,7 +86,8 @@
 				}),
 				Typography,
 				CustomCodeBlock,
-				Image
+				Image,
+				Gapcursor
 			],
 			content: content,
 			editorProps: {
@@ -414,14 +416,10 @@
 	}
 </script>
 
-<svelte:head>
-	<title>Tiptap Svelte</title>
-</svelte:head>
-
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect={handleSelect} />
 {/if}
-<div>
+<div class="relative">
 	{#if editor}
 		<div class =
 					 "sticky top-0 bg-white z-20 border-black border-2 border-b-0 rounded-t-md shadow-md">
@@ -470,6 +468,3 @@
 
 	<EditorContent editor = {$editor} />
 </div>
-<!--{#if editor}-->
-<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
-<!--{/if}-->
