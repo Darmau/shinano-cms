@@ -13,7 +13,7 @@ export default Node.create({
 		];
 	},
 	renderHTML({ HTMLAttributes }) {
-		return ['custom-image', HTMLAttributes, 0];
+		return ['img', HTMLAttributes, 0];
 	},
 	addNodeView() {
 		return ({ node }) => {

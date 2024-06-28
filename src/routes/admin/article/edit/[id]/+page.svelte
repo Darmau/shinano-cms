@@ -1,8 +1,9 @@
 <script lang="ts">
+	import ArticleEditor from '$components/ArticleEditor.svelte';
+
 	export let data;
 </script>
 
-<div>
-	恭喜你成功了
-	<div>{data.id}</div>
+<div class="@container">
+	<ArticleEditor {data} articleContent={data.articleContent} isSaved=true />
 </div>

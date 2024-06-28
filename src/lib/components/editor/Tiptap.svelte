@@ -423,7 +423,8 @@
 {/if}
 <div>
 	{#if editor}
-		<div class = "border-black border-2 border-b-0 rounded-t-md ">
+		<div class =
+					 "sticky top-0 bg-white z-20 border-black border-2 border-b-0 rounded-t-md shadow-md">
 			<div
 				class = "p-2 flex gap-1 flex-wrap"
 			>
