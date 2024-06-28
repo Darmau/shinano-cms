@@ -194,7 +194,7 @@
 		/>
 	</div>
 
-	<aside class = "@xl:col-span-1 space-y-6">
+	<aside class = "col-span-1 space-y-6">
 		<!--语言-->
 		<div>
 			<h2
@@ -218,11 +218,13 @@
 						</a>
 					</li>
 				{/each}
-				<li
-					class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
-				>
-					+ {$t('add-language')}
-				</li>
+				{#if articleContent.id}
+					<li
+						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+					>
+						+ {$t('add-language')}
+					</li>
+				{/if}
 			</ul>
 		</div>
 
