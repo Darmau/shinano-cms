@@ -59,7 +59,7 @@
 		}
 	}
 
-	10秒一次执行保存函数
+	// 10秒一次执行保存函数
 	setInterval(() => {
 		saveArticle();
 	}, 20000);
@@ -182,7 +182,7 @@
 				<li
 					class = "inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
 				>
-					{data.defaultLanguage.lang}
+					{data.currentLanguage.lang}
 				</li>
 				{#each data.otherVersions as version}
 					<li
