@@ -24,7 +24,8 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		  is_draft,
 		  is_featured,
 		  is_premium,
-		  lang (id, lang, locale)
+		  lang,
+		  cover (id, alt, storage_key)
 		`)
 		.eq('id', articleId)
 		.single();
@@ -37,12 +38,17 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		}
 	}
 
-	const currentLanguage = (articleData.lang as {id: number, locale: string, lang: string}[])[0];
+	const currentLanguage = await supabase
+	.from('language')
+	.select('id, lang, locale')
+	.eq('id', articleData.lang)
+	.single()
+	.then(res => res.data)
 
 	const categories = await supabase
 	.from('category')
 	.select('id, title, slug')
-	.eq('lang', currentLanguage.id)
+	.eq('lang', currentLanguage!.id)
 	.eq('type', 'article')
 	.then(res => res.data);
 
@@ -51,7 +57,7 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 	.from('article')
 	.select('id, lang (id, lang)')
 	.eq('slug', articleData.slug)
-	.neq('lang', currentLanguage.id)
+	.neq('lang', currentLanguage!.id)
 	.then(res => res.data);
 
 	return {

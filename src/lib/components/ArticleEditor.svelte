@@ -5,7 +5,7 @@
 	import PhotoIcon from '$assets/icons/photo.svelte';
 	import AddIcon from '$assets/icons/plus.svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 
 	export let data;
 	export let isSaved = false;
@@ -21,6 +21,7 @@
 		if (!isChanged) return;
 
 		articleContent.updated_at = new Date().toISOString();
+		articleContent.cover = coverImage.id;
 		let returnedData;
 		let saveError;
 
@@ -78,14 +79,14 @@
 
 	// 接收图片选择器返回的图片信息并显示
 	let isModalOpen = false;
-	let coverImage = {};
+	let coverImage = articleContent.cover || {};
 
 	function selectCoverImage(images) {
 		// 只接收第一张图片
 		coverImage = {
 			id: images[0].id,
 			alt: images[0].alt,
-			key: images[0].storage_key
+			storage_key: images[0].storage_key
 		};
 		articleContent.cover = coverImage.id;
 		isChanged = true;
@@ -247,7 +248,8 @@
 			>
 				{#if Object.keys(coverImage).length > 0}
 					<img
-						src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.key}`}
+						src =
+							{`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.storage_key}`}
 						alt = {coverImage.alt}
 						class = "img-bg h-full w-full object-contain"
 					/>
