@@ -1,26 +1,30 @@
 import type { PageServerLoad } from './$types';
-import { ImageProcess } from '$lib/types/imageProcess';
 
-const storageConfigs = new ImageProcess();
-const CONFIGS = storageConfigs.emptyObject();
-const KEYS = storageConfigs.array();
+export const load: PageServerLoad = async ({ fetch, locals: { supabase }}) => {
+	const storageKeys = await fetch('/api/kv', {
+		method: 'POST',
+		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
+	}).then(res => res.json());
 
-export const load: PageServerLoad = async ({ locals: {supabase}}) => {
-	const { data: storageKeys, error: fetchError } = await
-		supabase.from('config').select('name, value').in('name', KEYS);
+	// 从language表中获取is_default为true的语言
+	const defaultLanguage = await supabase
+		.from('language')
+		.select('id, lang')
+		.eq('is_default', true)
+		.single();
 
-	if (fetchError) {
-		throw fetchError;
-	}
-
-	storageKeys.forEach(key => {
-		if (key.name in CONFIGS) {
-			CONFIGS[key.name] = key.value;
-		}
-	});
+	// 根据defaultLanguage.data.id在category表中获取type为article的分类
+	const defaultLanguageId = defaultLanguage.data?.id ?? 1;
+	const categories = await supabase
+		.from('category')
+		.select('id, title, slug')
+		.eq('lang', defaultLanguageId)
+	  .eq('type', 'article');
 
 	return {
-		configs: CONFIGS,
-		prefix: CONFIGS.S3_URL_PREFIX,
+		prefix: storageKeys[0].config_URL_PREFIX,
+		defaultLanguage: defaultLanguage.data,
+		categories: categories.data,
+		otherVersions: []
 	}
 }
