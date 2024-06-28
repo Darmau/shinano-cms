@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.selected-image {
-  outline: 3px solid #67e8f9;
-}
-
 .ProseMirror {
   min-height: 320px;
 }

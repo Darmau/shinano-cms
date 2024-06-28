@@ -46,6 +46,7 @@
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import Image from '$components/editor/Image';
 	import { createEventDispatcher } from 'svelte';
+	import Gapcursor from '@tiptap/extension-gapcursor'
 
 	const dispatch = createEventDispatcher();
 	export let data;
@@ -85,7 +86,8 @@
 				}),
 				Typography,
 				CustomCodeBlock,
-				Image
+				Image,
+				Gapcursor
 			],
 			content: content,
 			editorProps: {
@@ -466,6 +468,3 @@
 
 	<EditorContent editor = {$editor} />
 </div>
-<!--{#if editor}-->
-<!--	<pre>{JSON.stringify($editor.getJSON(), null, 2)}</pre>-->
-<!--{/if}-->
