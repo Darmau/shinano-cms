@@ -122,7 +122,7 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 		// 查询article表中除了当前语言版本的其他语言版本 查询slug相等但lang不等于currentLanguage.id的文章
 		otherVersions = await supabase
 		  .from('article')
-		  .select('lang (id, lang)')
+		  .select('id, lang (id, lang)')
 		  .eq('slug', articleContent.slug)
 		  .neq('lang', currentLanguage!.id)
 		  .then(res => res.data);
