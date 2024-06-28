@@ -5,5 +5,5 @@
 </script>
 
 <div class="@container">
-	<ArticleEditor {data} articleContent={data.articleContent} isSaved=true />
+	<ArticleEditor {data} isSaved=true />
 </div>

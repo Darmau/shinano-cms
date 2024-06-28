@@ -9,8 +9,6 @@
 
 	export let data;
 	export let isSaved = false;
-	export let articleContent;
-	export let articleVersions;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -18,13 +16,12 @@
 
 	// 保存函数
 	let isChanged = false;
+	let articleContent = data.articleContent;
 	async function saveArticle() {
 		if (!isChanged) return;
-		if (articleContent.slug === '') {
-			articleContent.slug = new Date().toISOString();
-		}
 
 		articleContent.updated_at = new Date().toISOString();
+		articleContent.cover = coverImage.id;
 		let returnedData;
 		let saveError;
 
@@ -82,14 +79,14 @@
 
 	// 接收图片选择器返回的图片信息并显示
 	let isModalOpen = false;
-	let coverImage = {};
+	let coverImage = articleContent.cover || {};
 
 	function selectCoverImage(images) {
 		// 只接收第一张图片
 		coverImage = {
 			id: images[0].id,
 			alt: images[0].alt,
-			key: images[0].storage_key
+			storage_key: images[0].storage_key
 		};
 		articleContent.cover = coverImage.id;
 		isChanged = true;
@@ -111,7 +108,7 @@
 {/if}
 <div class = "grid grid-cols-1 gap-4 @xl:grid-cols-4">
 	<div class = "space-y-6 @xl:col-span-3">
-		<div>{JSON.stringify(articleContent)}</div>
+
 		<!--title-->
 		<div>
 			<label
@@ -187,7 +184,12 @@
 					<li
 						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
 					>
-						{version.lang}
+						<a
+							data-sveltekit-reload
+							href= {`/admin/article/edit/${version.id}`}
+						>
+							{version.lang.lang}
+						</a>
 					</li>
 				{/each}
 				<li
@@ -246,7 +248,8 @@
 			>
 				{#if Object.keys(coverImage).length > 0}
 					<img
-						src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.key}`}
+						src =
+							{`${data.prefix}/cdn-cgi/image/format=auto,width=480/${coverImage.storage_key}`}
 						alt = {coverImage.alt}
 						class = "img-bg h-full w-full object-contain"
 					/>
