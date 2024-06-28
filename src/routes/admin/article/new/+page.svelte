@@ -5,5 +5,5 @@
 </script>
 
 <div>
-	<ArticleEditor {data} isSaved=false />
+	<ArticleEditor {data} isSaved={false} />
 </div>

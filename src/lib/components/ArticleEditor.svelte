@@ -8,7 +8,7 @@
 	import { goto } from '$app/navigation';
 
 	export let data;
-	export let isSaved = false;
+	export let isSaved: boolean = false;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -29,7 +29,8 @@
 		if (isSaved === true) {
 			console.log('It is an existing article.')
 			const { data, error } = await
-				supabase.from('article').update(articleContent).select();
+				supabase.from('article').update(articleContent).eq('id',
+					articleContent.id).select();
 			returnedData = data;
 			saveError = error;
 		} else {
@@ -46,20 +47,17 @@
 				message: 'Failed to save article.',
 				background: 'variant-filled-error'
 			});
+			isChanged = false;
 		} else {
 			toastStore.trigger({
 				message: 'Article saved successfully.',
 				background: 'variant-filled-success'
 			});
 			// 跳转到/admin/article/edit/:id
+			isSaved = true;
 			await goto(`/admin/article/edit/${returnedData[0].id}`)
 		}
 	}
-
-	// 10秒一次执行保存函数
-	setInterval(() => {
-		saveArticle();
-	}, 20000);
 
 	let contentJSON = {};
 	let contentHTML = '';
@@ -108,7 +106,9 @@
 {/if}
 <div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
 	<div class = "space-y-6 xl:col-span-3">
-
+    <div>isSaved: {typeof isSaved}</div>
+		<div>isChanged: {isChanged}</div>
+		<div>{JSON.stringify(articleContent)}</div>
 		<!--title-->
 		<div>
 			<label
