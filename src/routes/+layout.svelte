@@ -7,6 +7,7 @@
 	initializeStores();
 
 	export let data;
+	let { supabase, session } = data;
 	$: ({ session, supabase } = data);
 
 	onMount(() => {
