@@ -8,9 +8,6 @@ export const load: PageServerLoad = async ({ fetch, url,params: { page }, locals
 	const pageNumber = Number(page)
 	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 24
 
-	// 从config表中读取S3_URL_PREFIX
-	// const { data: storageKeys, error: fetchError } = await
-	// 	supabase.from('config').select('name, value').in('name', KEYS);
 	const storageKeys = await fetch('/api/kv', {
 		method: 'POST',
 		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
@@ -26,6 +23,7 @@ export const load: PageServerLoad = async ({ fetch, url,params: { page }, locals
 	const { count } = await supabase.from('image').select('id', { count: 'exact' });
 
 	if (error) {
+		console.error(error);
 		throw error;
 	}
 
