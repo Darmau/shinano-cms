@@ -38,12 +38,11 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		}
 	}
 
-	const currentLanguage = await supabase
+	const {data: allLanguages} = await supabase
 	.from('language')
 	.select('id, lang, locale')
-	.eq('id', articleData.lang)
-	.single()
-	.then(res => res.data)
+
+	const currentLanguage = allLanguages?.find(lang => lang.id === articleData.lang);
 
 	const categories = await supabase
 	.from('category')
@@ -65,6 +64,7 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		currentLanguage,
 		articleContent: articleData,
 		categories,
-		otherVersions
+		otherVersions,
+		allLanguages
 	}
 }
