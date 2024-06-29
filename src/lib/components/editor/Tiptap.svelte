@@ -223,7 +223,7 @@
 	};
 
 	const setCodeLanguage = () => {
-		$editor.chain().focus().updateAttributes('codeBlock',
+		$editor.chain().focus().updateAttributes('customCodeBlock',
 			{ 'data-language': codeLanguage, 'language': codeLanguage }).run();
 	};
 
