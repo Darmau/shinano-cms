@@ -14,6 +14,20 @@
 
 	const toastStore = getToastStore();
 
+	// 找出当前文章没有的语言
+	function generateNewLanguageVersions() {
+		const currentLanguageId = data.currentLanguage.id;
+		const otherVersions = data.otherVersions;
+		const allLanguages = data.allLanguages;
+		return allLanguages.filter(
+			(language) =>
+				!otherVersions.some((version) => version.lang.id === language.id) &&
+				language.id !== currentLanguageId
+		);
+	}
+
+	const newLanguageVersions = generateNewLanguageVersions();
+
 	// 保存函数
 	let isChanged = false;
 	let articleContent = data.articleContent;
@@ -128,11 +142,39 @@
 			isChanged = false;
 		}
 	}
+
+	// 删除文章
+	async function deleteArticle() {
+		if (!isSaved) {
+			toastStore.trigger({
+				message: 'Article not saved yet.',
+				background: 'variant-filled-error'
+			});
+			return;
+		}
+
+		const { error } = await
+			supabase.from('article').delete().eq('id', articleContent.id).select();
+		if (error) {
+			console.error(error);
+			toastStore.trigger({
+				message: 'Failed to delete article.',
+				background: 'variant-filled-error'
+			});
+		} else {
+			toastStore.trigger({
+				message: 'Article deleted successfully.',
+				background: 'variant-filled-success'
+			});
+			await goto('/admin/article');
+		}
+	}
 </script>
 
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
+
 <div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
 	<div class = "space-y-6 xl:col-span-3">
 		<!--title-->
@@ -200,30 +242,43 @@
 			<h2
 				class = "text-sm font-medium leading-6 text-gray-900"
 			>{$t('language')}</h2>
-			<ul class = "mt-2">
+			<ul class = "mt-2 flex gap-2">
 				<li
-					class = "inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
+					class = "inline-flex items-center gap-x-1.5 rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
 				>
-					{data.currentLanguage.lang}
+					<svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true">
+						<circle cx="3" cy="3" r="3" />
+					</svg>
+					{data.currentLanguage.locale}
 				</li>
 				{#each data.otherVersions as version}
 					<li
-						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+						class =
+							"inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20 hover:bg-blue-200"
 					>
 						<a
 							data-sveltekit-reload
 							href= {`/admin/article/edit/${version.id}`}
 						>
-							{version.lang.lang}
+							{version.lang.locale}
 						</a>
 					</li>
 				{/each}
 				{#if articleContent.id}
-					<li
-						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
-					>
-						+ {$t('add-language')}
-					</li>
+					{#each newLanguageVersions as newVersion}
+						<li
+							class =
+								"inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-200"
+						>
+							<a
+								data-sveltekit-reload
+								href=
+									{`/admin/article/new?from=${articleContent.id}&lang=${newVersion.id}`}
+							>
+								+ {newVersion.locale}
+							</a>
+						</li>
+					{/each}
 				{/if}
 			</ul>
 		</div>
@@ -355,6 +410,7 @@
 		<!--按钮-->
 		<div class = "flex justify-end gap-4">
 			<button
+				on:click = {deleteArticle}
 				class =
 					"rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mr-auto"
 			>{$t('delete')}</button>

@@ -18,11 +18,15 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 	let categories;
 	let otherVersions;
 
+	const {data: allLanguages} = await supabase
+	.from('language')
+	.select('id, lang, locale');
+
 	if (isCompleteNew) {
 		// 从language表中获取is_default为true的语言
 		currentLanguage = await supabase
 		.from('language')
-		.select('id, lang')
+		.select('id, lang, locale')
 		.eq('is_default', true)
 		.single()
 		.then(res => res.data);
@@ -66,12 +70,7 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 			content_text: '开始书写你的文章吧',
 		}
 	} else {
-		currentLanguage = await supabase
-		.from('language')
-		.select('id, lang, locale')
-		.eq('id', targetLangId)
-		.single()
-		.then(res => res.data);
+		currentLanguage = allLanguages?.find(lang => lang.id === Number(targetLangId));
 
 		const { data: sourceArticle, error} = await supabase
 			.from('article')
@@ -124,7 +123,7 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 		// 查询article表中除了当前语言版本的其他语言版本 查询slug相等但lang不等于currentLanguage.id的文章
 		otherVersions = await supabase
 		  .from('article')
-		  .select('id, lang (id, lang)')
+		  .select('id, lang (id, lang, locale)')
 		  .eq('slug', articleContent.slug)
 		  .neq('lang', currentLanguage!.id)
 		  .then(res => res.data);
@@ -135,6 +134,7 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 		currentLanguage,
 		articleContent,
 		categories,
-		otherVersions
+		otherVersions,
+		allLanguages
 	}
 }

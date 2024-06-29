@@ -38,12 +38,11 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		}
 	}
 
-	const currentLanguage = await supabase
+	const {data: allLanguages} = await supabase
 	.from('language')
 	.select('id, lang, locale')
-	.eq('id', articleData.lang)
-	.single()
-	.then(res => res.data)
+
+	const currentLanguage = allLanguages?.find(lang => lang.id === articleData.lang);
 
 	const categories = await supabase
 	.from('category')
@@ -55,7 +54,7 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 	// 查询article表中除了当前语言版本的其他语言版本 查询slug相等但lang不等于currentLanguage.id的文章
 	const otherVersions = await supabase
 	.from('article')
-	.select('id, lang (id, lang)')
+	.select('id, lang (id, lang, locale)')
 	.eq('slug', articleData.slug)
 	.neq('lang', currentLanguage!.id)
 	.then(res => res.data);
@@ -65,6 +64,7 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		currentLanguage,
 		articleContent: articleData,
 		categories,
-		otherVersions
+		otherVersions,
+		allLanguages
 	}
 }
