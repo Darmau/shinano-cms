@@ -242,15 +242,19 @@
 			<h2
 				class = "text-sm font-medium leading-6 text-gray-900"
 			>{$t('language')}</h2>
-			<ul class = "mt-2">
+			<ul class = "mt-2 flex gap-2">
 				<li
-					class = "inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
+					class = "inline-flex items-center gap-x-1.5 rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
 				>
+					<svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true">
+						<circle cx="3" cy="3" r="3" />
+					</svg>
 					{data.currentLanguage.locale}
 				</li>
 				{#each data.otherVersions as version}
 					<li
-						class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+						class =
+							"inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-600/20 hover:bg-blue-200"
 					>
 						<a
 							data-sveltekit-reload
@@ -263,7 +267,8 @@
 				{#if articleContent.id}
 					{#each newLanguageVersions as newVersion}
 						<li
-							class = "inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+							class =
+								"inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-200"
 						>
 							<a
 								data-sveltekit-reload
