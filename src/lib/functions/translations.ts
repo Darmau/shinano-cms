@@ -83,6 +83,11 @@ const translations: Translation = {
 		"reset": "重置",
 		"status": "状态",
 		"edit": "编辑",
+		"draft": "草稿",
+		"published": "已发布",
+		"topped": "置顶",
+		"featured": "精选",
+		"premium-only": "登录可见",
 	},
 	"en": {
 		"home": "Home",
@@ -161,6 +166,11 @@ const translations: Translation = {
 		"reset": "Reset",
 		"status": "Status",
 		"edit": "Edit",
+		"draft": "Draft",
+		"published": "Published",
+		"topped": "Topped",
+		"featured": "Featured",
+		"premium-only": "Logged in only",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -239,6 +249,11 @@ const translations: Translation = {
 		"reset": "重置",
 		"status": "狀態",
 		"edit": "編輯",
+		"draft": "草稿",
+		"published": "已發布",
+		"topped": "置頂",
+		"featured": "精選",
+		"premium-only": "登錄可見",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -317,6 +332,11 @@ const translations: Translation = {
 		"reset": "リセット",
 		"status": "ステータス",
 		"edit": "編集",
+		"draft": "下書き",
+		"published": "公開済み",
+		"topped": "トップ",
+		"featured": "特集",
+		"premium-only": "ログイン後に表示",
 	}
 }
 
