@@ -175,7 +175,7 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-<div>{JSON.stringify(articleContent)}</div>
+
 <div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
 	<div class = "space-y-6 xl:col-span-3">
 		<!--title-->
