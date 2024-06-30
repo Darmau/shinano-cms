@@ -19,7 +19,6 @@
 
 <style>
   .frame {
-    min-height: 100vh;
     width: 100%;
     display: grid;
     grid-template-columns: 240px 1fr;
@@ -33,6 +32,8 @@
     grid-area: sidebar;
     height: 100vh;
     width: 100%;
+    position: sticky;
+    top: 0;
   }
 
   .main {
@@ -42,7 +43,6 @@
 
   .footer {
     grid-area: footer;
-    padding: 24px;
   }
 
   @media (max-width: 1024px) {
@@ -58,6 +58,10 @@
     .main {
       flex-grow: 1;
       padding: 24px;
+    }
+
+    .footer {
+      flex-grow: 0;
     }
   }
 </style>

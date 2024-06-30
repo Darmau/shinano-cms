@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
 	import FileDropzone from '$components/FileDropzone.svelte';
-	import { invalidateAll } from '$app/navigation';
+
+	export let refresh: () => void;
 
 	let files: FileList;
 	const toastStore = getToastStore();
@@ -69,7 +70,7 @@
 			await Promise.all(uploadPromises);
 
 			isLoading = false;
-			await invalidateAll();
+			await refresh();
 			toastStore.trigger({
 				message: '图片上传成功',
 				hideDismiss: true,

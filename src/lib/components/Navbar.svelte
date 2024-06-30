@@ -18,7 +18,7 @@
     {name: 'home', href: '/admin', icon: Home},
     {name: 'message', href: '/admin/message', icon: Message},
     {name: 'media', href: '/admin/media/1', icon: Media},
-    {name: 'article', href: '/admin/article', icon: Article},
+    {name: 'article', href: '/admin/article/1', icon: Article},
     {name: 'photo', href: '/admin/photo', icon: Photo},
     {name: 'video', href: '/admin/video', icon: Video},
     {name: 'thought', href: '/admin/thought', icon: Memo},
@@ -152,9 +152,7 @@
         >
       </div>
       <nav class = "flex flex-1 flex-col">
-        <ul role = "list" class = "flex flex-1 flex-col gap-y-7">
-          <li>
-            <ul role = "list" class = "-mx-2 space-y-2">
+        <ul role = "list" class = "flex flex-1 flex-col gap-2">
               {#each navItems as item}
                 <li>
                   <a
@@ -178,8 +176,6 @@
                   </a>
                 </li>
               {/each}
-            </ul>
-          </li>
         </ul>
       </nav>
       <select

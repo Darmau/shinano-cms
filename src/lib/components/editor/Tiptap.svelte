@@ -93,7 +93,7 @@
 			editorProps: {
 				attributes: {
 					class:
-						'prose prose-zinc max-w-none border-2 border-black rounded-b-md p-3 outline-none'
+						'prose prose-zinc max-w-none ring-1 ring-inset ring-gray-300 rounded-b-md p-3 outline-none'
 				}
 			},
 			onUpdate: ({ editor }) => {
@@ -223,7 +223,7 @@
 	};
 
 	const setCodeLanguage = () => {
-		$editor.chain().focus().updateAttributes('codeBlock',
+		$editor.chain().focus().updateAttributes('customCodeBlock',
 			{ 'data-language': codeLanguage, 'language': codeLanguage }).run();
 	};
 
@@ -422,7 +422,7 @@
 <div class="relative">
 	{#if editor}
 		<div class =
-					 "sticky top-0 bg-white z-20 border-black border-2 border-b-0 rounded-t-md shadow-md">
+					 "sticky top-0 bg-white z-20 ring-1 ring-inset ring-gray-300 rounded-t-md">
 			<div
 				class = "p-2 flex gap-1 flex-wrap"
 			>

@@ -8,14 +8,14 @@ const currentYear = new Date().getFullYear()
 </script>
 
 <div
-  class="mx-auto max-w-7xl overflow-hidden px-6 py-12 sm:py-16 lg:px-8">
-  <nav class="mb-6 columns-2 flex justify-center gap-8 md:gap-16"
+  class="mx-auto max-w-7xl overflow-hidden px-6 py-8 lg:px-8">
+  <nav class="columns-2 flex justify-center gap-8"
        aria-label="Footer">
     {#each links as link}
       <a href={link.url} target="_blank" class="text-sm leading-6 text-gray-600 hover:text-gray-900">{link.title}</a>
     {/each}
   </nav>
-  <div class="mt-10 flex justify-center space-x-10">
+  <div class="mt-6 flex justify-center space-x-10">
     <a href="/" class="text-gray-400 hover:text-gray-500">
       <span class="sr-only">Twitter</span>
       <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -29,7 +29,7 @@ const currentYear = new Date().getFullYear()
       </svg>
     </a>
   </div>
-  <p class="mt-10 text-center text-xs leading-5 text-gray-500">&copy;
+  <p class="mt-6 text-center text-xs leading-5 text-gray-500">&copy;
     2023 ~ {currentYear} Developed by <a href="https://darmau.design"
                                      target="_blank"
                             class="underline decoration-solid decoration-sky-500/30 underline-offset-4">
