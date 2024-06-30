@@ -47,7 +47,7 @@
 
 <div
 	class="flex flex-col-reverse gap-4 sm:flex-row items-center justify-between border-t border-gray-200 bg-white mt-8 py-8 sm:px-6">
-<!--	切换选择的时候，重新执行generatePages函数，更新pages数组。-->
+	<!--	切换选择的时候，重新执行generatePages函数，更新pages数组。-->
 	<div class="flex gap-4 items-center">
 		<select
 			bind:value = {limit} on:change={generatePages(count, limit, page)}
@@ -57,7 +57,7 @@
 				<option value = {option}>{option}</option>
 			{/each}
 		</select>
-		<p>{count} images total</p>
+		<p>{count} items total</p>
 	</div>
 
 	<div class="flex gap-8">
