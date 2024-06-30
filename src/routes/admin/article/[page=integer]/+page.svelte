@@ -3,13 +3,25 @@
 	import { t } from '$lib/functions/i18n';
 	import PageTitle from '$components/PageTitle.svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	import {
+		getToastStore,
+		getModalStore,
+		type ModalSettings
+	} from '@skeletonlabs/skeleton';
 
 	export let data;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
 	const toastStore = getToastStore();
+	const modalStore = getModalStore();
+
+	const modal: ModalSettings = {
+		type: 'confirm',
+		title: 'Please Confirm',
+		body: 'Are you sure you wish to proceed?',
+		response: (r: boolean) => console.log('response:', r),
+	};
 
 	let selectedArticleList = [];
 	let deletable = true
@@ -55,6 +67,24 @@
 			});
 		}
 	}
+
+	// 选中所有文章并添加到selectedArticleList
+	function switchSelectAll() {
+		const checkboxes = document.querySelectorAll('.article-checkbox');
+		if (selectedArticleList.length === data.articles.length) {
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = false;
+			});
+			selectedArticleList = [];
+			deletable = true;
+		} else {
+			checkboxes.forEach((checkbox) => {
+				checkbox.checked = true;
+			});
+			selectedArticleList = data.articles.map((article) => article.id);
+			deletable = false;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -67,6 +97,7 @@
 		<button
 			type = "button"
 			disabled = {deletable}
+			on:click = {deleteArticles}
 			class =
 				"inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto disabled:bg-gray-300"
 		>{$t('delete')}
@@ -93,6 +124,7 @@
 								class = "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 							>
 								<input
+									on:click = {switchSelectAll}
 									type = "checkbox"
 									class = "h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 								/>
@@ -135,8 +167,20 @@
 							>
 								<td class = "px-3 py-4 text-sm text-gray-500">
 									<input
+										on:change = {() => {
+											if (selectedArticleList.includes(article.id)) {
+												selectedArticleList = selectedArticleList.filter((id) => id !== article.id);
+												deletable = selectedArticleList.length === 0;
+												console.log(selectedArticleList)
+											} else {
+												selectedArticleList.push(article.id);
+												deletable = false;
+												console.log(selectedArticleList)
+											}
+										}}
 										type = "checkbox"
-										class = "h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
+										class =
+											"article-checkbox h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 									/>
 								</td>
 								<td
@@ -222,6 +266,7 @@
 										class = "text-cyan-600 hover:text-cyan-900"
 									>{$t('edit')}</a>
 									<button
+										on:click = {() => deleteArticle(article.id)}
 									  class="text-red-600 hover:text-red-900"
 									>
 										{$t('delete')}

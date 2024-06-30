@@ -63,7 +63,6 @@
 		}
 	}
 
-
 	// 打开图片编辑窗口
 	let isEditing = false;
 	let imageData = {};
