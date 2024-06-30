@@ -392,23 +392,28 @@ OR DELETE ON language FOR EACH ROW
 EXECUTE FUNCTION manage_default_language ();
 
 -- 替换置顶文章
-CREATE
-OR REPLACE FUNCTION replace_top_article () RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION replace_top_article() RETURNS TRIGGER AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_top IS TRUE THEN
-        UPDATE article SET is_top = false WHERE is_top = true;
+        -- 更新其他具有相同lang且is_top为true的文章
+        UPDATE article
+        SET is_top = false
+        WHERE is_top = true
+          AND lang = NEW.lang
+          AND id != NEW.id;  -- 排除当前正在插入/更新的文章
     END IF;
 
-    -- 对于INSERT和UPDATE操作，返回新的记录
+    -- 对于INSERT和UPDATE操作,返回新的记录
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
         RETURN NEW;
-    -- 对于DELETE操作，不需要返回记录
+    -- 对于DELETE操作,不需要返回记录
     ELSE
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$
+ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_switch_top_article BEFORE INSERT
 OR
@@ -416,23 +421,28 @@ UPDATE ON article FOR EACH ROW
 EXECUTE FUNCTION replace_top_article ();
 
 -- 替换置顶摄影
-CREATE
-OR REPLACE FUNCTION replace_top_photo () RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION replace_top_photo() RETURNS TRIGGER AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_top IS TRUE THEN
-        UPDATE photo SET is_top = false WHERE is_top = true;
+        -- 更新其他具有相同lang且is_top为true的摄影
+        UPDATE photo
+        SET is_top = false
+        WHERE is_top = true
+          AND lang = NEW.lang
+          AND id != NEW.id;  -- 排除当前正在插入/更新的
     END IF;
 
-    -- 对于INSERT和UPDATE操作，返回新的记录
+    -- 对于INSERT和UPDATE操作,返回新的记录
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
         RETURN NEW;
-    -- 对于DELETE操作，不需要返回记录
+    -- 对于DELETE操作,不需要返回记录
     ELSE
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$
+ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_switch_top_photo BEFORE INSERT
 OR
@@ -440,23 +450,28 @@ UPDATE ON photo FOR EACH ROW
 EXECUTE FUNCTION replace_top_photo ();
 
 -- 替换置顶视频
-CREATE
-OR REPLACE FUNCTION replace_top_video () RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION replace_top_video() RETURNS TRIGGER AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_top IS TRUE THEN
-        UPDATE video SET is_top = false WHERE is_top = true;
+        -- 更新其他具有相同lang且is_top为true的视频
+        UPDATE video
+        SET is_top = false
+        WHERE is_top = true
+          AND lang = NEW.lang
+          AND id != NEW.id;  -- 排除当前正在插入/更新的
     END IF;
 
-    -- 对于INSERT和UPDATE操作，返回新的记录
+    -- 对于INSERT和UPDATE操作,返回新的记录
     IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
         RETURN NEW;
-    -- 对于DELETE操作，不需要返回记录
+    -- 对于DELETE操作,不需要返回记录
     ELSE
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$
+ LANGUAGE plpgsql;
 
 CREATE TRIGGER trigger_switch_top_video BEFORE INSERT
 OR
