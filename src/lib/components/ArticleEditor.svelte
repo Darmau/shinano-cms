@@ -174,7 +174,7 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-
+<div>{JSON.stringify(articleContent)}</div>
 <div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
 	<div class = "space-y-6 xl:col-span-3">
 		<!--title-->
@@ -187,6 +187,7 @@
 				<input
 					type = "text" name = "title" id = "title"
 					bind:value = {articleContent.title}
+					on:input = {() => {isChanged = true}}
 					required
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -205,6 +206,7 @@
 				<input
 					type = "text" name = "slug" id = "slug"
 					bind:value = {articleContent.slug}
+					on:input = {() => {isChanged = true}}
 					required
 					class =
 						"block font-mono w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -222,6 +224,7 @@
 				<input
 					type = "text" name = "subtitle" id = "subtitle"
 					bind:value = {articleContent.subtitle}
+					on:input = {() => {isChanged = true}}
 					required
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -369,6 +372,7 @@
 			<div class = "flex h-6 items-center gap-2">
 				<input
 					bind:checked = {articleContent.is_top}
+					on:change = {() => {isChanged = true}}
 					id = "is_top" aria-describedby = "是否置顶文章"
 					name = "is_top" type = "checkbox"
 					class =
@@ -381,20 +385,22 @@
 			</div>
 			<div class = "flex h-6 items-center gap-2">
 				<input
-					bind:checked = {articleContent.is_feature}
-					id = "is_feature" aria-describedby = "是否设置为推荐文章"
-					name = "is_feature" type = "checkbox"
+					bind:checked = {articleContent.is_featured}
+					on:change = {() => {isChanged = true}}
+					id = "is_featured" aria-describedby = "是否设置为推荐文章"
+					name = "is_featured" type = "checkbox"
 					class =
 						"h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 				>
 				<label
-					for = "is_feature"
+					for = "is_featured"
 					class = "font-medium text-gray-900 text-sm"
 				>{$t('feature')}</label>
 			</div>
 			<div class = "flex h-6 items-center gap-2">
 				<input
 					bind:checked = {articleContent.is_premium}
+					on:change = {() => {isChanged = true}}
 					id = "is_premium" aria-describedby = "是否登录后可见"
 					name = "is_premium" type = "checkbox"
 					class =
@@ -422,8 +428,9 @@
 			>{$t('save')}</button>
 			<button
 				on:click = {publishArticle}
+				disabled = {!articleContent.is_draft}
 				class =
-					"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+					"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
 			>{$t('publish')}</button>
 		</div>
 	</aside>
