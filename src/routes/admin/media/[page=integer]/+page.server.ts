@@ -29,7 +29,7 @@ export const load: PageServerLoad = async ({ fetch, url,params: { page }, locals
 	return {
 		page: pageNumber,
 		images: images ?? [],
-		prefix: configs.config_URL_PREFIX,
+		prefix: configs[0].config_URL_PREFIX,
 		count: count ?? 0,
 		limit: limit,
 		path: path

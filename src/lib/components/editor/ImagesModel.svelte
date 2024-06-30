@@ -11,7 +11,6 @@
 	export let data;
 	let { supabase } = data;
 	$: ({ supabase } = data);
-	let afterFetch = false;
 	let selectedImages = new Map<number, any>();
 	let selectedNumber: number = 0;
 
@@ -21,6 +20,9 @@
 	onMount(async () => {
 		await getImages();
 	});
+
+	$: imagesList = [];
+	let page = 1;
 
 	// 获取图片信息
 	const getImages = async (page: number = 1) => {
@@ -34,20 +36,19 @@
 				background: 'variant-filled-error'
 			});
 		} else {
-			data = { ...data, images, page }; // 重新赋值data对象
-			afterFetch = true;
+			imagesList = images;
 		}
 	};
 
 
 	// 获取下一页图片数据
 	const nextPage = async () => {
-		await getImages(data.page + 1);
+		await getImages(page + 1);
 	};
 
 	// 获取上一页图片数据
 	const prevPage = async () => {
-		await getImages(data.page - 1);
+		await getImages(page - 1);
 	};
 
 	// 处理复选框状态改变
@@ -121,6 +122,11 @@
 			});
 		}
 	}
+
+	// 刷新数据
+	async function refresh() {
+		await getImages();
+	}
 </script>
 
 {#if isEditing}
@@ -149,7 +155,9 @@
 					>
 						<button
 							on:click = {deleteImages}
-							class = "inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto"
+							disabled = {selectedNumber <= 0}
+							class =
+								"inline-flex justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto disabled:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							{$t('delete')}
 						</button>
@@ -162,12 +170,11 @@
 						</button>
 					</div>
 					<div class = "bg-white p-4">
-						<UploadFile on:submit = {getImages} data = {data} />
-						{#if afterFetch}
+						<UploadFile on:submit = {getImages} {refresh} />
 							<div
 								class = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6 gap-4"
 							>
-								{#each data.images as image (image.id)}
+								{#each imagesList as image (image.id)}
 									<div
 										data-image-id = {image.id}
 										class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
@@ -204,7 +211,6 @@
 									</div>
 								{/each}
 							</div>
-						{/if}
 					</div>
 					<div
 						class = "sticky bottom-0 p-4 bg-white border-t flex justify-between"
@@ -215,6 +221,10 @@
 						>
 							{$t('close')}
 						</button>
+						<button
+						  on:click = {getImages}
+							type="button"
+						>Refresh</button>
 						<div class = "space-x-4">
 							<button
 								on:click = {prevPage}
