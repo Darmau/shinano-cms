@@ -4,9 +4,9 @@
 	import ImageGrid from '$components/image/ImageGrid.svelte';
 	import Pagination from '$components/Pagination.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { t } from '$lib/functions/i18n';
 
 	export let data;
-	export let title = '图片';
 
 	async function refresh() {
 		await invalidateAll();
@@ -14,11 +14,11 @@
 </script>
 
 <svelte:head>
-	<title>{title}</title>
+	<title>{$t('media')}</title>
 </svelte:head>
 
 <div class = "">
-	<PageTitle title = {title} />
+	<PageTitle title = {$t('media')} />
 	<UploadFile {refresh} />
 	<ImageGrid data = {data} />
 	<Pagination

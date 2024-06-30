@@ -221,10 +221,6 @@
 						>
 							{$t('close')}
 						</button>
-						<button
-						  on:click = {getImages}
-							type="button"
-						>Refresh</button>
 						<div class = "space-x-4">
 							<button
 								on:click = {prevPage}
