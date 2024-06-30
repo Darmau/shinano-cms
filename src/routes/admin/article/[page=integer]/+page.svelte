@@ -1,8 +1,60 @@
 <script lang="ts">
 	import Pagination from '$components/Pagination.svelte';
 	import { t } from '$lib/functions/i18n';
+	import PageTitle from '$components/PageTitle.svelte';
+	import { invalidateAll } from '$app/navigation';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 
 	export let data;
+	let { supabase } = data;
+	$: ({ supabase } = data);
+
+	const toastStore = getToastStore();
+
+	let selectedArticleList = [];
+	let deletable = true
+
+	// 删除选中文章
+	async function deleteArticles() {
+		try {
+			await supabase.from('article').delete().in('id', selectedArticleList);
+			selectedArticleList = [];
+			deletable = true;
+			await invalidateAll();
+			toastStore.trigger({
+				message: `成功删除文章。`,
+				hideDismiss: true,
+				background: 'variant-filled-success'
+			});
+		} catch (error) {
+			console.error('删除文章时出错:', error);
+			toastStore.trigger({
+				message: '删除文章失败。',
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+		}
+	}
+
+	// 直接删除文章
+	async function deleteArticle(id: number) {
+		try {
+			await supabase.from('article').delete().eq('id', id);
+			await invalidateAll();
+			toastStore.trigger({
+				message: `成功删除文章。`,
+				hideDismiss: true,
+				background: 'variant-filled-success'
+			});
+		} catch (error) {
+			console.error('删除文章时出错:', error);
+			toastStore.trigger({
+				message: '删除文章失败。',
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+		}
+	}
 </script>
 
 <svelte:head>
@@ -10,18 +62,22 @@
 </svelte:head>
 
 <div>
-	<div class = "sm:flex sm:items-center">
-		<div class = "sm:flex-auto">
-			<h1 class = "text-base font-semibold leading-6 text-gray-900">Users</h1>
-			<p class = "mt-2 text-sm text-gray-700">A list of all the users in your
-				account including their name, title, email and role.</p>
-		</div>
-		<div class = "mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-			<a
-				href = "/admin/article/new"
-				class = "block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-			>New</a>
-		</div>
+	<PageTitle title = {$t('article')} />
+	<div class = "sm:flex sm:items-center sm:justify-between sm:gap-4">
+		<button
+			type = "button"
+			disabled = {deletable}
+			class =
+				"inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:w-auto disabled:bg-gray-300"
+		>{$t('delete')}
+		</button>
+		<a
+			href = "/admin/article/new"
+			class =
+				"flex justify-between gap-2 rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+		>
+			{$t('add-new')}
+		</a>
 	</div>
 	<div class = "mt-8 flow-root">
 		<div class = "-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -117,7 +173,7 @@
 								<!--文章状态-->
 								<td
 									class =
-										"px-3 py-4 text-sm text-gray-500 flex flex-col items-start md:flex-row gap-2">
+										"px-3 py-4 text-sm text-gray-500">
 									{#if article.is_draft}
 										<span class="inline-flex items-center gap-x-1.5 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
 											<svg class="h-1.5 w-1.5 fill-gray-400" viewBox="0 0 6 6" aria-hidden="true">
@@ -157,13 +213,19 @@
 								</td>
 
 								<td
-									class = "relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+									class =
+										"relative whitespace-nowrap py-4 pl-3 pr-4 space-x-4 text-right text-sm font-medium sm:pr-6"
 								>
 									<a
 										href = {`/admin/article/edit/${article.id}`}
 										data-sveltekit-preload-data
-										class = "text-indigo-600 hover:text-indigo-900"
+										class = "text-cyan-600 hover:text-cyan-900"
 									>{$t('edit')}</a>
+									<button
+									  class="text-red-600 hover:text-red-900"
+									>
+										{$t('delete')}
+									</button>
 								</td>
 							</tr>
 						{/each}

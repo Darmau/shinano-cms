@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ fetch, url, params: { page }, locals: { supabase }}) => {
 	const pageNumber = Number(page);
-	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 24;
+	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 12;
 
 	const configs = await fetch('/api/kv', {
 		method: 'POST',
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ fetch, url, params: { page }, local
 	const { data: articles, error } = await supabase
 		.from('article')
 		.select(`id, title, subtitle, lang (id, locale), slug, category (id,  title), is_draft, is_featured, is_top, is_premium`)
-		.range((pageNumber - 1) * 24, pageNumber * 24 - 1)
+		.range((pageNumber - 1) * limit, pageNumber * limit - 1)
 		.order('id', { ascending: false });
 
 	if (error) {

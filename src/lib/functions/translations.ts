@@ -88,6 +88,7 @@ const translations: Translation = {
 		"topped": "置顶",
 		"featured": "精选",
 		"premium-only": "登录可见",
+		"add-new": "创建",
 	},
 	"en": {
 		"home": "Home",
@@ -171,6 +172,7 @@ const translations: Translation = {
 		"topped": "Topped",
 		"featured": "Featured",
 		"premium-only": "Logged in only",
+		"add-new": "Create",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -254,6 +256,7 @@ const translations: Translation = {
 		"topped": "置頂",
 		"featured": "精選",
 		"premium-only": "登錄可見",
+		"add-new": "創建",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -337,6 +340,7 @@ const translations: Translation = {
 		"topped": "トップ",
 		"featured": "特集",
 		"premium-only": "ログイン後に表示",
+		"add-new": "作成",
 	}
 }
 
