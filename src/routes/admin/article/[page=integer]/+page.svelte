@@ -84,9 +84,12 @@
 									/>
 								</td>
 								<td
-									class = "whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+									class =
+										"whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
 								>
 									{article.title}
+									<p
+										class="font-normal text-gray-600">{article.subtitle}</p>
 									<dl class = "font-normal lg:hidden">
 										<dt class = "sr-only sm:hidden">Slug</dt>
 										<dd class =
@@ -113,7 +116,8 @@
 
 								<!--文章状态-->
 								<td
-									class = "px-3 py-4 text-sm text-gray-500 flex gap-2">
+									class =
+										"px-3 py-4 text-sm text-gray-500 flex flex-col items-start md:flex-row gap-2">
 									{#if article.is_draft}
 										<span class="inline-flex items-center gap-x-1.5 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
 											<svg class="h-1.5 w-1.5 fill-gray-400" viewBox="0 0 6 6" aria-hidden="true">

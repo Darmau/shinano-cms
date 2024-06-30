@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ fetch, url, params: { page }, local
 
 	const { data: articles, error } = await supabase
 		.from('article')
-		.select(`id, title, lang (id, locale), slug, category (id,  title), is_draft, is_featured, is_top, is_premium`)
+		.select(`id, title, subtitle, lang (id, locale), slug, category (id,  title), is_draft, is_featured, is_top, is_premium`)
 		.range((pageNumber - 1) * 24, pageNumber * 24 - 1)
 		.order('id', { ascending: false });
 
