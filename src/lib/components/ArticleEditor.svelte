@@ -121,16 +121,17 @@
 		isModalOpen = false;
 	}
 
-	// 发布文章
+	// 切换发布文章
 	async function publishArticle() {
-		articleContent.is_draft = false;
+		articleContent.cover = coverImage.id || null;
+		articleContent.is_draft = !articleContent.is_draft;
 		const { error } = await
 			supabase.from('article').update(articleContent).eq('id',
 				articleContent.id).select();
 		if (error) {
 			console.error(error);
 			toastStore.trigger({
-				message: 'Failed to save article.',
+				message: 'Failed to publish article.',
 				background: 'variant-filled-error'
 			});
 		} else {
@@ -428,10 +429,9 @@
 			>{$t('save')}</button>
 			<button
 				on:click = {publishArticle}
-				disabled = {!articleContent.is_draft}
 				class =
-					"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-			>{$t('publish')}</button>
+					"rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+			>{articleContent.is_draft ? $t('publish') : $t('unpublish')}</button>
 		</div>
 	</aside>
 </div>

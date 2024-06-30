@@ -73,6 +73,7 @@ const translations: Translation = {
 		"cover": "封面",
 		"save": "保存",
 		"publish": "发布",
+		"unpublish": "取消发布",
 		"feature": "精选",
 		"top": "置顶",
 		"logged-in-only": "登录后可见",
@@ -80,6 +81,8 @@ const translations: Translation = {
 		"generate": "生成",
 		"select": "选择",
 		"reset": "重置",
+		"status": "状态",
+		"edit": "编辑",
 	},
 	"en": {
 		"home": "Home",
@@ -148,6 +151,7 @@ const translations: Translation = {
 		"cover": "Cover",
 		"save": "Save",
 		"publish": "Publish",
+		"unpublish": "Unpublish",
 		"feature": "Feature",
 		"top": "Top",
 		"logged-in-only": "Logged in only",
@@ -155,6 +159,8 @@ const translations: Translation = {
 		"generate": "Generate",
 		"select": "Select",
 		"reset": "Reset",
+		"status": "Status",
+		"edit": "Edit",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -223,6 +229,7 @@ const translations: Translation = {
 		"cover": "封面",
 		"save": "保存",
 		"publish": "發布",
+		"unpublish": "取消發布",
 		"feature": "精選",
 		"top": "置頂",
 		"logged-in-only": "登錄後可見",
@@ -230,6 +237,8 @@ const translations: Translation = {
 		"generate": "生成",
 		"select": "選擇",
 		"reset": "重置",
+		"status": "狀態",
+		"edit": "編輯",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -298,6 +307,7 @@ const translations: Translation = {
 		"cover": "カバー",
 		"save": "保存",
 		"publish": "公開",
+		"unpublish": "非公開",
 		"feature": "特集",
 		"top": "トップ",
 		"logged-in-only": "ログイン後に表示",
@@ -305,6 +315,8 @@ const translations: Translation = {
 		"generate": "生成",
 		"select": "選択",
 		"reset": "リセット",
+		"status": "ステータス",
+		"edit": "編集",
 	}
 }
 

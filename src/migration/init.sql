@@ -410,7 +410,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_switch_top_article BEFORE INSERT
+CREATE TRIGGER trigger_switch_top_article AFTER INSERT
 OR
 UPDATE ON article FOR EACH ROW
 EXECUTE FUNCTION replace_top_article ();
@@ -434,7 +434,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_switch_top_photo BEFORE INSERT
+CREATE TRIGGER trigger_switch_top_photo AFTER INSERT
 OR
 UPDATE ON photo FOR EACH ROW
 EXECUTE FUNCTION replace_top_photo ();
@@ -458,7 +458,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_switch_top_video BEFORE INSERT
+CREATE TRIGGER trigger_switch_top_video AFTER INSERT
 OR
 UPDATE ON video FOR EACH ROW
 EXECUTE FUNCTION replace_top_video ();
