@@ -152,9 +152,7 @@
         >
       </div>
       <nav class = "flex flex-1 flex-col">
-        <ul role = "list" class = "flex flex-1 flex-col gap-y-7">
-          <li>
-            <ul role = "list" class = "-mx-2 space-y-2">
+        <ul role = "list" class = "flex flex-1 flex-col gap-2">
               {#each navItems as item}
                 <li>
                   <a
@@ -178,8 +176,6 @@
                   </a>
                 </li>
               {/each}
-            </ul>
-          </li>
         </ul>
       </nav>
       <select
