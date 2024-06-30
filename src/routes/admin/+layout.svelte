@@ -32,6 +32,8 @@
     grid-area: sidebar;
     height: 100vh;
     width: 100%;
+    position: sticky;
+    top: 0;
   }
 
   .main {
