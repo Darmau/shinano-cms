@@ -44,11 +44,13 @@
 	// 获取下一页图片数据
 	const nextPage = async () => {
 		await getImages(page + 1);
+		page = page + 1;
 	};
 
 	// 获取上一页图片数据
 	const prevPage = async () => {
 		await getImages(page - 1);
+		page = page - 1;
 	};
 
 	// 处理复选框状态改变
@@ -171,46 +173,46 @@
 					</div>
 					<div class = "bg-white p-4">
 						<UploadFile on:submit = {getImages} {refresh} />
-							<div
-								class = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6 gap-4"
-							>
-								{#each imagesList as image (image.id)}
-									<div
-										data-image-id = {image.id}
-										class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
-									>
-										<div class = "object-contain aspect-square relative">
-											<div
+						<div
+							class = "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 3xl:grid-cols-6 gap-4"
+						>
+							{#each imagesList as image (image.id)}
+								<div
+									data-image-id = {image.id}
+									class = "bg-white border rounded-xl overflow-clip hover:shadow-md transition-all duration-150 space-y-2"
+								>
+									<div class = "object-contain aspect-square relative">
+										<div
+											class =
+												"absolute left-4 top-4 flex gap-2 h-6 items-center"
+										>
+											<input
+												on:change = {() => handleCheckboxChange(image)}
+												id = {image.id} aria-describedby = {image.alt}
+												name = {image.storage_key}
+												type = "checkbox"
 												class =
-													"absolute left-4 top-4 flex gap-2 h-6 items-center"
+													"h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 											>
-												<input
-													on:change = {() => handleCheckboxChange(image)}
-													id = {image.id} aria-describedby = {image.alt}
-													name = {image.storage_key}
-													type = "checkbox"
-													class =
-														"h-5 w-5 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
-												>
-												<label for = {image.id}>{image.file_name}</label>
-											</div>
-											<button
-												class = "absolute right-4 top-4 flex h-6 items-center"
-												on:click = {() => openEdit(image)}
-											>
-												<Edit
-													classList = "h-6 w-6 text-gray-400 hover:text-cyan-600"
-												/>
-											</button>
-											<img
-												src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
-												class = "img-bg h-full w-full object-contain"
-												alt = {image.alt}
-											/>
+											<label for = {image.id}>{image.file_name}</label>
 										</div>
+										<button
+											class = "absolute right-4 top-4 flex h-6 items-center"
+											on:click = {() => openEdit(image)}
+										>
+											<Edit
+												classList = "h-6 w-6 text-gray-400 hover:text-cyan-600"
+											/>
+										</button>
+										<img
+											src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${data.prefix}/${image.storage_key}`}
+											class = "img-bg h-full w-full object-contain"
+											alt = {image.alt}
+										/>
 									</div>
-								{/each}
-							</div>
+								</div>
+							{/each}
+						</div>
 					</div>
 					<div
 						class = "sticky bottom-0 p-4 bg-white border-t flex justify-between"
