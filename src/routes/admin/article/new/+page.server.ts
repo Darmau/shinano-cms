@@ -1,11 +1,8 @@
 import type { PageServerLoad } from './$types';
 import getDateFormat from '$lib/functions/dateFormat';
+import { URL_PREFIX } from '$env/static/private'
 
-export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) => {
-	const storageKeys = await fetch('/api/kv', {
-		method: 'POST',
-		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
-	}).then(res => res.json());
+export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 
 	const copyFromId= url.searchParams.get('from');
 	const targetLangId = url.searchParams.get('lang');
@@ -42,10 +39,11 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 
 		otherVersions = [];
 
+		const dateString = new Date().toISOString();
 		articleContent = {
 			title: 'title',
 			subtitle: '',
-			slug: getDateFormat(),
+			slug: getDateFormat(dateString, true),
 			abstract: '',
 			is_top: false,
 			is_draft: true,
@@ -130,7 +128,7 @@ export const load: PageServerLoad = async ({ url, fetch, locals: { supabase }}) 
 	}
 
 	return {
-		prefix: storageKeys[0].config_URL_PREFIX,
+		prefix: URL_PREFIX,
 		currentLanguage,
 		articleContent,
 		categories,

@@ -1,13 +1,9 @@
 import type { PageServerLoad } from './$types';
+import { URL_PREFIX } from '$env/static/private'
 
-export const load: PageServerLoad = async ({ fetch, url, params: { page }, locals: { supabase }}) => {
+export const load: PageServerLoad = async ({ url, params: { page }, locals: { supabase }}) => {
 	const pageNumber = Number(page);
 	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 12;
-
-	const configs = await fetch('/api/kv', {
-		method: 'POST',
-		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
-	}).then(res => res.json());
 
 	// 获取article表中数据的条目数
 	const { count } = await supabase.from('article').select('id', { count: 'exact' });
@@ -27,7 +23,7 @@ export const load: PageServerLoad = async ({ fetch, url, params: { page }, local
 
 	return {
 		page: pageNumber,
-		prefix: configs[0].config_URL_PREFIX,
+		prefix: URL_PREFIX,
 		count: count ?? 0,
 		articles: articles ?? [],
 		limit,

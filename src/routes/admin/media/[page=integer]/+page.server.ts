@@ -1,13 +1,9 @@
 import type { PageServerLoad } from './$types';
+import { URL_PREFIX } from '$env/static/private'
 
-export const load: PageServerLoad = async ({ fetch, url,params: { page }, locals: { supabase } }) => {
+export const load: PageServerLoad = async ({ url,params: { page }, locals: { supabase } }) => {
 	const pageNumber = Number(page)
 	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 24
-
-	const configs = await fetch('/api/kv', {
-		method: 'POST',
-		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
-	}).then(res => res.json());
 
 	const { data: images, error } = await supabase
 		.from('image')
@@ -29,7 +25,7 @@ export const load: PageServerLoad = async ({ fetch, url,params: { page }, locals
 	return {
 		page: pageNumber,
 		images: images ?? [],
-		prefix: configs[0].config_URL_PREFIX,
+		prefix: URL_PREFIX,
 		count: count ?? 0,
 		limit: limit,
 		path: path

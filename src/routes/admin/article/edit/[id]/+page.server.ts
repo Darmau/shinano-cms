@@ -1,10 +1,7 @@
 import type { PageServerLoad } from './$types';
+import { URL_PREFIX } from '$env/static/private'
 
-export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}) => {
-	const storageKeys = await fetch('/api/kv', {
-		method: 'POST',
-		body: JSON.stringify({ keys: ['config_URL_PREFIX']})
-	}).then(res => res.json());
+export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 
 	const articleId = params.id;
 
@@ -61,7 +58,7 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 	.then(res => res.data);
 
 	return {
-		prefix: storageKeys[0].config_URL_PREFIX,
+		prefix: URL_PREFIX,
 		currentLanguage,
 		articleContent: articleData,
 		categories,
