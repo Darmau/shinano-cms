@@ -683,7 +683,7 @@ create extension pg_cron with schema extensions;
 grant usage on schema cron to postgres;
 grant all privileges on all tables in schema cron to postgres;
 
-SELECT cron.schedule('daily_stats_update', '0 3 * * *', $$
+SELECT cron.schedule('daily_stats_update', '0 0 * * *', $$
   INSERT INTO stats (article_count, photo_count, video_count, thought_count,
   comment_count, message_count, user_count, image_count)
   SELECT
@@ -697,6 +697,47 @@ SELECT cron.schedule('daily_stats_update', '0 3 * * *', $$
     (SELECT COUNT(*) FROM image)
     $$
   );
+
+--文章定时发布
+SELECT
+  cron.schedule (
+    'article_schedule_publish',
+    '*/5 * * * *',
+    $$
+  UPDATE article
+  SET is_draft = false
+  WHERE is_draft = true
+    AND published_at IS NOT NULL
+    AND published_at <= NOW()
+  $$
+  );
+
+SELECT
+  cron.schedule (
+    'photo_schedule_publish',
+    '*/5 * * * *',
+    $$
+UPDATE photo
+SET is_draft = false
+WHERE is_draft = true
+  AND published_at IS NOT NULL
+  AND published_at <= NOW()
+$$
+  );
+
+SELECT
+  cron.schedule (
+    'video_schedule_publish',
+    '*/5 * * * *',
+    $$
+  UPDATE video
+  SET is_draft = false
+  WHERE is_draft = true
+    AND published_at IS NOT NULL
+    AND published_at <= NOW()
+  $$
+  );
+
 
 -- 允许全文搜索插件
 create extension pgroonga with schema extensions;
@@ -713,3 +754,4 @@ create index video_content ON video USING pgroonga (content_text);
 create index thought_content ON thought USING pgroonga (content_text);
 
 create index comment_content ON comment USING pgroonga (content_text);
+
