@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
 	import FileDropzone from '$components/FileDropzone.svelte';
+	import { error } from '@sveltejs/kit';
 
 	export let refresh: () => void;
 
@@ -61,10 +62,6 @@
 					method: 'POST',
 					body: formData
 				});
-				if (!response.ok) {
-					console.error(JSON.stringify(response));
-					throw new Error(`上传失败: ${response.statusText}`);
-				}
 			});
 
 			await Promise.all(uploadPromises);
@@ -83,7 +80,7 @@
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});
-			console.error('上传错误:', error);
+			error(500, { message: '上传失败' })
 		}
 	}
 </script>
