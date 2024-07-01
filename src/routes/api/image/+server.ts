@@ -41,7 +41,7 @@ export const POST: RequestHandler = async({ request, locals: { supabase} }) => {
 		location: workersResponse.location,
 		taken_at: workersResponse.taken_at,
 		exif: workersResponse.exif,
-		date: getDateFormat(),
+		date: getDateFormat(false),
 		width,
 		height,
 		size: file.size,

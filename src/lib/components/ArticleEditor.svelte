@@ -6,6 +6,7 @@
 	import AddIcon from '$assets/icons/plus.svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
+	import getDateFormat from '$lib/functions/dateFormat.js';
 
 	export let data;
 	export let isSaved: boolean = false;
@@ -36,6 +37,7 @@
 
 		articleContent.updated_at = new Date().toISOString();
 		articleContent.cover = coverImage.id;
+		articleContent.published_at = localTime ? new Date(localTime).toISOString() : null;
 
 		// 存储到supabase article表。对于已保存的文章，只更新内容
 		if (isSaved === true) {
@@ -122,9 +124,21 @@
 	}
 
 	// 切换发布文章
+	let localTime = articleContent.published_at ?
+		getDateFormat(articleContent.published_at, true) : null;
 	async function publishArticle() {
 		articleContent.cover = coverImage.id || null;
-		articleContent.is_draft = !articleContent.is_draft;
+		if (articleContent.is_draft) {
+			articleContent.is_draft = false;
+			const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+			let date = localTime ? new Date(localTime) : new Date();
+			let isoString = date.toLocaleString('en-US', { timeZone: timezone });
+			articleContent.published_at = new Date(isoString).toISOString();
+		} else {
+			articleContent.is_draft = true;
+			articleContent.published_at = null;
+			localTime = null;
+		}
 		const { error } = await
 			supabase.from('article').update(articleContent).eq('id',
 				articleContent.id).select();
@@ -167,7 +181,7 @@
 				message: 'Article deleted successfully.',
 				background: 'variant-filled-success'
 			});
-			await goto('/admin/article');
+			await goto('/admin/article/1');
 		}
 	}
 </script>
@@ -175,9 +189,10 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-
+<div>{localTime}</div>
 <div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
 	<div class = "space-y-6 xl:col-span-3">
+		<div>{JSON.stringify(articleContent.published_at)}</div>
 		<!--title-->
 		<div>
 			<label
@@ -241,6 +256,16 @@
 	</div>
 
 	<aside class = "col-span-1 space-y-6">
+		<!--发布时间-->
+		<div>
+			<label class = "text-sm font-medium leading-6 text-gray-900">发布时间</label>
+			<input
+				type="datetime-local"
+				class="mt-2 rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
+				bind:value={localTime}
+			/>
+		</div>
+
 		<!--语言-->
 		<div>
 			<h2
@@ -302,7 +327,7 @@
 				bind:value={articleContent.category}
 				id="category"
 				name="category"
-				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6">
 				{#each data.categories as category}
 					<option value = {category.id}>{category.title}</option>
 				{/each}
