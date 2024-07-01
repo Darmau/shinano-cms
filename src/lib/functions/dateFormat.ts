@@ -1,7 +1,13 @@
-export default function getDateFormat () {
-	const today = new Date();
+export default function getDateFormat (isoString: string, withTime: boolean = false) {
+	const today = new Date(isoString) || new Date();
 	const year = today.getFullYear();
 	const month = ('0' + (today.getMonth() + 1)).slice(-2);
 	const day = ('0' + today.getDate()).slice(-2);
-	return `${year}-${month}-${day}`;
+	const hours = today.getHours().toString().padStart(2, "0");
+	const minutes = today.getMinutes().toString().padStart(2, "0");
+	if (withTime) {
+		return `${year}-${month}-${day}T${hours}:${minutes}`;
+	} else {
+		return `${year}-${month}-${day}`;
+	}
 }

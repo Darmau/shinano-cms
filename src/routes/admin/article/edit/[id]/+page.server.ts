@@ -25,6 +25,7 @@ export const load: PageServerLoad = async ({ fetch, params , locals: {supabase}}
 		  is_featured,
 		  is_premium,
 		  lang,
+		  published_at,
 		  cover (id, alt, storage_key)
 		`)
 		.eq('id', articleId)
