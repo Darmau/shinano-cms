@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types';
 import getDateFormat from '$lib/functions/dateFormat';
 import { URL_PREFIX } from '$env/static/private'
+import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 
@@ -70,7 +71,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 	} else {
 		currentLanguage = allLanguages?.find(lang => lang.id === Number(targetLangId));
 
-		const { data: sourceArticle, error} = await supabase
+		const { data: sourceArticle, error: sourceError} = await supabase
 			.from('article')
 		  .select(`
 		    title, 
@@ -90,8 +91,9 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 		  .eq('id', copyFromId)
 		  .single();
 
-		if (error) {
+		if (sourceError) {
 			console.error(error);
+			error(Number(sourceError.code), { message: sourceError.message})
 		}
 
 		articleContent = {

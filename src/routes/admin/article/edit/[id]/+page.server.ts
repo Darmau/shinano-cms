@@ -1,4 +1,5 @@
 import type { PageServerLoad } from './$types';
+import { error } from '@sveltejs/kit';
 import { URL_PREFIX } from '$env/static/private'
 
 export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
@@ -30,10 +31,7 @@ export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 
 	if (articleError) {
 		console.error('Error fetching article data:', articleError);
-		return {
-			status: 500,
-			error: new Error('Error fetching article data')
-		}
+		error(Number(articleError.code), { message: articleError.message})
 	}
 
 	const {data: allLanguages} = await supabase
