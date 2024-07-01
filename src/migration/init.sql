@@ -507,6 +507,32 @@ CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW
 EXECUTE PROCEDURE sync_new_user ();
 
+-- 创建语言时同时创建默认分类
+CREATE OR REPLACE FUNCTION insert_default_categories()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- 插入article类型的默认分类
+  INSERT INTO category (lang, title, description, type, slug)
+  VALUES (NEW.id, 'Default', 'Default category', 'article', 'default');
+
+  -- 插入photo类型的默认分类
+  INSERT INTO category (lang, title, description, type, slug)
+  VALUES (NEW.id, 'Default', 'Default category', 'photo', 'default');
+
+  -- 插入video类型的默认分类
+  INSERT INTO category (lang, title, description, type, slug)
+  VALUES (NEW.id, 'Default', 'Default category', 'video', 'default');
+
+  RETURN NEW;
+END;
+$$
+ LANGUAGE plpgsql;
+
+CREATE TRIGGER insert_default_categories_after_language_created
+AFTER INSERT ON language
+FOR EACH ROW
+EXECUTE FUNCTION insert_default_categories();
+
 ALTER TABLE article ENABLE ROW LEVEL SECURITY;
 
 ALTER TABLE category ENABLE ROW LEVEL SECURITY;

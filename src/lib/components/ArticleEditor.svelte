@@ -189,10 +189,9 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
-<div>{localTime}</div>
-<div class = "grid grid-cols-1 gap-4 3xl:grid-cols-4">
-	<div class = "space-y-6 xl:col-span-3">
-		<div>{JSON.stringify(articleContent.published_at)}</div>
+
+<div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
+	<div class = "space-y-8 xl:col-span-3">
 		<!--title-->
 		<div>
 			<label
@@ -255,7 +254,7 @@
 		/>
 	</div>
 
-	<aside class = "col-span-1 space-y-6">
+	<aside class = "col-span-1 space-y-8">
 		<!--发布时间-->
 		<div>
 			<label class = "text-sm font-medium leading-6 text-gray-900">发布时间</label>
