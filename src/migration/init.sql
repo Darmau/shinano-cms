@@ -114,8 +114,6 @@ CREATE TABLE
     UNIQUE ("lang", "slug")
   );
 
-CREATE INDEX ON article ("title");
-
 CREATE INDEX ON article ("lang");
 
 CREATE INDEX ON article ("category");
@@ -128,9 +126,11 @@ WHERE
 
 CREATE INDEX ON article ("updated_at");
 
-CREATE INDEX ON article ("page_view");
-
 CREATE INDEX ON article ("is_draft");
+
+CREATE INDEX ON article ("topic");
+
+CREATE INDEX ON article ("page_view");
 
 CREATE TABLE
   thought (
@@ -142,6 +142,7 @@ CREATE TABLE
     "topic" TEXT[],
     "content_json" JSON,
     "content_html" TEXT,
+    "page_view" INT DEFAULT 0,
     UNIQUE ("slug")
   );
 
@@ -185,8 +186,6 @@ CREATE TABLE
     UNIQUE ("lang", "slug")
   );
 
-CREATE INDEX ON photo ("title");
-
 CREATE INDEX ON photo ("lang");
 
 CREATE INDEX ON photo ("category");
@@ -199,9 +198,9 @@ WHERE
 
 CREATE INDEX ON photo ("updated_at");
 
-CREATE INDEX ON photo ("page_view");
-
 CREATE INDEX ON photo ("is_draft");
+
+CREATE INDEX ON photo ("page_view");
 
 CREATE TABLE
   photo_image (
@@ -240,8 +239,6 @@ CREATE TABLE
     FOREIGN KEY ("cover") REFERENCES image ("id") ON UPDATE CASCADE ON DELETE SET NULL,
     FOREIGN KEY ("category") REFERENCES category ("id") ON UPDATE CASCADE ON DELETE RESTRICT
   );
-
-CREATE INDEX ON video ("title");
 
 CREATE INDEX ON video ("lang");
 
@@ -289,17 +286,15 @@ CREATE TABLE
 
 CREATE INDEX ON comment ("user_id");
 
-CREATE INDEX ON comment ("to_article");
+CREATE INDEX ON comment ("to_article", "is_public");
 
-CREATE INDEX ON comment ("to_thought");
+CREATE INDEX ON comment ("to_thought", "is_public");
 
-CREATE INDEX ON comment ("to_photo");
+CREATE INDEX ON comment ("to_photo", "is_public");
 
-CREATE INDEX ON comment ("to_video");
+CREATE INDEX ON comment ("to_video", "is_public");
 
 CREATE INDEX ON comment ("created_at");
-
-CREATE INDEX ON comment ("is_public");
 
 ALTER TABLE comment
 ADD CONSTRAINT check_comment_can_only_reply_to_one_content CHECK (
@@ -806,6 +801,8 @@ with
   schema extensions;
 
 create index article_title ON article USING pgroonga (title);
+
+create index article_subtitle ON article USING pgroonga (subtitle);
 
 create index article_abstract ON article USING pgroonga (abstract);
 
