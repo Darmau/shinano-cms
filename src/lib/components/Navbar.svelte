@@ -8,7 +8,6 @@
   import Memo from '$assets/icons/light-bulb.svelte';
   import Comment from '$assets/icons/chat-bubble-left.svelte';
   import User from '$assets/icons/users.svelte';
-  import Tag from '$assets/icons/tag.svelte';
   import Setting from '$assets/icons/cog.svelte';
   import Category from '$assets/icons/rectangle-stack.svelte';
   import {page} from '$app/stores';
@@ -25,7 +24,6 @@
     {name: 'category', href: '/admin/category', icon: Category},
     {name: 'comment', href: '/admin/comment', icon: Comment},
     {name: 'user', href: '/admin/user', icon: User},
-    {name: 'topic', href: '/admin/topic', icon: Tag},
     {name: 'setting', href: '/admin/setting', icon: Setting},
   ];
 
