@@ -1,4 +1,4 @@
-import { redirect } from '@sveltejs/kit'
+import { redirect, error } from '@sveltejs/kit'
 
 import type { Actions } from '@sveltejs/kit'
 
@@ -8,10 +8,10 @@ export const actions: Actions = {
 		const email = formData.get('email') as string
 		const password = formData.get('password') as string
 
-		const { error } = await supabase.auth.signInWithPassword({ email, password })
+		const { error: AuthError } = await supabase.auth.signInWithPassword({ email, password })
 
-		if (error ) {
-			throw new Error('登录失败')
+		if (AuthError ) {
+			error(AuthError.code, { message: AuthError.message });
 		} else {
 			return redirect(303, '/admin')
 		}

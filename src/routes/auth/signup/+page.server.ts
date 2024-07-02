@@ -9,7 +9,7 @@ export const actions: Actions = {
 		const password = formData.get('password') as string
 		const name = formData.get('name') as string
 
-		const { error } = await supabase.auth.signUp({
+		const { error: authError } = await supabase.auth.signUp({
 			email,
 			password,
 			options: {
@@ -18,8 +18,8 @@ export const actions: Actions = {
 				}
 			}
 		})
-		if (error) {
-			console.error(error)
+		if (authError) {
+			console.error(authError)
 			return redirect(303, '/auth/signup/error')
 		} else {
 			return redirect(303, '/auth/confirm')
