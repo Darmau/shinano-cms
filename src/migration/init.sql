@@ -124,7 +124,8 @@ CREATE TABLE
 
 CREATE UNIQUE INDEX ON article ("lang", "slug");
 
-CREATE INDEX ON article ("title", "published_at", "created_at", "updated_at");
+CREATE INDEX ON article ("title", "published_at", "created_at", "updated_at",
+ "topic");
 
 CREATE TABLE
   thought (
@@ -141,7 +142,7 @@ CREATE TABLE
 
 CREATE INDEX ON thought ("created_at");
 
-CREATE UNIQUE INDEX ON thought ("slug");
+CREATE UNIQUE INDEX ON thought ("slug", "topic");
 
 CREATE TABLE
   thought_image (
@@ -181,7 +182,8 @@ CREATE TABLE
 
 CREATE UNIQUE INDEX ON photo ("lang", "slug");
 
-CREATE INDEX ON photo ("title", "published_at", "created_at", "update_at");
+CREATE INDEX ON photo ("title", "published_at", "created_at", "update_at",
+"topic");
 
 CREATE TABLE
   photo_image (
@@ -223,7 +225,8 @@ CREATE TABLE
 
 CREATE UNIQUE INDEX ON video ("lang", "slug");
 
-CREATE INDEX ON video ("title", "published_at", "created_at", "update_at");
+CREATE INDEX ON video ("title", "published_at", "created_at", "update_at",
+"topic");
 
 CREATE TABLE
   comment (
