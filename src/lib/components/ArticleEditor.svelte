@@ -260,7 +260,7 @@
 			<label class = "text-sm font-medium leading-6 text-gray-900">发布时间</label>
 			<input
 				type="datetime-local"
-				class="mt-2 rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
+				class="mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				bind:value={localTime}
 			/>
 		</div>
