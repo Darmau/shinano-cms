@@ -7,6 +7,7 @@
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
 	import getDateFormat from '$lib/functions/dateFormat.js';
+	import { onMount } from 'svelte';
 
 	export let data;
 	export let isSaved: boolean = false;
@@ -184,6 +185,75 @@
 			await goto('/admin/article/1');
 		}
 	}
+
+	// 检测当前slug在相同语言下是否已存在
+	let slugExists = false;
+	let isCheckingSlug = false;
+	async function checkSlug(slug: string): Boolean {
+		isCheckingSlug = true;
+
+		// 正则表达式检查
+		const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+		if (!slugRegex.test(slug)) {
+			toastStore.trigger({
+				message: 'Slug 包含非法字符,请只使用小写字母、数字和连字符。',
+				background: 'variant-filled-error'
+			});
+			isCheckingSlug = false;
+			slugExists = true;
+			return false;
+		}
+
+    const { data: checkSlugData, error: checkSlugError } = await
+			supabase.from('article').select('slug').eq('slug', articleContent.slug).eq('lang', data.currentLanguage.id).maybeSingle();
+
+		if (checkSlugError) {
+			toastStore.trigger({
+				message: 'Failed to check slug.',
+				background: 'variant-filled-error'
+			});
+			return false;
+		}
+
+		if (checkSlugData) {
+			isCheckingSlug = false;
+			slugExists = true;
+			return false;
+		} else {
+			isCheckingSlug = false;
+			slugExists = false;
+			return true;
+		}
+	}
+
+	// 生成slug
+	async function generateSlug() {
+		const title = articleContent.title;
+		articleContent.slug = await fetch('/api/slug', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ title })
+		}).then((res) => res.text());
+	}
+
+	// 生成摘要
+	async function generateAbstract() {
+		const article = articleContent.content_text;
+		articleContent.abstract = await fetch('/api/abstract', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ article })
+		}).then((res) => res.text());
+	}
+
+	onMount(() => {
+		isCheckingSlug = true;
+		checkSlug(articleContent.slug);
+	})
 </script>
 
 {#if isModalOpen}
@@ -217,16 +287,30 @@
 				for = "slug"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>Slug</label>
-			<div class = "mt-2">
+			<div class = "mt-2 flex gap-4">
 				<input
 					type = "text" name = "slug" id = "slug"
 					bind:value = {articleContent.slug}
-					on:input = {() => {isChanged = true}}
+					on:input = {() => {isChanged = true; checkSlug(articleContent.slug)}}
 					required
 					class =
 						"block font-mono w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				>
+				<button
+					type="button"
+					on:click = {generateSlug}
+				  class="w-fit break-keep rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+				>{$t('generate')}</button>
 			</div>
+			{#if isCheckingSlug}
+				<p class="mt-2 text-sm text-gray-600">Checking...</p>
+			{:else}
+				{#if slugExists}
+					<p class="mt-2 text-sm text-red-600">{$t('slug-has-been-used')}</p>
+				{:else}
+					<p class="mt-2 text-sm text-cyan-600">{$t('slug-is-available')}</p>
+				{/if}
+			{/if}
 		</div>
 
 		<!--subtitle-->
@@ -260,7 +344,7 @@
 			<label class = "text-sm font-medium leading-6 text-gray-900">发布时间</label>
 			<input
 				type="datetime-local"
-				class="mt-2 rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
+				class="mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				bind:value={localTime}
 			/>
 		</div>
@@ -378,6 +462,8 @@
 					class = "block text-sm font-medium leading-6 text-gray-900"
 				>{$t('abstract')}</label>
 				<button
+					type="button"
+					on:click = {generateAbstract}
 					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 				>{$t('generate')}</button>
 			</div>
