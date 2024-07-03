@@ -92,6 +92,8 @@ const translations: Translation = {
 		"add-new": "创建",
 		"type": "类型",
 		"count": "数量",
+		"slug-is-available": "你可以使用这个slug",
+		"slug-has-been-used": "这个slug不能使用",
 	},
 	"en": {
 		"home": "Home",
@@ -179,6 +181,8 @@ const translations: Translation = {
 		"add-new": "Create",
 		"type": "Type",
 		"count": "Count",
+		"slug-is-available": "You can use this slug",
+		"slug-has-been-used": "This slug cannot be used",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -266,6 +270,8 @@ const translations: Translation = {
 		"add-new": "創建",
 		"type": "類型",
 		"count": "數量",
+		"slug-is-available": "你可以使用這個slug",
+		"slug-has-been-used": "這個slug不能使用",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -353,6 +359,8 @@ const translations: Translation = {
 		"add-new": "作成",
 		"type": "タイプ",
 		"count": "数",
+		"slug-is-available": "このスラッグを使用できます",
+		"slug-has-been-used": "このスラッグは使用できません",
 	}
 }
 

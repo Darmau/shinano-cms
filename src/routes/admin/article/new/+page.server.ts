@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 		articleContent = {
 			title: 'title',
 			subtitle: '',
-			slug: getDateFormat(dateString, true),
+			slug: getDateFormat(dateString, false),
 			abstract: '',
 			is_top: false,
 			is_draft: true,
