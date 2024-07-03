@@ -2,7 +2,8 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { WORKERS_TOKEN, WORKERS_URL } from '$env/static/private';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { title } = await request.json();
+	const { article } = await request.json();
+
 	const promptObj = await fetch(`${WORKERS_URL}/kv`, {
 		method: 'POST',
 		headers: {
@@ -11,7 +12,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		},
 		body: JSON.stringify({
 			keys: [
-				"prompt_SLUG"
+				"prompt_SEO"
 			]
 		})
 	}).then(res => res.json())
@@ -20,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		error(502, 'Error fetching prompt');
 	});
 
-	const prompt = promptObj[0].prompt_SLUG;
+	const prompt = promptObj[0].prompt_SEO;
 
 	const generatedSlug = await fetch(`${WORKERS_URL}/openai`, {
 		method: 'POST',
@@ -29,9 +30,10 @@ export const POST: RequestHandler = async ({ request }) => {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
+			max_tokens: 512,
 			messages: [
 				{ role: 'system', content: prompt },
-				{ role: 'user', content: title },
+				{ role: 'user', content: article },
 			]
 		})
 	}).then(res => res.text())

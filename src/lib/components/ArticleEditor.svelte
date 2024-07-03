@@ -195,7 +195,6 @@
 		// 正则表达式检查
 		const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 		if (!slugRegex.test(slug)) {
-			console.log('Slug 不符合URL规范');
 			toastStore.trigger({
 				message: 'Slug 包含非法字符,请只使用小写字母、数字和连字符。',
 				background: 'variant-filled-error'
@@ -209,7 +208,6 @@
 			supabase.from('article').select('slug').eq('slug', articleContent.slug).eq('lang', data.currentLanguage.id).maybeSingle();
 
 		if (checkSlugError) {
-			console.error(checkSlugError);
 			toastStore.trigger({
 				message: 'Failed to check slug.',
 				background: 'variant-filled-error'
@@ -220,12 +218,10 @@
 		if (checkSlugData) {
 			isCheckingSlug = false;
 			slugExists = true;
-			console.log('Slug exists.')
 			return false;
 		} else {
 			isCheckingSlug = false;
 			slugExists = false;
-			console.log('Slug does not exist.')
 			return true;
 		}
 	}
@@ -239,6 +235,18 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ title })
+		}).then((res) => res.text());
+	}
+
+	// 生成摘要
+	async function generateAbstract() {
+		const article = articleContent.content_text;
+		articleContent.abstract = await fetch('/api/abstract', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ article })
 		}).then((res) => res.text());
 	}
 
@@ -454,6 +462,8 @@
 					class = "block text-sm font-medium leading-6 text-gray-900"
 				>{$t('abstract')}</label>
 				<button
+					type="button"
+					on:click = {generateAbstract}
 					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 				>{$t('generate')}</button>
 			</div>
