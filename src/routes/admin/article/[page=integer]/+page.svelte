@@ -38,22 +38,21 @@
 
 	// 直接删除文章
 	async function deleteArticle(id: number) {
-		try {
-			await supabase.from('article').delete().eq('id', id);
-			await invalidateAll();
-			toastStore.trigger({
-				message: `成功删除文章。`,
-				hideDismiss: true,
-				background: 'variant-filled-success'
-			});
-		} catch (error) {
-			console.error('删除文章时出错:', error);
+		const { error: deleteError } = await supabase.from('article').delete().eq('id', id);
+		if (deleteError) {
 			toastStore.trigger({
 				message: '删除文章失败。',
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});
+		} else {
+			toastStore.trigger({
+				message: `成功删除文章`,
+				hideDismiss: true,
+				background: 'variant-filled-success'
+			});
 		}
+		await invalidateAll();
 	}
 
 	// 选中所有文章并添加到selectedArticleList
@@ -146,7 +145,7 @@
 								>{$t('status')}
 								</th>
 								<th scope = "col" class = "relative py-3.5 pl-3 pr-4 sm:pr-6">
-									<span class = "sr-only">Edit</span>
+									<span class = "sr-only">{$t('edit')}</span>
 								</th>
 							</tr>
 							</thead>

@@ -68,6 +68,7 @@ const translations: Translation = {
 		"previous-page": "上一页",
 		"title": "标题",
 		"subtitle": "副标题",
+		"description": "描述",
 		"content": "正文",
 		"abstract": "摘要",
 		"cover": "封面",
@@ -89,6 +90,8 @@ const translations: Translation = {
 		"featured": "精选",
 		"premium-only": "登录可见",
 		"add-new": "创建",
+		"type": "类型",
+		"count": "数量",
 	},
 	"en": {
 		"home": "Home",
@@ -152,6 +155,7 @@ const translations: Translation = {
 		"previous-page": "Previous",
 		"title": "Title",
 		"subtitle": "Subtitle",
+		"description": "Description",
 		"content": "Content",
 		"abstract": "Abstract",
 		"cover": "Cover",
@@ -173,6 +177,8 @@ const translations: Translation = {
 		"featured": "Featured",
 		"premium-only": "Logged in only",
 		"add-new": "Create",
+		"type": "Type",
+		"count": "Count",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -236,6 +242,7 @@ const translations: Translation = {
 		"previous-page": "上一頁",
 		"title": "標題",
 		"subtitle": "副標題",
+		"description": "描述",
 		"content": "內容",
 		"abstract": "摘要",
 		"cover": "封面",
@@ -257,6 +264,8 @@ const translations: Translation = {
 		"featured": "精選",
 		"premium-only": "登錄可見",
 		"add-new": "創建",
+		"type": "類型",
+		"count": "數量",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -320,6 +329,7 @@ const translations: Translation = {
 		"previous-page": "前へ",
 		"title": "タイトル",
 		"subtitle": "サブタイトル",
+		"description": "説明",
 		"content": "コンテンツ",
 		"abstract": "要約",
 		"cover": "カバー",
@@ -341,6 +351,8 @@ const translations: Translation = {
 		"featured": "特集",
 		"premium-only": "ログイン後に表示",
 		"add-new": "作成",
+		"type": "タイプ",
+		"count": "数",
 	}
 }
 
