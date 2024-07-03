@@ -230,6 +230,18 @@
 		}
 	}
 
+	// 生成slug
+	async function generateSlug() {
+		const title = articleContent.title;
+		articleContent.slug = await fetch('/api/slug', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ title })
+		}).then((res) => res.text());
+	}
+
 	onMount(() => {
 		isCheckingSlug = true;
 		checkSlug(articleContent.slug);
@@ -277,6 +289,8 @@
 						"block font-mono w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				>
 				<button
+					type="button"
+					on:click = {generateSlug}
 				  class="w-fit break-keep rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
 				>{$t('generate')}</button>
 			</div>

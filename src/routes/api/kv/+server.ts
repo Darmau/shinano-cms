@@ -1,7 +1,7 @@
 import { error, type RequestHandler } from '@sveltejs/kit';
 import { WORKERS_TOKEN, WORKERS_URL } from '$env/static/private';
 
-// GET body: { keys: string[] }
+// POST body: { keys: string[] }
 export const POST: RequestHandler = async ({ request }) => {
 	const { keys }: { keys: string[] } = await request.json();
 	const keyValues = await fetch(`${WORKERS_URL}/kv`, {
