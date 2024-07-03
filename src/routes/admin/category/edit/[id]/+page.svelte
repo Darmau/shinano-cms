@@ -2,8 +2,14 @@
 	import { t } from '$lib/functions/i18n';
 	import PhotoIcon from '$assets/icons/photo.svelte';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { invalidateAll } from '$app/navigation';
 
 	export let data;
+	let { supabase } = data;
+	$: ({ supabase } = data);
+
+	const toastStore = getToastStore();
 
 	let categoryData = data.category;
 
@@ -29,6 +35,33 @@
 	function closeModel() {
 		isModalOpen = false;
 	}
+
+	// 保存
+	async function saveCategory() {
+		categoryData.cover = coverImage.id || null;
+
+		const { data: updateData, error: updateError } = await supabase
+			.from('category')
+			.update(categoryData)
+			.eq('id', categoryData.id)
+			.select();
+
+		if (updateError) {
+			console.error(updateError);
+			toastStore.trigger({
+				message: `保存分类失败。${updateError.message}`,
+				hideDismiss: true,
+				background: 'variant-filled-error'
+			});
+		} else {
+			toastStore.trigger({
+				message: '保存分类成功。',
+				hideDismiss: true,
+				background: 'variant-filled-success'
+			});
+			await invalidateAll();
+		}
+	}
 </script>
 
 {#if isModalOpen}
@@ -36,9 +69,7 @@
 {/if}
 
 <div class = "max-w-80 mx-auto">
-	<div>{JSON.stringify(categoryData)}</div>
-	<div></div>
-	<form method = "POST" action = "?/update">
+	<div class="space-y-6">
 		<div>
 			<label
 				for = "title"
@@ -79,6 +110,7 @@
 					class = "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				/>
 			</div>
+			<p class="mt-2 text-sm text-gray-500">注意在同一个语言下和类型下不得重复</p>
 		</div>
 		<div>
 			<label
@@ -146,8 +178,12 @@
 				{/if}
 			</div>
 		</div>
-		<button type = "submit">
+		<button
+		  type="button"
+			on:click = {saveCategory}
+			class="flex w-full justify-center rounded-md bg-cyan-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+		>
 			保存
 		</button>
-	</form>
+	</div>
 </div>
