@@ -39,10 +39,10 @@
 		articleContent.updated_at = new Date().toISOString();
 		articleContent.cover = coverImage.id;
 		articleContent.published_at = localTime ? new Date(localTime).toISOString() : null;
+		articleContent.topic = topics;
 
 		// 存储到supabase article表。对于已保存的文章，只更新内容
 		if (isSaved === true) {
-			console.log('It is an existing article.')
 			const { error } = await
 				supabase.from('article').update(articleContent).eq('id',
 					articleContent.id).select();
@@ -129,6 +129,7 @@
 		getDateFormat(articleContent.published_at, true) : null;
 	async function publishArticle() {
 		articleContent.cover = coverImage.id || null;
+		await saveArticle();
 		if (articleContent.is_draft) {
 			articleContent.is_draft = false;
 			const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -243,6 +244,23 @@
 		isChanged = true;
 	}
 
+	// 话题
+	let topics = articleContent.topic;
+	let topicInput = '';
+
+	function handleKeydown(event) {
+		if (event.key === 'Enter' && topicInput.trim() !== '') {
+			topics = [...topics, topicInput.trim()];
+			topicInput = '';
+			isChanged = true;
+		}
+	}
+
+	function removeTopic(index) {
+		topics = topics.filter((_, i) => i !== index);
+		isChanged = true;
+	}
+
 	onMount(() => {
 		isCheckingSlug = true;
 		checkSlug(articleContent.slug);
@@ -255,6 +273,7 @@
 
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
+		<div>{topics}</div>
 		<!--title-->
 		<div>
 			<label
@@ -301,7 +320,7 @@
 				{#if slugExists}
 					<p class="mt-2 text-sm text-red-600">{$t('slug-has-been-used')}</p>
 				{:else}
-					<p class="mt-2 text-sm text-cyan-600">{$t('slug-is-available')}</p>
+					<p class="mt-2 text-sm text-green-600">{$t('slug-is-available')}</p>
 				{/if}
 			{/if}
 		</div>
@@ -334,7 +353,8 @@
 	<aside class = "col-span-1 space-y-8">
 		<!--发布时间-->
 		<div>
-			<label class = "text-sm font-medium leading-6 text-gray-900">发布时间</label>
+			<label
+				class = "text-sm font-medium leading-6 text-gray-900">{$t('publish-time')}</label>
 			<input
 				type="datetime-local"
 				class="mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
@@ -413,6 +433,34 @@
 					<option value = {category.id}>{category.title}</option>
 				{/each}
 			</select>
+		</div>
+
+		<!--话题-->
+		<div class="relative mt-2">
+			<label
+				class = "text-sm font-medium leading-6 text-gray-900">{$t('topic')}</label>
+			<div
+				class="flex flex-wrap gap-1 w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 group-focus-within:ring-2 group-focus-within:ring-cyan-600 sm:text-sm sm:leading-6">
+				{#each topics as topic, index}
+					<span class="inline-flex items-center gap-x-0.5 rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+						{topic}
+						<button type="button" on:click={() => removeTopic(index)}
+										class="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
+							<span class="sr-only">Remove</span>
+							<svg viewBox="0 0 14 14" class="h-3.5 w-3.5 stroke-gray-600/50 group-hover:stroke-gray-600/75">
+								<path d="M4 4l6 6m0-6l-6 6" />
+							</svg>
+							<span class="absolute -inset-1"></span>
+						</button>
+					</span>
+				{/each}
+				<input
+				  type="text"
+					bind:value={topicInput}
+					on:keydown={handleKeydown}
+					class="peer border-none text-sm focus:ring-0 focus:outline-none bg-transparent"
+				/>
+			</div>
 		</div>
 
 		<!--封面-->
