@@ -205,7 +205,8 @@
 		}
 
     const { data: checkSlugData, error: checkSlugError } = await
-			supabase.from('article').select('slug').eq('slug', articleContent.slug).eq('lang', data.currentLanguage.id).maybeSingle();
+			supabase.from('article').select('slug').neq('id', articleContent.id).eq('slug',
+				articleContent.slug).eq('lang', data.currentLanguage.id).maybeSingle();
 
 		if (checkSlugError) {
 			toastStore.trigger({
