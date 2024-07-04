@@ -61,10 +61,10 @@
 				isChanged = false;
 			}
 		} else {
-			const { data, error } = await
+			const { data, error: saveError } = await
 				supabase.from('article').insert(articleContent).select();
 
-			if (error) {
+			if (saveError) {
 				console.error(saveError);
 				toastStore.trigger({
 					message: 'Failed to save article.',
@@ -192,38 +192,28 @@
 	async function checkSlug(slug: string): Boolean {
 		isCheckingSlug = true;
 
-		// 正则表达式检查
-		const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-		if (!slugRegex.test(slug)) {
+		const { error } = await fetch('/api/slug-check', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				type: 'article',
+				langId: data.currentLanguage.id,
+				slug,
+				contentId: articleContent.id || null
+			})
+		}).then(res => res.json());
+
+		isCheckingSlug = false;
+		if (error) {
 			toastStore.trigger({
-				message: 'Slug 包含非法字符,请只使用小写字母、数字和连字符。',
+				message: error,
 				background: 'variant-filled-error'
 			});
-			isCheckingSlug = false;
 			slugExists = true;
-			return false;
-		}
-
-    const { data: checkSlugData, error: checkSlugError } = await
-			supabase.from('article').select('slug').neq('id', articleContent.id).eq('slug',
-				articleContent.slug).eq('lang', data.currentLanguage.id).maybeSingle();
-
-		if (checkSlugError) {
-			toastStore.trigger({
-				message: 'Failed to check slug.',
-				background: 'variant-filled-error'
-			});
-			return false;
-		}
-
-		if (checkSlugData) {
-			isCheckingSlug = false;
-			slugExists = true;
-			return false;
 		} else {
-			isCheckingSlug = false;
 			slugExists = false;
-			return true;
 		}
 	}
 
