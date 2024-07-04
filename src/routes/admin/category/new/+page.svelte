@@ -67,7 +67,7 @@
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
 {/if}
 
-<div class = "max-w-80 mx-auto">
+<div class = "max-w-96 mx-auto">
 	<div class = "space-y-6">
 		<div>
 			<label

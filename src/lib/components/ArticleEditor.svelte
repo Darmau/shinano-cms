@@ -237,6 +237,7 @@
 			},
 			body: JSON.stringify({ title })
 		}).then((res) => res.text());
+		isChanged = true;
 	}
 
 	// 生成摘要
@@ -249,6 +250,7 @@
 			},
 			body: JSON.stringify({ article })
 		}).then((res) => res.text());
+		isChanged = true;
 	}
 
 	onMount(() => {
@@ -300,7 +302,7 @@
 				<button
 					type="button"
 					on:click = {generateSlug}
-				  class="w-fit break-keep rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+				  class="w-fit break-keep rounded bg-cyan-50 px-3 py-1 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
 				>{$t('generate')}</button>
 			</div>
 			{#if isCheckingSlug}
@@ -347,6 +349,7 @@
 				type="datetime-local"
 				class="mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				bind:value={localTime}
+				on:change = {() => {isChanged = true}}
 			/>
 		</div>
 
@@ -403,12 +406,16 @@
 					class = "text-sm font-medium leading-6 text-gray-900"
 					for="category"
 				>{$t('category')}</label>
-				<button>
+				<a
+				  href="/admin/category/new"
+					target="_blank"
+				>
 					<AddIcon classList = "h-4 w-4 text-gray-400 hover:text-cyan-600" />
-				</button>
+				</a>
 			</header>
 			<select
 				bind:value={articleContent.category}
+				on:change = {() => {isChanged = true}}
 				id="category"
 				name="category"
 				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6">
@@ -427,13 +434,15 @@
 				<button
 					on:click = {resetCoverImage}
 					disabled = {Object.keys(coverImage).length === 0}
-					class = "rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+					class =
+						"rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
 				>
 					{$t('reset')}
 				</button>
 				<button
 					on:click = {()=>{isModalOpen =true}}
-					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+					class =
+						"rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 				>
 					{$t('select')}
 				</button>
