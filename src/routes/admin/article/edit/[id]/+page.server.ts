@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 		  is_featured,
 		  is_premium,
 		  lang,
+		  topic,
 		  published_at,
 		  cover (id, alt, storage_key)
 		`)

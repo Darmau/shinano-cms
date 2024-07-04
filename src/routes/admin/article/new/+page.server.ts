@@ -51,6 +51,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			is_featured: false,
 			is_premium: false,
 			lang: defaultLanguageId,
+			topic: [],
 			content_json: {
 				"type": "doc",
 				"content": [
@@ -86,6 +87,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 		    content_html, 
 		    content_text, 
 		    lang,
+		    topic,
 		    cover (id, alt, storage_key)
 		  `)
 		  .eq('id', copyFromId)
@@ -109,7 +111,8 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			content_json:sourceArticle!.content_json,
 			content_html: sourceArticle!.content_html,
 			content_text: sourceArticle!.content_text,
-			cover: sourceArticle!.cover
+			cover: sourceArticle!.cover,
+			topic: sourceArticle!.topic
 		}
 
 		// 查询category表中type为article，lang为currentLanguage.id的分类
