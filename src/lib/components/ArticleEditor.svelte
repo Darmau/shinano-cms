@@ -39,10 +39,10 @@
 		articleContent.updated_at = new Date().toISOString();
 		articleContent.cover = coverImage.id;
 		articleContent.published_at = localTime ? new Date(localTime).toISOString() : null;
+		articleContent.topic = topics;
 
 		// 存储到supabase article表。对于已保存的文章，只更新内容
 		if (isSaved === true) {
-			console.log('It is an existing article.')
 			const { error } = await
 				supabase.from('article').update(articleContent).eq('id',
 					articleContent.id).select();
@@ -61,10 +61,10 @@
 				isChanged = false;
 			}
 		} else {
-			const { data, error } = await
+			const { data, error: saveError } = await
 				supabase.from('article').insert(articleContent).select();
 
-			if (error) {
+			if (saveError) {
 				console.error(saveError);
 				toastStore.trigger({
 					message: 'Failed to save article.',
@@ -129,6 +129,7 @@
 		getDateFormat(articleContent.published_at, true) : null;
 	async function publishArticle() {
 		articleContent.cover = coverImage.id || null;
+		await saveArticle();
 		if (articleContent.is_draft) {
 			articleContent.is_draft = false;
 			const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -192,37 +193,28 @@
 	async function checkSlug(slug: string): Boolean {
 		isCheckingSlug = true;
 
-		// 正则表达式检查
-		const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-		if (!slugRegex.test(slug)) {
+		const { error } = await fetch('/api/slug-check', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				type: 'article',
+				langId: data.currentLanguage.id,
+				slug,
+				contentId: articleContent.id || null
+			})
+		}).then(res => res.json());
+
+		isCheckingSlug = false;
+		if (error) {
 			toastStore.trigger({
-				message: 'Slug 包含非法字符,请只使用小写字母、数字和连字符。',
+				message: error,
 				background: 'variant-filled-error'
 			});
-			isCheckingSlug = false;
 			slugExists = true;
-			return false;
-		}
-
-    const { data: checkSlugData, error: checkSlugError } = await
-			supabase.from('article').select('slug').eq('slug', articleContent.slug).eq('lang', data.currentLanguage.id).maybeSingle();
-
-		if (checkSlugError) {
-			toastStore.trigger({
-				message: 'Failed to check slug.',
-				background: 'variant-filled-error'
-			});
-			return false;
-		}
-
-		if (checkSlugData) {
-			isCheckingSlug = false;
-			slugExists = true;
-			return false;
 		} else {
-			isCheckingSlug = false;
 			slugExists = false;
-			return true;
 		}
 	}
 
@@ -236,6 +228,7 @@
 			},
 			body: JSON.stringify({ title })
 		}).then((res) => res.text());
+		isChanged = true;
 	}
 
 	// 生成摘要
@@ -248,6 +241,24 @@
 			},
 			body: JSON.stringify({ article })
 		}).then((res) => res.text());
+		isChanged = true;
+	}
+
+	// 话题
+	let topics = articleContent.topic;
+	let topicInput = '';
+
+	function handleKeydown(event) {
+		if (event.key === 'Enter' && topicInput.trim() !== '') {
+			topics = [...topics, topicInput.trim()];
+			topicInput = '';
+			isChanged = true;
+		}
+	}
+
+	function removeTopic(index) {
+		topics = topics.filter((_, i) => i !== index);
+		isChanged = true;
 	}
 
 	onMount(() => {
@@ -262,6 +273,7 @@
 
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
+
 		<!--title-->
 		<div>
 			<label
@@ -299,7 +311,7 @@
 				<button
 					type="button"
 					on:click = {generateSlug}
-				  class="w-fit break-keep rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
+				  class="w-fit break-keep rounded bg-cyan-50 px-3 py-1 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
 				>{$t('generate')}</button>
 			</div>
 			{#if isCheckingSlug}
@@ -308,7 +320,7 @@
 				{#if slugExists}
 					<p class="mt-2 text-sm text-red-600">{$t('slug-has-been-used')}</p>
 				{:else}
-					<p class="mt-2 text-sm text-cyan-600">{$t('slug-is-available')}</p>
+					<p class="mt-2 text-sm text-green-600">{$t('slug-is-available')}</p>
 				{/if}
 			{/if}
 		</div>
@@ -341,11 +353,13 @@
 	<aside class = "col-span-1 space-y-8">
 		<!--发布时间-->
 		<div>
-			<label class = "text-sm font-medium leading-6 text-gray-900">发布时间</label>
+			<label
+				class = "text-sm font-medium leading-6 text-gray-900">{$t('publish-time')}</label>
 			<input
 				type="datetime-local"
 				class="mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				bind:value={localTime}
+				on:change = {() => {isChanged = true}}
 			/>
 		</div>
 
@@ -402,12 +416,16 @@
 					class = "text-sm font-medium leading-6 text-gray-900"
 					for="category"
 				>{$t('category')}</label>
-				<button>
+				<a
+				  href="/admin/category/new"
+					target="_blank"
+				>
 					<AddIcon classList = "h-4 w-4 text-gray-400 hover:text-cyan-600" />
-				</button>
+				</a>
 			</header>
 			<select
 				bind:value={articleContent.category}
+				on:change = {() => {isChanged = true}}
 				id="category"
 				name="category"
 				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6">
@@ -415,6 +433,36 @@
 					<option value = {category.id}>{category.title}</option>
 				{/each}
 			</select>
+		</div>
+
+		<!--话题-->
+		<div>
+			<label
+				class = "text-sm font-medium leading-6 text-gray-900">{$t('topic')}</label>
+			<div class="relative mt-2">
+				<div
+					class="flex flex-wrap gap-1 w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
+					{#each topics as topic, index}
+					<span class="inline-flex items-center gap-x-0.5 rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+						{topic}
+						<button type="button" on:click={() => removeTopic(index)}
+										class="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
+							<span class="sr-only">Remove</span>
+							<svg viewBox="0 0 14 14" class="h-3.5 w-3.5 stroke-gray-600/50 group-hover:stroke-gray-600/75">
+								<path d="M4 4l6 6m0-6l-6 6" />
+							</svg>
+							<span class="absolute -inset-1"></span>
+						</button>
+					</span>
+					{/each}
+					<input
+						type="text"
+						bind:value={topicInput}
+						on:keydown={handleKeydown}
+						class="peer border-none text-sm focus:ring-0 focus:outline-none bg-transparent"
+					/>
+				</div>
+			</div>
 		</div>
 
 		<!--封面-->
@@ -426,13 +474,15 @@
 				<button
 					on:click = {resetCoverImage}
 					disabled = {Object.keys(coverImage).length === 0}
-					class = "rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+					class =
+						"rounded bg-red-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
 				>
 					{$t('reset')}
 				</button>
 				<button
 					on:click = {()=>{isModalOpen =true}}
-					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+					class =
+						"rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 				>
 					{$t('select')}
 				</button>
