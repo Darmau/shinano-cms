@@ -273,7 +273,7 @@
 
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
-		<div>{topics}</div>
+
 		<!--title-->
 		<div>
 			<label
@@ -436,12 +436,13 @@
 		</div>
 
 		<!--话题-->
-		<div class="relative mt-2">
+		<div>
 			<label
 				class = "text-sm font-medium leading-6 text-gray-900">{$t('topic')}</label>
-			<div
-				class="flex flex-wrap gap-1 w-full rounded-md border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 group-focus-within:ring-2 group-focus-within:ring-cyan-600 sm:text-sm sm:leading-6">
-				{#each topics as topic, index}
+			<div class="relative mt-2">
+				<div
+					class="flex flex-wrap gap-1 w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
+					{#each topics as topic, index}
 					<span class="inline-flex items-center gap-x-0.5 rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
 						{topic}
 						<button type="button" on:click={() => removeTopic(index)}
@@ -453,13 +454,14 @@
 							<span class="absolute -inset-1"></span>
 						</button>
 					</span>
-				{/each}
-				<input
-				  type="text"
-					bind:value={topicInput}
-					on:keydown={handleKeydown}
-					class="peer border-none text-sm focus:ring-0 focus:outline-none bg-transparent"
-				/>
+					{/each}
+					<input
+						type="text"
+						bind:value={topicInput}
+						on:keydown={handleKeydown}
+						class="peer border-none text-sm focus:ring-0 focus:outline-none bg-transparent"
+					/>
+				</div>
 			</div>
 		</div>
 
