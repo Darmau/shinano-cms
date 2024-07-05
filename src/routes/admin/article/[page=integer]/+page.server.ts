@@ -1,4 +1,4 @@
-import type { Actions, PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { URL_PREFIX } from '$env/static/private'
 
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ url, params: { page }, locals: { su
 		.from('article')
 		.select(`id, title, subtitle, lang (id, locale), slug, category (id,  title), is_draft, is_featured, is_top, is_premium`)
 		.range((pageNumber - 1) * limit, pageNumber * limit - 1)
-		.order('id', { ascending: false });
+		.order('updated_at', { ascending: false });
 
 	if (fetchError) {
 		console.error(error);
