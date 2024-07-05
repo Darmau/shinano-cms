@@ -261,11 +261,20 @@
 		isChanged = true;
 	}
 
+	function handleBeforeUnload(event) {
+		if (!isSaved && isChanged) {
+			event.preventDefault();
+			event.returnValue = '';
+		}
+	}
+
 	onMount(() => {
 		isCheckingSlug = true;
 		checkSlug(articleContent.slug);
 	})
 </script>
+
+<svelte:window on:beforeunload={handleBeforeUnload} />
 
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectCoverImage} />
