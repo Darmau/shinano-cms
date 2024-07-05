@@ -17,7 +17,7 @@
 	const toastStore = getToastStore();
 
 	// 找出当前文章没有的语言
-	function generateNewLanguageVersions() {
+	const newLanguageVersions = () => {
 		const currentLanguageId = data.currentLanguage.id;
 		const otherVersions = data.otherVersions;
 		const allLanguages = data.allLanguages;
@@ -27,8 +27,6 @@
 				language.id !== currentLanguageId
 		);
 	}
-
-	const newLanguageVersions = generateNewLanguageVersions();
 
 	// 保存函数
 	let isChanged = false;
@@ -49,7 +47,7 @@
 			if (error) {
 				console.error(error);
 				toastStore.trigger({
-					message: 'Failed to save article.',
+					message: error.message,
 					background: 'variant-filled-error'
 				});
 			} else {
@@ -67,7 +65,7 @@
 			if (saveError) {
 				console.error(saveError);
 				toastStore.trigger({
-					message: 'Failed to save article.',
+					message: saveError.message,
 					background: 'variant-filled-error'
 				});
 				isChanged = false;
@@ -147,7 +145,7 @@
 		if (error) {
 			console.error(error);
 			toastStore.trigger({
-				message: 'Failed to publish article.',
+				message: error.message,
 				background: 'variant-filled-error'
 			});
 		} else {
@@ -175,7 +173,7 @@
 		if (error) {
 			console.error(error);
 			toastStore.trigger({
-				message: 'Failed to delete article.',
+				message: error.message,
 				background: 'variant-filled-error'
 			});
 		} else {
