@@ -87,7 +87,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 		    content_text, 
 		    lang,
 		    topic,
-		    cover (id, alt, storage_key),
+		    cover,
 		    photo_image!inner (order, image (id, alt, storage_key, caption))
 		  `)
 		.eq('id', copyFromId)

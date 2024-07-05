@@ -126,7 +126,6 @@
 	let localTime = articleContent.published_at ?
 		getDateFormat(articleContent.published_at, true) : null;
 	async function publishArticle() {
-		articleContent.cover = coverImage.id || null;
 		await saveArticle();
 		if (articleContent.is_draft) {
 			articleContent.is_draft = false;

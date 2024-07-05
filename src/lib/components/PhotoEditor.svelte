@@ -6,6 +6,7 @@
 	import { beforeNavigate, goto } from '$app/navigation';
 	import getDateFormat from '$lib/functions/dateFormat';
 	import { onMount } from 'svelte';
+	import ImagesModel from '$components/editor/ImagesModel.svelte';
 
 	export let data;
 	let { supabase } = data;
@@ -17,7 +18,6 @@
 	let photoContent = data.photoContent;
 	let isChanged = false;
 	let isSaved = false;
-	let coverImage = photoContent.cover || {};
 
 	let localTime = photoContent.published_at ?
 		getDateFormat(photoContent.published_at, true) : null;
@@ -27,9 +27,23 @@
 	  return true;
 	}
 
+	// 选择图片
+	let pictures = photoContent.photos || [] // 用于存储选择的图片数组，需要存入photo_image表
+	function selectPictures(images) {
+		pictures = images.map((image, index) => ({
+			image: image,
+			order: index
+		}));
+		isChanged = true;
+	}
+
+	let isModalOpen = false;
+	function closeModel() {
+		isModalOpen = false;
+	}
+
 	// 切换发布摄影
 	async function publishPhoto() {
-		photoContent.cover = coverImage.id || null;
 		await savePhoto();
 		if (photoContent.is_draft) {
 			photoContent.is_draft = false;
@@ -213,9 +227,13 @@
 
 <svelte:window on:beforeunload={handleBeforeUnload} />
 
+{#if isModalOpen}
+	<ImagesModel {data} {closeModel} onSelect = {selectPictures} />
+{/if}
+
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
-		<div>{JSON.stringify(photoContent)}</div>
+		<div class="break-all">{JSON.stringify(photoContent)}</div>
 
     <!--标题-->
 		<div>
@@ -268,34 +286,46 @@
 			{/if}
 		</div>
 
-    <!--编辑器-->
-		<SimpleEditor on:contentUpdate = {handleContentUpdate} {data} content =
-			{data.photoContent.content_json} />
-
-		<!--封面-->
-
 		<!--图片-->
 		<div>
 			<label
 				for = "images"
 				class = "block text-sm font-medium leading-6 text-gray-900"
 			>图片</label>
-			<ol>
-				{#each photoContent.photos as photo (photo.order)}
+			<button
+				on:click = {()=>{isModalOpen =true}}
+				class =
+					"rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+			>
+				{$t('select')}
+			</button>
+			<ol class="flex">
+				{#each pictures as photo (photo.order)}
 					<li>
 						<figure>
+							<input
+								type="checkbox"
+								id = {`photo-${photo.order}`}
+								name = {`photo-${photo.order}`}
+								on:change = {() => {isChanged = true}}
+								on:click = {() => {photoContent.cover = photo.image.id}}
+							/>
 							<img
-							  src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
+								src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
 								alt={photo.image.alt}
 							/>
-							{#if photo.caption}
-								<figcaption>{photo.caption}</figcaption>
+							{#if photo.image.caption}
+								<figcaption>{photo.image.caption}</figcaption>
 							{/if}
 						</figure>
 					</li>
 				{/each}
 			</ol>
 		</div>
+
+    <!--编辑器-->
+		<SimpleEditor on:contentUpdate = {handleContentUpdate} {data} content =
+			{data.photoContent.content_json} />
 	</div>
 
 	<aside class = "col-span-1 space-y-8">
