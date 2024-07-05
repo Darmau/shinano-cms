@@ -5,7 +5,7 @@
 	import PhotoIcon from '$assets/icons/photo.svelte';
 	import AddIcon from '$assets/icons/plus.svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import getDateFormat from '$lib/functions/dateFormat.js';
 	import { onMount } from 'svelte';
 
@@ -261,12 +261,21 @@
 		isChanged = true;
 	}
 
+	// 防止误关页面
 	function handleBeforeUnload(event) {
 		if (!isSaved && isChanged) {
 			event.preventDefault();
 			event.returnValue = '';
 		}
 	}
+
+	beforeNavigate((navigation) => {
+		if (!isSaved && isChanged) {
+			if (!confirm($t('leave-confirm'))) {
+				navigation.preventDefault();
+			}
+		}
+	})
 
 	onMount(() => {
 		isCheckingSlug = true;
