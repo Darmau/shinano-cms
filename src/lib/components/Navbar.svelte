@@ -18,7 +18,7 @@
     {name: 'message', href: '/admin/message', icon: Message},
     {name: 'media', href: '/admin/media/1', icon: Media},
     {name: 'article', href: '/admin/article/1', icon: Article},
-    {name: 'photo', href: '/admin/photo', icon: Photo},
+    {name: 'photo', href: '/admin/photo/1', icon: Photo},
     {name: 'video', href: '/admin/video', icon: Video},
     {name: 'thought', href: '/admin/thought', icon: Memo},
     {name: 'category', href: '/admin/category', icon: Category},
