@@ -25,7 +25,7 @@
 
 	// TODO: 保存方法不一样
 	async function savePhoto() {
-    let newPhotoId = null;
+		let newPhotoId = null;
 		// 存储photo信息
 		if (isSaved === true) {
 			const { error: savePhotoError } = await supabase
@@ -105,9 +105,9 @@
 		// 删除photo_image表现有信息 photoContent.photos
 		if (isSaved === true) {
 			const { error: deletePhotoImageError } = await supabase
-				.from('photo_image')
-				.delete()
-				.in('photo_id', [photoContent.id]);
+			.from('photo_image')
+			.delete()
+			.in('photo_id', [photoContent.id]);
 
 			if (deletePhotoImageError) {
 				console.error(deletePhotoImageError);
@@ -126,8 +126,8 @@
 		}));
 
 		const { error: savePhotoImageError } = await supabase
-			.from('photo_image')
-			.insert(albumImages);
+		.from('photo_image')
+		.insert(albumImages);
 
 		if (savePhotoImageError) {
 			console.error(savePhotoImageError);
@@ -138,7 +138,7 @@
 		}
 
 
-		if(newPhotoId) {
+		if (newPhotoId) {
 			await goto(`/admin/photo/edit/${newPhotoId}`);
 		}
 
@@ -393,7 +393,6 @@
 
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
-		<div class = "break-all">{JSON.stringify(photoContent)}</div>
 
 		<!--标题-->
 		<div>

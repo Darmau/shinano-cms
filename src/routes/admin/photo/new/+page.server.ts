@@ -1,10 +1,10 @@
 import type { PageServerLoad } from './$types';
 import getDateFormat from '$lib/functions/dateFormat';
-import { URL_PREFIX } from '$env/static/private'
+import { URL_PREFIX } from '$env/static/private';
 import { error } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
-	const copyFromId= url.searchParams.get('from');
+export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
+	const copyFromId = url.searchParams.get('from');
 	const targetLangId = url.searchParams.get('lang');
 
 	// 判断摄影是全新的还是创建的其他语言版本
@@ -15,7 +15,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 	let categories;
 	let otherVersions;
 
-	const {data: allLanguages} = await supabase
+	const { data: allLanguages } = await supabase
 	.from('language')
 	.select('id, lang, locale');
 
@@ -51,14 +51,14 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			lang: defaultLanguageId,
 			topic: [],
 			content_json: {
-				"type": "doc",
-				"content": [
+				'type': 'doc',
+				'content': [
 					{
-						"type": "paragraph",
-						"content": [
+						'type': 'paragraph',
+						'content': [
 							{
-								"type": "text",
-								"text": "添加关于摄影的介绍"
+								'type': 'text',
+								'text': '添加关于摄影的介绍'
 							}
 						]
 					}
@@ -68,12 +68,12 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			content_text: '添加关于摄影的介绍',
 			photos: [],
 			cover: null
-		}
+		};
 	} else {
 		currentLanguage = allLanguages?.find(lang => lang.id === Number(targetLangId));
 
 		// 从photo表获取数据
-		const { data: sourcePhoto, error: sourceError} = await supabase
+		const { data: sourcePhoto, error: sourceError } = await supabase
 		.from('photo')
 		.select(`
 		    title, 
@@ -95,7 +95,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 
 		if (sourceError) {
 			console.error(error);
-			error(500, { message: sourceError.message})
+			error(500, { message: sourceError.message });
 		}
 
 		photoContent = {
@@ -106,13 +106,13 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			is_draft: sourcePhoto!.is_draft,
 			is_featured: sourcePhoto!.is_featured,
 			lang: currentLanguage!.id,
-			content_json:sourcePhoto!.content_json,
+			content_json: sourcePhoto!.content_json,
 			content_html: sourcePhoto!.content_html,
 			content_text: sourcePhoto!.content_text,
 			cover: sourcePhoto!.cover,
 			photos: sourcePhoto.photo_image,
 			topic: sourcePhoto!.topic
-		}
+		};
 
 		// 查询category表中type为article，lang为currentLanguage.id的分类
 		categories = await supabase
@@ -138,5 +138,5 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 		categories,
 		otherVersions,
 		allLanguages
-	}
-}
+	};
+};

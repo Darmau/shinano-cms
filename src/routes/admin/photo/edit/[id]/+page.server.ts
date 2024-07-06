@@ -2,7 +2,7 @@ import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
 import { URL_PREFIX } from '$env/static/private';
 
-export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
+export const load: PageServerLoad = async ({ params, locals: { supabase } }) => {
 	const photoId = params.id;
 
 	// 获取摄影数据 其中lang来自language表，需展开
@@ -30,12 +30,12 @@ export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 
 	if (photoError) {
 		console.error('Error fetching photo data:', photoError);
-		error(Number(photoError.code), { message: photoError.message})
+		error(Number(photoError.code), { message: photoError.message });
 	}
 
-	const {data: allLanguages} = await supabase
+	const { data: allLanguages } = await supabase
 	.from('language')
-	.select('id, lang, locale')
+	.select('id, lang, locale');
 
 	const currentLanguage = allLanguages?.find(lang => lang.id === sourcePhoto.lang);
 
@@ -49,13 +49,13 @@ export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 		is_draft: sourcePhoto!.is_draft,
 		is_featured: sourcePhoto!.is_featured,
 		lang: currentLanguage!.id,
-		content_json:sourcePhoto!.content_json,
+		content_json: sourcePhoto!.content_json,
 		content_html: sourcePhoto!.content_html,
 		content_text: sourcePhoto!.content_text,
 		cover: sourcePhoto!.cover,
 		photos: sourcePhoto.photo_image,
 		topic: sourcePhoto!.topic
-	}
+	};
 
 	const categories = await supabase
 	.from('category')
@@ -79,5 +79,5 @@ export const load: PageServerLoad = async ({ params , locals: {supabase}}) => {
 		categories,
 		otherVersions,
 		allLanguages
-	}
-}
+	};
+};
