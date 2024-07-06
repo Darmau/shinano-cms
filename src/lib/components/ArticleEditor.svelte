@@ -231,13 +231,13 @@
 
 	// 生成摘要
 	async function generateAbstract() {
-		const article = articleContent.content_text;
+		const content = articleContent.content_text;
 		articleContent.abstract = await fetch('/api/abstract', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ article })
+			body: JSON.stringify({ content })
 		}).then((res) => res.text());
 		isChanged = true;
 	}

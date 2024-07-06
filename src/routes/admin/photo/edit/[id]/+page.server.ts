@@ -23,7 +23,7 @@ export const load: PageServerLoad = async ({ params, locals: { supabase } }) => 
 		  topic,
 		  published_at,
 		  cover (id, alt, storage_key),
-		  photo_image!inner (order, image (id, alt, storage_key, caption))
+		  photo_image (order, image (id, alt, storage_key, caption))
 		`)
 	.eq('id', photoId)
 	.single();

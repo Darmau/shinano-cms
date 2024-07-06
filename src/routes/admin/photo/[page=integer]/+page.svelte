@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang = "ts">
 	import Pagination from '$components/Pagination.svelte';
 	import { t } from '$lib/functions/i18n';
 	import PageTitle from '$components/PageTitle.svelte';
@@ -38,9 +38,9 @@
 	}
 
 	// 直接删除摄影
-	async function deletePhoto(id: number) {
+	async function deletePhoto(id) {
 		const { error: deleteError } = await
-			supabase.from('photo').delete().eq('id',	id);
+			supabase.from('photo').delete().eq('id', id);
 		if (deleteError) {
 			toastStore.trigger({
 				message: deleteError.message,
@@ -189,12 +189,18 @@
 									<td
 										class = "px-3 py-4 text-sm text-gray-500 lg:table-cell"
 									>
-										<img
-											class="w-16 object-cover rounded-full shadow-sm bg-gray-100 aspect-square"
-											src = {`${data.prefix}/cdn-cgi/image/format=auto,
-										width=144/${photo.cover.storage_key}`}
-											alt={photo.cover.alt}
-										/>
+										<div
+											class =
+												"w-12 object-cover rounded-full shadow-sm bg-gray-100 aspect-square"
+										>
+											{#if photo.cover}
+												<img
+													class = "rounded-full w-12 h-12 object-cover"
+													src = {`${data.prefix}/cdn-cgi/image/format=auto,width=56/${photo.cover.storage_key}`}
+													alt = {photo.cover.alt}
+												/>
+											{/if}
+										</div>
 									</td>
 									<td
 										class =
@@ -304,8 +310,10 @@
 				</div>
 			</div>
 		{:else}
-			<div class = "flex flex-col items-center justify-center text-center min-h-80">
-				<ArticleIcon classList="mx-auto h-12 w-12 text-gray-400" />
+			<div
+				class = "flex flex-col items-center justify-center text-center min-h-80"
+			>
+				<ArticleIcon classList = "mx-auto h-12 w-12 text-gray-400" />
 				<h3 class = "mt-2 text-sm font-semibold text-gray-900">No photos</h3>
 				<div class = "mt-6">
 					<a

@@ -2,7 +2,7 @@ import { error, type RequestHandler } from '@sveltejs/kit';
 import { WORKERS_TOKEN, WORKERS_URL } from '$env/static/private';
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { article } = await request.json();
+	const { content } = await request.json();
 
 	const promptObj = await fetch(`${WORKERS_URL}/kv`, {
 		method: 'POST',
@@ -33,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			max_tokens: 512,
 			messages: [
 				{ role: 'system', content: prompt },
-				{ role: 'user', content: article },
+				{ role: 'user', content: content },
 			]
 		})
 	}).then(res => res.text())
