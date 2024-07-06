@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/functions/i18n';
 	import PhotoEditor from '$components/PhotoEditor.svelte';
+	import { t } from '$lib/functions/i18n';
 
 	export let data;
 </script>
@@ -24,11 +24,11 @@
 						<path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
 					</svg>
 					<a data-sveltekit-preload-data href="/admin/photo/1"
-						 class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{$t('photo')}</a>
+						 class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{$t('article')}</a>
 				</div>
 			</li>
 		</ol>
 	</nav>
 
-	<PhotoEditor {data} isSaved={false} />
+	<PhotoEditor {data} isSaved={true} />
 </div>

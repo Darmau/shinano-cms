@@ -98,7 +98,6 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			error(500, { message: sourceError.message})
 		}
 
-		// 从photo_image表获取关联数据
 		photoContent = {
 			title: sourcePhoto!.title,
 			slug: sourcePhoto!.slug,

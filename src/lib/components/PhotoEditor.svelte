@@ -8,9 +8,9 @@
 	import { onMount } from 'svelte';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import { flip } from 'svelte/animate';
-	import { quintOut } from 'svelte/easing';
 
 	export let data;
+	export let isSaved;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -19,32 +19,147 @@
 	// 保存
 	let photoContent = data.photoContent;
 	let isChanged = false;
-	let isSaved = false;
 
 	let localTime = photoContent.published_at ?
 		getDateFormat(photoContent.published_at, true) : null;
 
 	// TODO: 保存方法不一样
 	async function savePhoto() {
+    let newPhotoId = null;
 		// 存储photo信息
+		if (isSaved === true) {
+			const { error: savePhotoError } = await supabase
+			.from('photo')
+			.update({
+				title: photoContent.title,
+				slug: photoContent.slug,
+				abstract: photoContent.abstract,
+				content_json: photoContent.content_json,
+				content_html: photoContent.content_html,
+				content_text: photoContent.content_text,
+				cover: photoContent.cover,
+				category: photoContent.category,
+				topic: photoContent.topic,
+				is_top: photoContent.is_top,
+				is_featured: photoContent.is_featured,
+				is_draft: photoContent.is_draft,
+				updated_at: new Date().toISOString(),
+				published_at: localTime ? new Date(localTime).toISOString() : null
+			})
+			.eq('id', photoContent.id);
 
-		// 删除photo_image表现有信息
+			if (savePhotoError) {
+				console.error(savePhotoError);
+				toastStore.trigger({
+					message: savePhotoError.message,
+					background: 'variant-filled-error'
+				});
+			} else {
+				toastStore.trigger({
+					message: 'Photo saved successfully.',
+					background: 'variant-filled-success'
+				});
+				isSaved = true;
+				isChanged = false;
+			}
+
+		} else {
+			// 全新的photo
+			const { data: newPhoto, error: savePhotoError } = await supabase
+			.from('photo')
+			.insert({
+				lang: data.currentLanguage.id,
+				title: photoContent.title,
+				slug: photoContent.slug,
+				abstract: photoContent.abstract,
+				content_json: photoContent.content_json,
+				content_html: photoContent.content_html,
+				content_text: photoContent.content_text,
+				cover: photoContent.cover,
+				category: photoContent.category,
+				topic: photoContent.topic,
+				is_top: photoContent.is_top,
+				is_featured: photoContent.is_featured,
+				is_draft: photoContent.is_draft,
+				updated_at: new Date().toISOString(),
+				published_at: localTime ? new Date(localTime).toISOString() : null
+			}).select();
+
+			if (savePhotoError) {
+				console.error(savePhotoError);
+				toastStore.trigger({
+					message: savePhotoError.message,
+					background: 'variant-filled-error'
+				});
+				isChanged = false;
+			} else {
+				newPhotoId = newPhoto[0].id;
+				toastStore.trigger({
+					message: 'Photo saved successfully.',
+					background: 'variant-filled-success'
+				});
+				isSaved = true;
+			}
+		}
+
+		// 删除photo_image表现有信息 photoContent.photos
+		if (isSaved === true) {
+			const { error: deletePhotoImageError } = await supabase
+				.from('photo_image')
+				.delete()
+				.in('photo_id', [photoContent.id]);
+
+			if (deletePhotoImageError) {
+				console.error(deletePhotoImageError);
+				toastStore.trigger({
+					message: deletePhotoImageError.message,
+					background: 'variant-filled-error'
+				});
+			}
+		}
 
 		// bulk存入新的photo_image信息
-	  return true;
+		const albumImages = photoContent.photos.map((photo) => ({
+			photo_id: photoContent.id || newPhotoId,
+			image_id: photo.image.id,
+			order: photo.order
+		}));
+
+		const { error: savePhotoImageError } = await supabase
+			.from('photo_image')
+			.insert(albumImages);
+
+		if (savePhotoImageError) {
+			console.error(savePhotoImageError);
+			toastStore.trigger({
+				message: savePhotoImageError.message,
+				background: 'variant-filled-error'
+			});
+		}
+
+
+		if(newPhotoId) {
+			await goto(`/admin/photo/edit/${newPhotoId}`);
+		}
+
+		return true;
 	}
 
 	// 选择图片
-	let pictures = photoContent.photos || [] // 用于存储选择的图片数组，需要存入photo_image表
+	let pictures = photoContent.photos || []; // 用于存储选择的图片数组，需要存入photo_image表
 	function selectPictures(images) {
-		pictures = images.map((image, index) => ({
+		const currentLastIndex = pictures.length;
+		const newImages = images.map((image, index) => ({
 			image: image,
-			order: index
+			order: currentLastIndex + index + 1
 		}));
+		pictures = [...pictures, ...newImages];
+		photoContent.photos = pictures;
 		isChanged = true;
 	}
 
 	let isModalOpen = false;
+
 	function closeModel() {
 		isModalOpen = false;
 	}
@@ -75,6 +190,8 @@
 			...pic,
 			order: index + 1
 		}));
+		photoContent.photos = pictures;
+		isChanged = true;
 	}
 
 	// 切换发布摄影
@@ -105,7 +222,6 @@
 				message: 'Photo published successfully.',
 				background: 'variant-filled-success'
 			});
-			isSaved = true;
 			isChanged = false;
 		}
 	}
@@ -138,7 +254,7 @@
 	}
 
 	// 找出当前摄影没有的语言
-	const newLanguageVersions = () => {
+	function generateNewLanguageVersions() {
 		const currentLanguageId = data.currentLanguage.id;
 		const otherVersions = data.otherVersions;
 		const allLanguages = data.allLanguages;
@@ -149,9 +265,12 @@
 		);
 	}
 
+	const newLanguageVersions = generateNewLanguageVersions();
+
 	// 检查slug
 	let isCheckingSlug = false;
 	let slugExists = false;
+
 	async function checkSlug(slug: string): Boolean {
 		isCheckingSlug = true;
 
@@ -210,6 +329,7 @@
 	let contentJSON = {};
 	let contentHTML = '';
 	let contentText = '';
+
 	function handleContentUpdate(event) {
 		const { json, html, text } = event.detail;
 		contentJSON = json;
@@ -228,6 +348,7 @@
 	function handleKeydown(event) {
 		if (event.key === 'Enter' && topicInput.trim() !== '') {
 			topics = [...topics, topicInput.trim()];
+			photoContent.topic = topics;
 			topicInput = '';
 			isChanged = true;
 		}
@@ -235,6 +356,7 @@
 
 	function removeTopic(index) {
 		topics = topics.filter((_, i) => i !== index);
+		photoContent.topic = topics;
 		isChanged = true;
 	}
 
@@ -252,16 +374,15 @@
 				navigation.preventDefault();
 			}
 		}
-	})
+	});
 
 	onMount(() => {
 		isCheckingSlug = true;
 		checkSlug(photoContent.slug);
-		updateOrder();
-	})
+	});
 </script>
 
-<svelte:window on:beforeunload={handleBeforeUnload} />
+<svelte:window on:beforeunload = {handleBeforeUnload} />
 
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectPictures} />
@@ -269,9 +390,9 @@
 
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
-		<div class="break-all">{JSON.stringify(pictures)}</div>
+		<div class = "break-all">{JSON.stringify(photoContent)}</div>
 
-    <!--标题-->
+		<!--标题-->
 		<div>
 			<label
 				for = "title"
@@ -306,18 +427,18 @@
 						"block font-mono w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
 				>
 				<button
-					type="button"
+					type = "button"
 					on:click = {generateSlug}
-					class="w-fit break-keep rounded bg-cyan-50 px-3 py-1 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
+					class = "w-fit break-keep rounded bg-cyan-50 px-3 py-1 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
 				>{$t('generate')}</button>
 			</div>
 			{#if isCheckingSlug}
-				<p class="mt-2 text-sm text-gray-600">Checking...</p>
+				<p class = "mt-2 text-sm text-gray-600">Checking...</p>
 			{:else}
 				{#if slugExists}
-					<p class="mt-2 text-sm text-red-600">{$t('slug-has-been-used')}</p>
+					<p class = "mt-2 text-sm text-red-600">{$t('slug-has-been-used')}</p>
 				{:else}
-					<p class="mt-2 text-sm text-green-600">{$t('slug-is-available')}</p>
+					<p class = "mt-2 text-sm text-green-600">{$t('slug-is-available')}</p>
 				{/if}
 			{/if}
 		</div>
@@ -335,27 +456,33 @@
 			>
 				{$t('select')}
 			</button>
-			<ol class="flex">
+			<ol class = "flex">
 				{#each pictures as photo, index (photo.order)}
 					<li
-						draggable={true}
-						on:dragstart={(event) => dragStart(event, index)}
-						on:dragover={(event) => dragOver(event, index)}
-						on:dragend={dragEnd}
-						animate:flip={{ duration: 100 }}
+						draggable = {true}
+						on:dragstart = {(event) => dragStart(event, index)}
+						on:dragover = {(event) => dragOver(event, index)}
+						on:dragend = {dragEnd}
+						animate:flip = {{ duration: 100 }}
 					>
 						<figure>
 							<input
-								type="checkbox"
-								id = {`photo-${photo.order}`}
+								type = "checkbox"
+								id = {photo.id}
 								name = {`photo-${photo.order}`}
 								checked = {photoContent.cover === photo.image.id}
 								on:change = {() => {isChanged = true}}
-								on:click = {() => {photoContent.cover = photo.image.id}}
+								on:click = {() => {
+									if (photoContent.cover === photo.image.id) {
+										photoContent.cover = null;
+									} else {
+										photoContent.cover = photo.image.id;
+									}
+								}}
 							/>
 							<img
-								src={`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
-								alt={photo.image.alt}
+								src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
+								alt = {photo.image.alt}
 							/>
 							{#if photo.image.caption}
 								<figcaption>{photo.image.caption}</figcaption>
@@ -366,23 +493,26 @@
 			</ol>
 		</div>
 
-    <!--编辑器-->
-		<SimpleEditor on:contentUpdate = {handleContentUpdate} {data} content =
-			{data.photoContent.content_json} />
+		<!--编辑器-->
+		<SimpleEditor
+			on:contentUpdate = {handleContentUpdate} {data} content =
+			{data.photoContent.content_json}
+		/>
 	</div>
 
 	<aside class = "col-span-1 space-y-8">
-    <!--发布时间-->
+		<!--发布时间-->
 		<div>
 			<label
-				class = "text-sm font-medium leading-6 text-gray-900">{$t('publish-time')}</label>
+				class = "text-sm font-medium leading-6 text-gray-900"
+			>{$t('publish-time')}</label>
 			<input
-				type="datetime-local"
-				class="mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
+				type = "datetime-local"
+				class = "mt-2 w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
 			/>
 		</div>
 
-    <!--语言-->
+		<!--语言-->
 		<div>
 			<h2
 				class = "text-sm font-medium leading-6 text-gray-900"
@@ -391,8 +521,11 @@
 				<li
 					class = "inline-flex items-center gap-x-1.5 rounded-md bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
 				>
-					<svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true">
-						<circle cx="3" cy="3" r="3" />
+					<svg
+						class = "h-1.5 w-1.5 fill-green-500" viewBox = "0 0 6 6"
+						aria-hidden = "true"
+					>
+						<circle cx = "3" cy = "3" r = "3" />
 					</svg>
 					{data.currentLanguage.locale}
 				</li>
@@ -403,7 +536,7 @@
 					>
 						<a
 							data-sveltekit-reload
-							href= {`/admin/photo/edit/${version.id}`}
+							href = {`/admin/photo/edit/${version.id}`}
 						>
 							{version.lang.locale}
 						</a>
@@ -417,7 +550,7 @@
 						>
 							<a
 								data-sveltekit-reload
-								href=
+								href =
 									{`/admin/photo/new?from=${photoContent.id}&lang=${newVersion.id}`}
 							>
 								+ {newVersion.locale}
@@ -430,24 +563,25 @@
 
 		<!--分类-->
 		<div>
-			<header class="flex justify-between">
+			<header class = "flex justify-between">
 				<label
 					class = "text-sm font-medium leading-6 text-gray-900"
-					for="category"
+					for = "category"
 				>{$t('category')}</label>
 				<a
-					href="/admin/category/new"
-					target="_blank"
+					href = "/admin/category/new"
+					target = "_blank"
 				>
 					<AddIcon classList = "h-4 w-4 text-gray-400 hover:text-cyan-600" />
 				</a>
 			</header>
 			<select
-				bind:value={photoContent.category}
+				bind:value = {photoContent.category}
 				on:change = {() => {isChanged = true}}
-				id="category"
-				name="category"
-				class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6">
+				id = "category"
+				name = "category"
+				class = "mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-cyan-600 sm:text-sm sm:leading-6"
+			>
 				{#each data.categories as category}
 					<option value = {category.id}>{category.title}</option>
 				{/each}
@@ -457,28 +591,37 @@
 		<!--话题-->
 		<div>
 			<label
-				class = "text-sm font-medium leading-6 text-gray-900">{$t('topic')}</label>
-			<div class="relative mt-2">
+				class = "text-sm font-medium leading-6 text-gray-900"
+			>{$t('topic')}</label>
+			<div class = "relative mt-2">
 				<div
-					class="flex flex-wrap gap-1 w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
+					class = "flex flex-wrap gap-1 w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6"
+				>
 					{#each topics as topic, index}
-					<span class="inline-flex items-center gap-x-0.5 rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+					<span
+						class = "inline-flex items-center gap-x-0.5 rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10"
+					>
 						{topic}
-						<button type="button" on:click={() => removeTopic(index)}
-										class="group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20">
-							<span class="sr-only">Remove</span>
-							<svg viewBox="0 0 14 14" class="h-3.5 w-3.5 stroke-gray-600/50 group-hover:stroke-gray-600/75">
-								<path d="M4 4l6 6m0-6l-6 6" />
+						<button
+							type = "button" on:click = {() => removeTopic(index)}
+							class = "group relative -mr-1 h-3.5 w-3.5 rounded-sm hover:bg-gray-500/20"
+						>
+							<span class = "sr-only">Remove</span>
+							<svg
+								viewBox = "0 0 14 14"
+								class = "h-3.5 w-3.5 stroke-gray-600/50 group-hover:stroke-gray-600/75"
+							>
+								<path d = "M4 4l6 6m0-6l-6 6" />
 							</svg>
-							<span class="absolute -inset-1"></span>
+							<span class = "absolute -inset-1"></span>
 						</button>
 					</span>
 					{/each}
 					<input
-						type="text"
-						bind:value={topicInput}
-						on:keydown={handleKeydown}
-						class="peer border-none text-sm focus:ring-0 focus:outline-none bg-transparent"
+						type = "text"
+						bind:value = {topicInput}
+						on:keydown = {handleKeydown}
+						class = "peer border-none text-sm focus:ring-0 focus:outline-none bg-transparent"
 					/>
 				</div>
 			</div>
@@ -492,7 +635,7 @@
 					class = "block text-sm font-medium leading-6 text-gray-900"
 				>{$t('abstract')}</label>
 				<button
-					type="button"
+					type = "button"
 					on:click = {generateAbstract}
 					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 				>{$t('generate')}</button>
@@ -561,29 +704,3 @@
 		</div>
 	</aside>
 </div>
-
-<style>
-  .image-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .image-item {
-    position: relative;
-    cursor: move;
-  }
-  .image-item img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-  }
-  .order {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 3px;
-  }
-</style>
