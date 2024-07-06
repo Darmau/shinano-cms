@@ -26,7 +26,6 @@
 	import Gapcursor from '@tiptap/extension-gapcursor'
 
 	const dispatch = createEventDispatcher();
-	export let data;
 	export let content;
 
 	let editor: Readable<Editor>;
