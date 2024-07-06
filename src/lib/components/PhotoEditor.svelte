@@ -7,6 +7,8 @@
 	import getDateFormat from '$lib/functions/dateFormat';
 	import { onMount } from 'svelte';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
+	import { flip } from 'svelte/animate';
+	import { quintOut } from 'svelte/easing';
 
 	export let data;
 	let { supabase } = data;
@@ -24,6 +26,11 @@
 
 	// TODO: 保存方法不一样
 	async function savePhoto() {
+		// 存储photo信息
+
+		// 删除photo_image表现有信息
+
+		// bulk存入新的photo_image信息
 	  return true;
 	}
 
@@ -40,6 +47,34 @@
 	let isModalOpen = false;
 	function closeModel() {
 		isModalOpen = false;
+	}
+
+	// 更改顺序
+	let draggingIndex = null;
+
+	function dragStart(event, index) {
+		draggingIndex = index;
+		event.dataTransfer.setData('text/plain', index);
+	}
+
+	function dragOver(event, index) {
+		event.preventDefault();
+		if (draggingIndex !== null && draggingIndex !== index) {
+			const newPictures = [...pictures];
+			const [removed] = newPictures.splice(draggingIndex, 1);
+			newPictures.splice(index, 0, removed);
+			pictures = newPictures;
+			draggingIndex = index;
+		}
+	}
+
+	function dragEnd() {
+		draggingIndex = null;
+		// 更新order值
+		pictures = pictures.map((pic, index) => ({
+			...pic,
+			order: index + 1
+		}));
 	}
 
 	// 切换发布摄影
@@ -222,6 +257,7 @@
 	onMount(() => {
 		isCheckingSlug = true;
 		checkSlug(photoContent.slug);
+		updateOrder();
 	})
 </script>
 
@@ -233,7 +269,7 @@
 
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
-		<div class="break-all">{JSON.stringify(photoContent)}</div>
+		<div class="break-all">{JSON.stringify(pictures)}</div>
 
     <!--标题-->
 		<div>
@@ -300,13 +336,20 @@
 				{$t('select')}
 			</button>
 			<ol class="flex">
-				{#each pictures as photo (photo.order)}
-					<li>
+				{#each pictures as photo, index (photo.order)}
+					<li
+						draggable={true}
+						on:dragstart={(event) => dragStart(event, index)}
+						on:dragover={(event) => dragOver(event, index)}
+						on:dragend={dragEnd}
+						animate:flip={{ duration: 100 }}
+					>
 						<figure>
 							<input
 								type="checkbox"
 								id = {`photo-${photo.order}`}
 								name = {`photo-${photo.order}`}
+								checked = {photoContent.cover === photo.image.id}
 								on:change = {() => {isChanged = true}}
 								on:click = {() => {photoContent.cover = photo.image.id}}
 							/>
@@ -518,3 +561,29 @@
 		</div>
 	</aside>
 </div>
+
+<style>
+  .image-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .image-item {
+    position: relative;
+    cursor: move;
+  }
+  .image-item img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+  }
+  .order {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+</style>
