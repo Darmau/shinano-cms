@@ -28,6 +28,7 @@
   // 保存摄影
 	async function savePhoto() {
 		let newPhotoId = null;
+
 		// 存储photo信息
 		if (isSaved === true) {
 			const { error: savePhotoError } = await supabase
@@ -193,6 +194,19 @@
 			order: index + 1
 		}));
 		photoContent.photos = pictures;
+		isChanged = true;
+	}
+
+	// 设置封面
+	function setCoverId(id) {
+		// 取消所有图片的checked状态
+		const checkboxes = document.querySelectorAll('.album-photo');
+		checkboxes.forEach((checkbox) => {
+			checkbox.checked = false;
+		});
+		const newCover = document.getElementById(`photo-${id}`);
+		newCover.checked = true;
+		photoContent.cover = id;
 		isChanged = true;
 	}
 
@@ -381,14 +395,6 @@
 		isChanged = true;
 	}
 
-	// 检测图片是否为封面
-	function ifIsTheCover(imageId) {
-		if (photoContent.cover === null) {
-			return false;
-		}
-		return photoContent.cover.id === imageId
-	}
-
 	// 防止误关页面
 	function handleBeforeUnload(event) {
 		if (!isSaved && isChanged) {
@@ -510,18 +516,11 @@
 							>
 								<input
 									type = "checkbox"
-									class = "absolute top-4 left-4"
-									id = {photo.id}
+									class = "album-photo absolute top-4 left-4"
+									id = {`photo-${photo.image.id}`}
 									name = {`photo-${photo.order}`}
-									checked = {ifIsTheCover(photo.image.id)}
-									on:change = {() => {isChanged = true}}
-									on:click = {() => {
-									if (photoContent.cover === photo.image.id) {
-										photoContent.cover = null;
-									} else {
-										photoContent.cover = photo.image.id;
-									}
-								}}
+									checked = {photoContent.cover && photoContent.cover === photo.image.id}
+									on:click = {() => {setCoverId(photo.image.id)}}
 								/>
 								<img
 									src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
