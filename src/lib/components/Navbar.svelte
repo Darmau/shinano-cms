@@ -20,7 +20,7 @@
     {name: 'article', href: '/admin/article/1', icon: Article},
     {name: 'photo', href: '/admin/photo/1', icon: Photo},
     {name: 'video', href: '/admin/video', icon: Video},
-    {name: 'thought', href: '/admin/thought', icon: Memo},
+    {name: 'thought', href: '/admin/thought/1', icon: Memo},
     {name: 'category', href: '/admin/category', icon: Category},
     {name: 'comment', href: '/admin/comment', icon: Comment},
     {name: 'user', href: '/admin/user', icon: User},
