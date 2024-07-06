@@ -194,6 +194,18 @@
 		isChanged = true;
 	}
 
+	// 删除图片
+	function deleteImage(index) {
+		pictures = pictures.filter((_, i) => i !== index);
+		// 更新order值
+		pictures = pictures.map((pic, index) => ({
+			...pic,
+			order: index + 1
+		}));
+		photoContent.photos = pictures;
+		isChanged = true;
+	}
+
 	// 切换发布摄影
 	async function publishPhoto() {
 		await savePhoto();
@@ -390,7 +402,7 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectPictures} />
 {/if}
-
+<div>{JSON.stringify(photoContent)}</div>
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
 
@@ -467,7 +479,8 @@
 						on:dragend = {dragEnd}
 						animate:flip = {{ duration: 100 }}
 					>
-						<figure>
+						<p>{index}</p>
+						<figure class="relative">
 							<input
 								type = "checkbox"
 								id = {photo.id}
@@ -486,6 +499,10 @@
 								src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
 								alt = {photo.image.alt}
 							/>
+							<button
+								on:click = {() => deleteImage(index)}
+								class = "absolute top-2 right-2"
+							>Delete</button>
 							{#if photo.image.caption}
 								<figcaption>{photo.image.caption}</figcaption>
 							{/if}
