@@ -96,6 +96,7 @@ const translations: Translation = {
 		"slug-is-available": "你可以使用这个slug",
 		"slug-has-been-used": "这个slug不能使用",
 		"leave-confirm": "你还有未保存的修改，确定要离开吗？",
+		"photos-count": "照片数量",
 	},
 	"en": {
 		"home": "Home",
@@ -187,6 +188,7 @@ const translations: Translation = {
 		"slug-is-available": "You can use this slug",
 		"slug-has-been-used": "This slug cannot be used",
 		"leave-confirm": "You have unsaved changes, are you sure to leave?",
+		"photos-count": "Photos Count",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -278,6 +280,7 @@ const translations: Translation = {
 		"slug-is-available": "你可以使用這個slug",
 		"slug-has-been-used": "這個slug不能使用",
 		"leave-confirm": "你還有未保存的修改，確定要離開嗎？",
+		"photos-count": "照片數量",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -369,6 +372,7 @@ const translations: Translation = {
 		"slug-is-available": "このスラッグを使用できます",
 		"slug-has-been-used": "このスラッグは使用できません",
 		"leave-confirm": "保存されていない変更があります。本当に移動しますか？",
+		"photos-count": "写真の数",
 	}
 }
 

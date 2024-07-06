@@ -162,11 +162,9 @@
 											if (selectedArticleList.includes(article.id)) {
 												selectedArticleList = selectedArticleList.filter((id) => id !== article.id);
 												deletable = selectedArticleList.length === 0;
-												console.log(selectedArticleList)
 											} else {
 												selectedArticleList.push(article.id);
 												deletable = false;
-												console.log(selectedArticleList)
 											}
 										}}
 											type = "checkbox"

@@ -25,9 +25,10 @@
 	let localTime = photoContent.published_at ?
 		getDateFormat(photoContent.published_at, true) : null;
 
-	// TODO: 保存方法不一样
+  // 保存摄影
 	async function savePhoto() {
 		let newPhotoId = null;
+
 		// 存储photo信息
 		if (isSaved === true) {
 			const { error: savePhotoError } = await supabase
@@ -39,7 +40,7 @@
 				content_json: photoContent.content_json,
 				content_html: photoContent.content_html,
 				content_text: photoContent.content_text,
-				cover: photoContent.cover.id,
+				cover: photoContent.cover,
 				category: photoContent.category,
 				topic: photoContent.topic,
 				is_top: photoContent.is_top,
@@ -196,6 +197,19 @@
 		isChanged = true;
 	}
 
+	// 设置封面
+	function setCoverId(id) {
+		// 取消所有图片的checked状态
+		const checkboxes = document.querySelectorAll('.album-photo');
+		checkboxes.forEach((checkbox) => {
+			checkbox.checked = false;
+		});
+		const newCover = document.getElementById(`photo-${id}`);
+		newCover.checked = true;
+		photoContent.cover = id;
+		isChanged = true;
+	}
+
 	// 删除图片
 	function deleteImage(index) {
 		pictures = pictures.filter((_, i) => i !== index);
@@ -335,13 +349,13 @@
 
 	// 生成摘要
 	async function generateAbstract() {
-		const album = photoContent.content_text;
+		const content = photoContent.content_text;
 		photoContent.abstract = await fetch('/api/abstract', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ album })
+			body: JSON.stringify({ content })
 		}).then((res) => res.text());
 		isChanged = true;
 	}
@@ -502,18 +516,11 @@
 							>
 								<input
 									type = "checkbox"
-									class = "absolute top-4 left-4"
-									id = {photo.id}
+									class = "album-photo absolute top-4 left-4"
+									id = {`photo-${photo.image.id}`}
 									name = {`photo-${photo.order}`}
-									checked = {photoContent.cover.id === photo.image.id}
-									on:change = {() => {isChanged = true}}
-									on:click = {() => {
-									if (photoContent.cover === photo.image.id) {
-										photoContent.cover = null;
-									} else {
-										photoContent.cover = photo.image.id;
-									}
-								}}
+									checked = {photoContent.cover && photoContent.cover === photo.image.id}
+									on:click = {() => {setCoverId(photo.image.id)}}
 								/>
 								<img
 									src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
@@ -704,6 +711,7 @@
 				<textarea
 					name = "abstract" id = "abstract" rows = "3"
 					bind:value = {photoContent.abstract}
+					on:input = {() => {isChanged = true}}
 					placeholder = "使用AI为文章生成摘要"
 					class =
 						"block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6"
