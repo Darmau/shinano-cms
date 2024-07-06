@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { t } from '$lib/functions/i18n';
 	import PhotoEditor from '$components/PhotoEditor.svelte';
+	import { t } from '$lib/functions/i18n';
 
 	export let data;
 </script>
@@ -45,5 +45,5 @@
 		</ol>
 	</nav>
 
-	<PhotoEditor {data} isSaved = {false} />
+	<PhotoEditor {data} isSaved = {true} />
 </div>

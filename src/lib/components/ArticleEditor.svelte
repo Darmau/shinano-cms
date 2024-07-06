@@ -17,7 +17,7 @@
 	const toastStore = getToastStore();
 
 	// 找出当前文章没有的语言
-	const newLanguageVersions = () => {
+	function generateNewLanguageVersions() {
 		const currentLanguageId = data.currentLanguage.id;
 		const otherVersions = data.otherVersions;
 		const allLanguages = data.allLanguages;
@@ -28,11 +28,12 @@
 		);
 	}
 
+	const newLanguageVersions = generateNewLanguageVersions();
+
 	// 保存函数
 	let isChanged = false;
 	let articleContent = data.articleContent;
 	async function saveArticle() {
-		if (!isChanged) return;
 
 		articleContent.updated_at = new Date().toISOString();
 		articleContent.cover = coverImage.id;
@@ -43,7 +44,7 @@
 		if (isSaved === true) {
 			const { error } = await
 				supabase.from('article').update(articleContent).eq('id',
-					articleContent.id).select();
+					articleContent.id);
 			if (error) {
 				console.error(error);
 				toastStore.trigger({
@@ -126,7 +127,6 @@
 	let localTime = articleContent.published_at ?
 		getDateFormat(articleContent.published_at, true) : null;
 	async function publishArticle() {
-		articleContent.cover = coverImage.id || null;
 		await saveArticle();
 		if (articleContent.is_draft) {
 			articleContent.is_draft = false;
