@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import { flip } from 'svelte/animate';
+	import PhotoIcon from '$assets/icons/photo.svelte';
 
 	export let data;
 	export let isSaved;
@@ -49,7 +50,7 @@
 			.eq('id', photoContent.id);
 
 			if (savePhotoError) {
-				console.error(savePhotoError);
+				console.error('this is savePhotoError: ', savePhotoError);
 				toastStore.trigger({
 					message: savePhotoError.message,
 					background: 'variant-filled-error'
@@ -197,6 +198,10 @@
 	// 删除图片
 	function deleteImage(index) {
 		pictures = pictures.filter((_, i) => i !== index);
+		// 如果删除的是封面图片，清空封面
+		if (photoContent.cover === pictures[index].image.id) {
+			photoContent.cover = null;
+		}
 		// 更新order值
 		pictures = pictures.map((pic, index) => ({
 			...pic,
@@ -459,57 +464,90 @@
 
 		<!--图片-->
 		<div>
-			<label
-				for = "images"
-				class = "block text-sm font-medium leading-6 text-gray-900"
-			>图片</label>
-			<button
-				on:click = {()=>{isModalOpen =true}}
-				class =
-					"rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
-			>
-				{$t('select')}
-			</button>
-			<ol class = "flex">
-				{#each pictures as photo, index (photo.order)}
-					<li
-						draggable = {true}
-						on:dragstart = {(event) => dragStart(event, index)}
-						on:dragover = {(event) => dragOver(event, index)}
-						on:dragend = {dragEnd}
-						animate:flip = {{ duration: 100 }}
+			<header class = "flex justify-between items-center mb-4">
+				<label
+					for = "images"
+					class = "block text-sm font-medium leading-6 text-gray-900"
+				>图片</label>
+				{#if pictures.length > 0}
+					<button
+						on:click = {()=>{isModalOpen =true}}
+						class =
+							"rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
 					>
-						<p>{index}</p>
-						<figure class="relative">
-							<input
-								type = "checkbox"
-								id = {photo.id}
-								name = {`photo-${photo.order}`}
-								checked = {photoContent.cover === photo.image.id}
-								on:change = {() => {isChanged = true}}
-								on:click = {() => {
+						{$t('select')}
+					</button>
+				{/if}
+			</header>
+			{#if pictures.length > 0}
+				<ol class = "grid grid-cols-3 gap-4">
+					{#each pictures as photo, index (photo.order)}
+						<li
+							draggable = {true}
+							on:dragstart = {(event) => dragStart(event, index)}
+							on:dragover = {(event) => dragOver(event, index)}
+							on:dragend = {dragEnd}
+							animate:flip = {{ duration: 100 }}
+						>
+							<figure
+								class =
+									"relative object-contain aspect-square flex justify-center items-center rounded-md border border-gray-100"
+							>
+								<input
+									type = "checkbox"
+									class = "absolute top-2 left-2"
+									id = {photo.id}
+									name = {`photo-${photo.order}`}
+									checked = {photoContent.cover === photo.image.id}
+									on:change = {() => {isChanged = true}}
+									on:click = {() => {
 									if (photoContent.cover === photo.image.id) {
 										photoContent.cover = null;
 									} else {
 										photoContent.cover = photo.image.id;
 									}
 								}}
-							/>
-							<img
-								src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
-								alt = {photo.image.alt}
-							/>
-							<button
-								on:click = {() => deleteImage(index)}
-								class = "absolute top-2 right-2"
-							>Delete</button>
-							{#if photo.image.caption}
-								<figcaption>{photo.image.caption}</figcaption>
-							{/if}
-						</figure>
-					</li>
-				{/each}
-			</ol>
+								/>
+								<img
+									src = {`${data.prefix}/cdn-cgi/image/format=auto,width=480/${photo.image.storage_key}`}
+									alt = {photo.image.alt}
+									class="img-bg h-full w-full object-contain"
+								/>
+								<button
+									on:click = {() => deleteImage(index)}
+									class = "absolute top-2 right-2"
+								>Delete
+								</button>
+								{#if photo.image.caption}
+									<figcaption>{photo.image.caption}</figcaption>
+								{/if}
+							</figure>
+						</li>
+					{/each}
+				</ol>
+			{:else}
+				<div class = "text-center my-16">
+					<PhotoIcon classList = "mx-auto h-12 w-12 text-gray-400" />
+					<h3 class = "mt-2 text-sm font-semibold text-gray-900">No photos</h3>
+					<div class = "mt-6">
+						<button
+							type = "button"
+							on:click = {()=>{isModalOpen =true}}
+							class = "inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+						>
+							<svg
+								class = "-ml-0.5 mr-1.5 h-5 w-5" viewBox = "0 0 20 20"
+								fill = "currentColor" aria-hidden = "true"
+							>
+								<path
+									d = "M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"
+								/>
+							</svg>
+							{$t('add-new')}
+						</button>
+					</div>
+				</div>
+			{/if}
 		</div>
 
 		<!--编辑器-->
