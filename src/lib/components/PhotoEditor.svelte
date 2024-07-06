@@ -542,7 +542,7 @@
 					{/each}
 				</ol>
 			{:else}
-				<div class = "text-center my-16">
+				<div class = "text-center my-16 border-2 border-dashed border-gray-300">
 					<PhotoIcon classList = "mx-auto h-12 w-12 text-gray-400" />
 					<h3 class = "mt-2 text-sm font-semibold text-gray-900">No photos</h3>
 					<div class = "mt-6">

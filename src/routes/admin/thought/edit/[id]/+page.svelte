@@ -152,7 +152,7 @@
 {/if}
 
 <div class = "max-w-3xl mx-auto">
-	<div>{JSON.stringify(thoughtContent)}</div>
+
 	<nav class = "flex mb-8" aria-label = "Breadcrumb">
 		<ol role = "list" class = "flex items-center space-x-4">
 			<li>
