@@ -63,7 +63,8 @@
 				id: image.id,
 				alt: image.alt,
 				storage_key: image.storage_key,
-				prefix: data.prefix
+				prefix: data.prefix,
+				caption: image.caption,
 			}); // 如果不存在，则添加
 			selectedNumber = selectedNumber + 1;
 		}

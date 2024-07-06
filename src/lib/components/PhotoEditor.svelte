@@ -463,6 +463,12 @@
 			{/if}
 		</div>
 
+		<!--编辑器-->
+		<SimpleEditor
+			on:contentUpdate = {handleContentUpdate} {data} content =
+			{data.photoContent.content_json}
+		/>
+
 		<!--图片-->
 		<div>
 			<header class = "flex justify-between items-center mb-4">
@@ -481,7 +487,7 @@
 				{/if}
 			</header>
 			{#if pictures.length > 0}
-				<ol class = "grid grid-cols-3 gap-4">
+				<ol class = "grid grid-cols-2 md:grid-cols-3 gap-4">
 					{#each pictures as photo, index (photo.order)}
 						<li
 							draggable = {true}
@@ -492,7 +498,7 @@
 						>
 							<figure
 								class =
-									"relative object-contain aspect-square flex justify-center items-center rounded-md border border-gray-100"
+									"relative object-contain aspect-square flex flex-col justify-center items-center rounded-md border border-gray-100"
 							>
 								<input
 									type = "checkbox"
@@ -521,7 +527,8 @@
 									<DeleteIcon classList = "h-6 w-6 text-gray-400 hover:text-red-600" />
 								</button>
 								{#if photo.image.caption}
-									<figcaption>{photo.image.caption}</figcaption>
+									<figcaption
+										class="text-sm text-gray-700 p-4">{photo.image.caption}</figcaption>
 								{/if}
 							</figure>
 						</li>
@@ -551,12 +558,6 @@
 				</div>
 			{/if}
 		</div>
-
-		<!--编辑器-->
-		<SimpleEditor
-			on:contentUpdate = {handleContentUpdate} {data} content =
-			{data.photoContent.content_json}
-		/>
 	</div>
 
 	<aside class = "col-span-1 space-y-8">
