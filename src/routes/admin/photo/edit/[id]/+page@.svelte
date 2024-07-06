@@ -39,7 +39,7 @@
 					<a
 						data-sveltekit-preload-data href = "/admin/photo/1"
 						class = "ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
-					>{$t('article')}</a>
+					>{$t('photo')}</a>
 				</div>
 			</li>
 		</ol>

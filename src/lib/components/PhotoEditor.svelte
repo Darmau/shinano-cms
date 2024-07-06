@@ -9,9 +9,10 @@
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import { flip } from 'svelte/animate';
 	import PhotoIcon from '$assets/icons/photo.svelte';
+	import DeleteIcon from '$assets/icons/delete.svelte';
 
 	export let data;
-	export let isSaved;
+	export let isSaved = false;
 	let { supabase } = data;
 	$: ({ supabase } = data);
 
@@ -38,7 +39,7 @@
 				content_json: photoContent.content_json,
 				content_html: photoContent.content_html,
 				content_text: photoContent.content_text,
-				cover: photoContent.cover,
+				cover: photoContent.cover.id,
 				category: photoContent.category,
 				topic: photoContent.topic,
 				is_top: photoContent.is_top,
@@ -407,7 +408,7 @@
 {#if isModalOpen}
 	<ImagesModel {data} {closeModel} onSelect = {selectPictures} />
 {/if}
-<div>{JSON.stringify(photoContent)}</div>
+
 <div class = "grid grid-cols-1 gap-6 3xl:grid-cols-4">
 	<div class = "space-y-8 xl:col-span-3">
 
@@ -468,7 +469,7 @@
 				<label
 					for = "images"
 					class = "block text-sm font-medium leading-6 text-gray-900"
-				>图片</label>
+				>{$t('photo')}</label>
 				{#if pictures.length > 0}
 					<button
 						on:click = {()=>{isModalOpen =true}}
@@ -495,10 +496,10 @@
 							>
 								<input
 									type = "checkbox"
-									class = "absolute top-2 left-2"
+									class = "absolute top-4 left-4"
 									id = {photo.id}
 									name = {`photo-${photo.order}`}
-									checked = {photoContent.cover === photo.image.id}
+									checked = {photoContent.cover.id === photo.image.id}
 									on:change = {() => {isChanged = true}}
 									on:click = {() => {
 									if (photoContent.cover === photo.image.id) {
@@ -515,8 +516,9 @@
 								/>
 								<button
 									on:click = {() => deleteImage(index)}
-									class = "absolute top-2 right-2"
-								>Delete
+									class = "absolute top-4 right-4"
+								>
+									<DeleteIcon classList = "h-6 w-6 text-gray-400 hover:text-red-600" />
 								</button>
 								{#if photo.image.caption}
 									<figcaption>{photo.image.caption}</figcaption>
