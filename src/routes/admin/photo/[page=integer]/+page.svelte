@@ -319,3 +319,8 @@
 		{/if}
 	</div>
 </div>
+
+<Pagination
+	count = {data.count} page = {data.page} limit = {data.limit}
+	path = {data.path}
+/>
