@@ -215,6 +215,10 @@
 			active: () => isActive('hardBreak')
 		}
 	];
+
+	export function updateContent(content) {
+		$editor.chain().focus().setContent(content).run();
+	}
 </script>
 
 <div class="relative">

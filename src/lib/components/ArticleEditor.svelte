@@ -259,6 +259,28 @@
 		isChanged = true;
 	}
 
+	// 翻译
+	let editorComponent;
+
+	function generateContent(content) {
+		editorComponent.updateContent(content);
+	}
+
+	async function getTranslation() {
+		articleContent.content_html = await fetch('/api/translation', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				lang: data.currentLanguage.locale,
+				content: articleContent.content_text
+			})
+		}).then(res => res.text());
+		generateContent(articleContent.content_html);
+		isChanged = true;
+	}
+
 	// 防止误关页面
 	function handleBeforeUnload(event) {
 		if (!isSaved && isChanged) {
@@ -362,8 +384,13 @@
 		<!--Content-->
 		<Tiptap
 			on:contentUpdate = {handleContentUpdate} {data} content =
-			{articleContent.content_json}
+			{articleContent.content_json} bind:this = {editorComponent}
 		/>
+		<button
+		  type="button"
+			on:click = {getTranslation}
+			class="rounded-md bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
+		>{$t('translate')}</button>
 	</div>
 
 	<aside class = "col-span-1 space-y-8">

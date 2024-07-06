@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import type { Readable } from 'svelte/store';
 	import StarterKit from '@tiptap/starter-kit';
 	import Highlight from '@tiptap/extension-highlight';
@@ -413,6 +413,10 @@
 			};
 		});
 		$editor.chain().focus().insertContent(nodeLists).run();
+	}
+
+	export function updateContent(content) {
+		$editor.chain().focus().setContent(content).run();
 	}
 </script>
 
