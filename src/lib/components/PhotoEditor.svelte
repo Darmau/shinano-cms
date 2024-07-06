@@ -209,7 +209,10 @@
 			localTime = null;
 		}
 		const { error } = await
-			supabase.from('photo').update(photoContent).eq('id',
+			supabase.from('photo').update({
+				is_draft: photoContent.is_draft,
+				published_at: photoContent.published_at
+			}).eq('id',
 				photoContent.id).select();
 		if (error) {
 			console.error(error);
