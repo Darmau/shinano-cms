@@ -99,10 +99,10 @@
 				根据标题生成网址末尾的slug
 			</label>
 			<textarea
-				type="text"
 				id="prompt_slug"
 				name="prompt_SLUG"
 				bind:value={AIObj.prompt_SLUG}
+				rows="4"
 				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			></textarea>
 		</div>
@@ -114,10 +114,23 @@
 				生成文章摘要用于SEO
 			</label>
 			<textarea
-				type="text"
 				id="prompt_seo"
 				name="prompt_SEO"
 				bind:value={AIObj.prompt_SEO}
+				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+			></textarea>
+		</div>
+		<div>
+			<label
+				for="prompt_translation"
+				class = "block text-sm font-medium leading-6 text-gray-900"
+			>
+				翻译内容
+			</label>
+			<textarea
+				id="prompt_translation"
+				name="prompt_TRANSLATION"
+				bind:value={AIObj.prompt_TRANSLATION}
 				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			></textarea>
 		</div>

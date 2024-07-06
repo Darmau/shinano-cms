@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { URL_PREFIX } from '$env/static/private'
+import { URL_PREFIX } from '$env/static/private';
 
 export const load: PageServerLoad = async ({ url, params: { page }, locals: { supabase }}) => {
 	const pageNumber = Number(page);

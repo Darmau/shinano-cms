@@ -110,7 +110,7 @@
 			const { error: deletePhotoImageError } = await supabase
 			.from('photo_image')
 			.delete()
-			.in('photo_id', [photoContent.id]);
+			.eq('photo_id', photoContent.id);
 
 			if (deletePhotoImageError) {
 				console.error(deletePhotoImageError);
@@ -403,6 +403,28 @@
 		}
 	}
 
+	// 翻译
+	let editorComponent;
+
+	function generateContent(content) {
+		editorComponent.updateContent(content);
+	}
+
+	async function getTranslation() {
+		photoContent.content_html = await fetch('/api/translation', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				lang: data.currentLanguage.locale,
+				content: photoContent.content_text
+			})
+		}).then(res => res.text());
+		generateContent(photoContent.content_html);
+		isChanged = true;
+	}
+
 	beforeNavigate((navigation) => {
 		if (!isSaved && isChanged) {
 			if (!confirm($t('leave-confirm'))) {
@@ -480,8 +502,13 @@
 		<!--编辑器-->
 		<SimpleEditor
 			on:contentUpdate = {handleContentUpdate} {data} content =
-			{data.photoContent.content_json}
+			{data.photoContent.content_json} bind:this = {editorComponent}
 		/>
+		<button
+			type="button"
+			on:click = {getTranslation}
+			class="rounded-md bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
+		>{$t('translate')}</button>
 
 		<!--图片-->
 		<div>
@@ -542,7 +569,7 @@
 					{/each}
 				</ol>
 			{:else}
-				<div class = "text-center my-16">
+				<div class = "text-center my-16 border-2 border-dashed border-gray-300">
 					<PhotoIcon classList = "mx-auto h-12 w-12 text-gray-400" />
 					<h3 class = "mt-2 text-sm font-semibold text-gray-900">No photos</h3>
 					<div class = "mt-6">

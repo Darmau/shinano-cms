@@ -17,24 +17,28 @@
 
 	// 删除选中文章
 	async function deleteArticles() {
-		try {
-			await supabase.from('article').delete().in('id', selectedArticleList);
-			selectedArticleList = [];
-			deletable = true;
-			await invalidateAll();
+		const { error: deleteError} = await
+			supabase.from('article').delete().in('id',
+			selectedArticleList);
+
+		if (deleteError) {
 			toastStore.trigger({
-				message: `成功删除文章。`,
-				hideDismiss: true,
-				background: 'variant-filled-success'
-			});
-		} catch (error) {
-			console.error('删除文章时出错:', error);
-			toastStore.trigger({
-				message: '删除文章失败。',
+				message: deleteError.message,
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});
 		}
+
+		selectedArticleList = [];
+		deletable = true;
+
+		toastStore.trigger({
+			message: `成功删除文章。`,
+			hideDismiss: true,
+			background: 'variant-filled-success'
+		});
+
+		await invalidateAll();
 	}
 
 	// 直接删除文章
@@ -42,7 +46,7 @@
 		const { error: deleteError } = await supabase.from('article').delete().eq('id', id);
 		if (deleteError) {
 			toastStore.trigger({
-				message: '删除文章失败。',
+				message: deleteError.message,
 				hideDismiss: true,
 				background: 'variant-filled-error'
 			});

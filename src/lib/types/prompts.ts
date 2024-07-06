@@ -3,6 +3,7 @@ export class AI {
 		['config_OPENAI', ''],
 		['prompt_SEO', ''],
 		['prompt_SLUG', ''],
+		['prompt_TRANSLATION', ''],
 		['prompt_IMAGE_ALT', ''],
 	]);
 

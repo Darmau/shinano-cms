@@ -98,6 +98,7 @@ const translations: Translation = {
 		"leave-confirm": "你还有未保存的修改，确定要离开吗？",
 		"photos-count": "照片数量",
 		"image": "图片",
+		"translate": "翻译",
 	},
 	"en": {
 		"home": "Home",
@@ -191,6 +192,7 @@ const translations: Translation = {
 		"leave-confirm": "You have unsaved changes, are you sure to leave?",
 		"photos-count": "Photos Count",
 		"image": "Image",
+		"translate": "Translate",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -284,6 +286,7 @@ const translations: Translation = {
 		"leave-confirm": "你還有未保存的修改，確定要離開嗎？",
 		"photos-count": "照片數量",
 		"image": "圖片",
+		"translate": "翻譯",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -377,6 +380,7 @@ const translations: Translation = {
 		"leave-confirm": "保存されていない変更があります。本当に移動しますか？",
 		"photos-count": "写真の数",
 		"image": "画像",
+		"translate": "翻訳",
 	}
 }
 
