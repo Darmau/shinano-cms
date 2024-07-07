@@ -52,7 +52,8 @@
 			.eq('id', photoContent.id);
 
 			if (savePhotoError) {
-				console.error('this is savePhotoError: ', savePhotoError);
+				console.error('Error happened when saved a existing photo: ',
+					savePhotoError);
 				toastStore.trigger({
 					message: savePhotoError.message,
 					background: 'variant-filled-error'
@@ -64,6 +65,20 @@
 				});
 				isSaved = true;
 				isChanged = false;
+			}
+
+			// 删除photo_image表现有信息 photoContent.photos
+			const { error: deletePhotoImageError } = await supabase
+			.from('photo_image')
+			.delete()
+			.eq('photo_id', photoContent.id);
+
+			if (deletePhotoImageError) {
+				console.error('Delete existing photo relation', deletePhotoImageError);
+				toastStore.trigger({
+					message: deletePhotoImageError.message,
+					background: 'variant-filled-error'
+				});
 			}
 
 		} else {
@@ -89,7 +104,7 @@
 			}).select();
 
 			if (savePhotoError) {
-				console.error(savePhotoError);
+				console.error('Error happened when saved a new photo', savePhotoError);
 				toastStore.trigger({
 					message: savePhotoError.message,
 					background: 'variant-filled-error'
@@ -105,22 +120,6 @@
 			}
 		}
 
-		// 删除photo_image表现有信息 photoContent.photos
-		if (isSaved === true) {
-			const { error: deletePhotoImageError } = await supabase
-			.from('photo_image')
-			.delete()
-			.eq('photo_id', photoContent.id);
-
-			if (deletePhotoImageError) {
-				console.error(deletePhotoImageError);
-				toastStore.trigger({
-					message: deletePhotoImageError.message,
-					background: 'variant-filled-error'
-				});
-			}
-		}
-
 		// bulk存入新的photo_image信息
 		const albumImages = photoContent.photos.map((photo) => ({
 			photo_id: photoContent.id || newPhotoId,
@@ -133,7 +132,7 @@
 		.insert(albumImages);
 
 		if (savePhotoImageError) {
-			console.error(savePhotoImageError);
+			console.error('Save image relations failed', savePhotoImageError);
 			toastStore.trigger({
 				message: savePhotoImageError.message,
 				background: 'variant-filled-error'
@@ -569,7 +568,8 @@
 					{/each}
 				</ol>
 			{:else}
-				<div class = "text-center my-16 border-2 border-dashed border-gray-300">
+				<div class =
+							 "text-center rounded-md py-16 border-2 border-dashed border-gray-300">
 					<PhotoIcon classList = "mx-auto h-12 w-12 text-gray-400" />
 					<h3 class = "mt-2 text-sm font-semibold text-gray-900">No photos</h3>
 					<div class = "mt-6">
