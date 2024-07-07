@@ -16,12 +16,23 @@
 		imageData.taken_at.toString().slice(0,16) :
 		new Date().toISOString().slice(0, 16);
 
-	function getISODate(date: string) {
-		return new Date().toISOString();
-	}
-
 	// 该变量负责记录表单是否被修改，如果修改，则为true
 	let isFormChanged = false;
+
+	// 生成alt
+	async function generateAlt() {
+		imageData.alt = await fetch(`/api/img-alt`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				prefix: data.prefix,
+				img_key: imageData.storage_key
+			})
+		}).then(res => res.text());
+		isFormChanged = true;
+	}
 
 	// 提交更新数据
 	async function submitForm(event: Event) {
@@ -100,7 +111,7 @@
 							on:submit = {submitForm}
 							on:input = {() => isFormChanged = true}
 						>
-							<div>
+							<div class="space-y-2">
 								<label
 									for = "file_name"
 									class = "block text-sm font-medium leading-6 text-gray-900"
@@ -115,13 +126,22 @@
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
 							</div>
-							<div>
-								<label
-									for = "alt"
-									class = "block text-sm font-medium leading-6 text-gray-900"
-								>
-									{$t('alt-text')}
-								</label>
+							<div class="space-y-2">
+								<div class="flex justify-between items-center">
+									<label
+										for = "alt"
+										class = "block text-sm font-medium leading-6 text-gray-900"
+									>
+										{$t('alt-text')}
+									</label>
+									<button
+									 type="button"
+									 on:click = {generateAlt}
+									 class="text-cyan-600 text-sm"
+									>
+										{$t('generate-alt')}
+									</button>
+								</div>
 								<input
 									type = "text"
 									id = "alt"
@@ -131,7 +151,7 @@
 								/>
 								<small>{$t('alt-text-description')}</small>
 							</div>
-							<div>
+							<div class="space-y-2">
 								<label
 									for = "folder"
 									class = "block text-sm font-medium leading-6 text-gray-900"
@@ -146,7 +166,7 @@
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
 							</div>
-							<div>
+							<div class="space-y-2">
 								<label
 									for = "caption"
 									class = "block text-sm font-medium leading-6 text-gray-900"
@@ -161,7 +181,7 @@
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
 							</div>
-							<div>
+							<div class="space-y-2">
 								<label
 									for = "taken_at"
 									class = "block text-sm font-medium leading-6 text-gray-900"
@@ -177,7 +197,7 @@
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
 							</div>
-							<div>
+							<div class="space-y-2">
 								<label
 									for = "location"
 									class = "block text-sm font-medium leading-6 text-gray-900"
