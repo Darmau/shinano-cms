@@ -54,7 +54,8 @@ export const load: PageServerLoad = async ({ params, locals: { supabase } }) => 
 		content_text: sourcePhoto!.content_text,
 		cover: sourcePhoto!.cover,
 		photos: sourcePhoto.photo_image,
-		topic: sourcePhoto!.topic
+		topic: sourcePhoto!.topic,
+		published_at: sourcePhoto!.published_at
 	};
 
 	const categories = await supabase
