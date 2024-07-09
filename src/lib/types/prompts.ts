@@ -5,6 +5,7 @@ export class AI {
 		['prompt_SLUG', ''],
 		['prompt_TRANSLATION', ''],
 		['prompt_IMAGE_ALT', ''],
+		['prompt_TAGS', ''],
 	]);
 
 	public array() {
