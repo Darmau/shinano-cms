@@ -149,6 +149,21 @@
 				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 			></textarea>
 		</div>
+		<div>
+			<label
+				for="prompt_tags"
+				class = "block text-sm font-medium leading-6 text-gray-900"
+			>
+				生成内容的Tags
+			</label>
+			<textarea
+				type="text"
+				id="prompt_tags"
+				name="prompt_TAGS"
+				bind:value={AIObj.prompt_TAGS}
+				class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
+			></textarea>
+		</div>
 		<button
 			type="submit"
 			disabled={!isFormChanged}

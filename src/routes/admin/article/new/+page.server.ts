@@ -75,20 +75,23 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 		const { data: sourceArticle, error: sourceError} = await supabase
 			.from('article')
 		  .select(`
-		    title, 
-		    subtitle, 
-		    slug, 
-		    abstract, 
-		    is_top, 
-		    is_draft, 
-		    is_featured, 
-		    is_premium, 
-		    content_json,
-		    content_html, 
-		    content_text, 
-		    lang,
-		    topic,
-		    cover (id, alt, storage_key)
+		    id,
+				title,
+				subtitle,
+				slug,
+				content_json,
+				content_html,
+				content_text,
+				abstract,
+				is_top,
+				is_draft,
+				is_featured,
+				is_premium,
+				lang,
+				topic,
+				published_at,
+				category,
+				cover (id, alt, storage_key)
 		  `)
 		  .eq('id', copyFromId)
 		  .single();
@@ -112,7 +115,9 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			content_html: sourceArticle!.content_html,
 			content_text: sourceArticle!.content_text,
 			cover: sourceArticle!.cover,
-			topic: sourceArticle!.topic
+			topic: sourceArticle!.topic,
+			categorie: sourceArticle!.category,
+			published_at: sourceArticle!.published_at
 		}
 
 		// 查询category表中type为article，lang为currentLanguage.id的分类

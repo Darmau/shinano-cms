@@ -23,6 +23,7 @@ export const load: PageServerLoad = async ({ params, locals: { supabase } }) => 
 		  topic,
 		  published_at,
 		  cover,
+		  category,
 		  photo_image (order, image (id, alt, storage_key, caption))
 		`)
 	.eq('id', photoId)
@@ -55,6 +56,7 @@ export const load: PageServerLoad = async ({ params, locals: { supabase } }) => 
 		cover: sourcePhoto!.cover,
 		photos: sourcePhoto.photo_image,
 		topic: sourcePhoto!.topic,
+		category: sourcePhoto!.category,
 		published_at: sourcePhoto!.published_at
 	};
 

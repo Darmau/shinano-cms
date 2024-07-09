@@ -259,6 +259,20 @@
 		isChanged = true;
 	}
 
+	// 生成tags
+	async function generateTags() {
+		const content = articleContent.content_text;
+		const result = await fetch('/api/tags', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ content })
+		}).then((res) => res.json());
+		topics = result.tags;
+		isChanged = true;
+	}
+
 	// 翻译
 	let editorComponent;
 
@@ -480,8 +494,17 @@
 
 		<!--话题-->
 		<div>
-			<label
-				class = "text-sm font-medium leading-6 text-gray-900">{$t('topic')}</label>
+			<div class = "flex justify-between">
+				<label
+					for = "abstract"
+					class = "block text-sm font-medium leading-6 text-gray-900"
+				>{$t('topic')}</label>
+				<button
+					type="button"
+					on:click = {generateTags}
+					class = "rounded bg-cyan-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
+				>{$t('generate')}</button>
+			</div>
 			<div class="relative mt-2">
 				<div
 					class="flex flex-wrap gap-1 w-full rounded-md border-0 p-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 sm:text-sm sm:leading-6">
