@@ -142,10 +142,10 @@
 										{$t('generate-alt')}
 									</button>
 								</div>
-								<input
-									type = "text"
+								<textarea
 									id = "alt"
 									name = "alt"
+									rows="3"
 									bind:value = {imageData.alt}
 									class="text-gray-900 ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 block w-full rounded-md border-0 py-1.5 px-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6"
 								/>
