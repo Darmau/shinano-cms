@@ -536,6 +536,37 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 检查文章发布的发布时间
+CREATE OR REPLACE FUNCTION update_published_time()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.is_draft = false AND OLD.is_draft = true THEN
+        IF NEW.published_at IS NULL THEN
+            NEW.published_at := NOW();
+        END IF;
+    ELSIF NEW.is_draft = true AND OLD.is_draft = false THEN
+        NEW.published_at := NULL;
+    END IF;
+    RETURN NEW;
+END;
+$$
+ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_article_update_time
+BEFORE UPDATE ON article
+FOR EACH ROW
+EXECUTE FUNCTION update_published_time();
+
+CREATE TRIGGER check_photo_update_time
+BEFORE UPDATE ON photo
+FOR EACH ROW
+EXECUTE FUNCTION update_published_time();
+
+CREATE TRIGGER check_video_update_time
+BEFORE UPDATE ON video
+FOR EACH ROW
+EXECUTE FUNCTION update_published_time();
+
 CREATE TRIGGER set_comment_not_public_before_insert BEFORE INSERT ON comment FOR EACH ROW
 EXECUTE FUNCTION set_comment_is_public ();
 
