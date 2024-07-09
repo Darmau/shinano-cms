@@ -20,8 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		error(502, 'Error fetching prompt');
 	});
 
-	const prompt = promptObj[0].prompt_TRANSLATION;
-	const contentAndLang = `${lang} | ${content}`;
+	const prompt = promptObj[0].prompt_TRANSLATION + lang;
 
 	const translatedHtml = await fetch(`${WORKERS_URL}/openai`, {
 		method: 'POST',
@@ -33,7 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			model: 'gpt-3.5-turbo',
 			messages: [
 				{ role: 'system', content: prompt },
-				{ role: 'user', content: contentAndLang },
+				{ role: 'user', content: content },
 			]
 		})
 	}).then(res => res.text())
