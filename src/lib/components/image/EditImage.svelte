@@ -28,7 +28,8 @@
 			},
 			body: JSON.stringify({
 				prefix: data.prefix,
-				img_key: imageData.storage_key
+				img_key: imageData.storage_key,
+				location: imageData.location || 'The location of the image is unknown.',
 			})
 		}).then(res => res.text());
 		isFormChanged = true;
