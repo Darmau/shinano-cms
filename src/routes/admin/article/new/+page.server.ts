@@ -116,7 +116,7 @@ export const load: PageServerLoad = async ({ url, locals: { supabase }}) => {
 			content_text: sourceArticle!.content_text,
 			cover: sourceArticle!.cover,
 			topic: sourceArticle!.topic,
-			categorie: sourceArticle!.category,
+			category: sourceArticle!.category,
 			published_at: sourceArticle!.published_at
 		}
 
