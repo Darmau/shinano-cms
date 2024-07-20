@@ -204,10 +204,10 @@
 									</td>
 									<td
 										class =
-											"whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+											"break-all py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
 									>
 										{photo.title}
-										<dl class = "font-normal lg:hidden">
+										<dl class = "font-normal break-words lg:hidden">
 											<dt class = "sr-only sm:hidden">Slug</dt>
 											<dd
 												class =
@@ -231,7 +231,7 @@
 									</td>
 									<td
 										class =
-											"hidden font-mono px-3 py-4 text-sm text-gray-500 sm:table-cell"
+											"hidden font-mono px-3 py-4 text-sm text-gray-500 sm:table-cell sm:break-words"
 									>{photo.slug}
 									</td>
 									<td
@@ -245,7 +245,8 @@
 									>
 										{#if photo.is_draft}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 break-keep"
 										>
 											<svg
 												class = "h-1.5 w-1.5 fill-gray-400" viewBox = "0 0 6 6"
@@ -257,7 +258,8 @@
 										</span>
 										{:else}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 break-keep"
 										>
 											<svg
 												class = "h-1.5 w-1.5 fill-green-500" viewBox = "0 0 6 6"
@@ -271,7 +273,8 @@
 
 										{#if photo.is_featured}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700 break-keep"
 										>
 											{$t('featured')}
 										</span>
@@ -279,7 +282,8 @@
 
 										{#if photo.is_top}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-violet-100 px-2 py-1 text-xs font-medium text-violet-700"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-violet-100 px-2 py-1 text-xs font-medium text-violet-700 break-keep"
 										>
 											{$t('topped')}
 										</span>
@@ -288,7 +292,7 @@
 
 									<td
 										class =
-											"relative whitespace-nowrap py-4 pl-3 pr-4 space-x-4 text-right text-sm font-medium sm:pr-6"
+											"relative flex flex-wrap gap-4 py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 									>
 										<a
 											href = {`/admin/photo/edit/${photo.id}`}
