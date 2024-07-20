@@ -178,17 +178,17 @@
 									</td>
 									<td
 										class =
-											"whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+											"break-words py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
 									>
 										{article.title}
 										<p
-											class = "font-normal text-gray-600"
+											class = "font-normal break-words text-gray-600"
 										>{article.subtitle}</p>
 										<dl class = "font-normal lg:hidden">
 											<dt class = "sr-only sm:hidden">Slug</dt>
 											<dd
 												class =
-													"font-mono mt-1 truncate text-gray-500 sm:hidden"
+													"font-mono mt-1 text-gray-500 sm:hidden"
 											>
 												{article.slug}
 											</dd>
@@ -204,21 +204,23 @@
 									</td>
 									<td
 										class =
-											"hidden font-mono px-3 py-4 text-sm text-gray-500 sm:table-cell"
+											"hidden break-words font-mono px-3 py-4 text-sm text-gray-500 sm:table-cell"
 									>{article.slug}
 									</td>
 									<td
-										class = "px-3 py-4 text-sm text-gray-500"
+										class =
+											"hidden sm:table-cell px-3 py-4 text-sm text-gray-500"
 									>{article.category.title}</td>
 
 									<!--文章状态-->
 									<td
 										class =
-											"px-3 py-4 text-sm text-gray-500"
+											"px-3 py-4 space-y-2 text-sm text-gray-500"
 									>
 										{#if article.is_draft}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 break-keep"
 										>
 											<svg
 												class = "h-1.5 w-1.5 fill-gray-400" viewBox = "0 0 6 6"
@@ -230,7 +232,8 @@
 										</span>
 										{:else}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 break-keep"
 										>
 											<svg
 												class = "h-1.5 w-1.5 fill-green-500" viewBox = "0 0 6 6"
@@ -244,7 +247,8 @@
 
 										{#if article.is_featured}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-sky-100 px-2 py-1 text-xs font-medium text-sky-700 break-keep"
 										>
 											{$t('featured')}
 										</span>
@@ -252,7 +256,8 @@
 
 										{#if article.is_top}
 										<span
-											class = "inline-flex items-center gap-x-1.5 rounded-full bg-violet-100 px-2 py-1 text-xs font-medium text-violet-700"
+											class =
+												"inline-flex items-center gap-x-1.5 rounded-full bg-violet-100 px-2 py-1 text-xs font-medium text-violet-700 break-keep"
 										>
 											{$t('topped')}
 										</span>
@@ -269,16 +274,16 @@
 
 									<td
 										class =
-											"relative whitespace-nowrap py-4 pl-3 pr-4 space-x-4 text-right text-sm font-medium sm:pr-6"
+											"relative space-y-4 sm:space-y-2 sm:space-x-4 py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 									>
 										<a
 											href = {`/admin/article/edit/${article.id}`}
 											data-sveltekit-preload-data
-											class = "text-cyan-600 hover:text-cyan-900"
+											class = "break-keep text-cyan-600 hover:text-cyan-900"
 										>{$t('edit')}</a>
 										<button
 											on:click = {() => deleteArticle(article.id)}
-											class = "text-red-600 hover:text-red-900"
+											class = "break-keep text-red-600 hover:text-red-900"
 										>
 											{$t('delete')}
 										</button>

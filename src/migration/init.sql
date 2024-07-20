@@ -732,11 +732,20 @@ create policy "Get All Albums" on public.photo for
 select
   to anon using (not is_draft);
 
+create policy "Get Albums for authenticated users" on public.photo for
+select
+  to authenticated using (not is_draft);
+
 create policy "Manage Albums" on public.photo for all to authenticated using (is_admin ());
 
 create policy "Get Photos of Album" on public.photo_image for
 select
   to anon using (true);
+
+create policy "Get Photos of Album for authenticated users" on public.photo_image
+ for
+select
+  to authenticated using (true);
 
 create policy "Manage Photos of Album" on public.photo_image for all to authenticated using (is_admin ());
 
@@ -745,6 +754,10 @@ create policy "Get All Videos" on public.video for
 select
   to anon using (not is_draft);
 
+create policy "Get Videos for authenticated users" on public.video for
+select
+  to authenticated using (not is_draft);
+
 create policy "Manage Videos" on public.video for all to authenticated using (is_admin ());
 
 -- 想法
@@ -752,11 +765,19 @@ create policy "Get All Thoughts" on public.thought for
 select
   to anon using (true);
 
+create policy "Get All Thoughts for Authenticated" on public.thought for
+select
+  to authenticated using (true);
+
 create policy "Manage Thoughts" on public.thought for all to authenticated using (is_admin ());
 
 create policy "Get Photos of Thought" on public.thought_image for
 select
   to anon using (true);
+
+create policy "Get Photos of Thought for Authenticated" on public.thought_image for
+select
+  to authenticated using (true);
 
 create policy "Manage Photos of Thought" on public.thought_image for all to authenticated using (is_admin ());
 
@@ -765,12 +786,20 @@ create policy "Get All Category" on public.category for
 select
   to anon using (true);
 
+create policy "Get All Category for Authenticated" on public.category for
+select
+  to authenticated using (true);
+
 create policy "Manage Category" on public.category for all to authenticated using (is_admin ());
 
 -- 评论
 create policy "List All Comments" on public.comment for
 select
   to anon using (not is_blocked);
+
+create policy "List All Comments for Authenticated" on public.comment for
+select
+  to authenticated using (not is_blocked);
 
 create policy "Authenticated and not blocked User Can Comment" on public.comment for insert to authenticated
 with
@@ -785,6 +814,10 @@ create policy "Get Reactions" on public.reaction for
 select
   to anon using (true);
 
+create policy "Get Reactions for Authenticated" on public.reaction for
+select
+  to authenticated using (true);
+
 create policy "Authenticated User Can React" on public.reaction for insert to authenticated
 with
   check (not user_is_blocked ());
@@ -797,12 +830,20 @@ create policy "Get Images" on public.image for
 select
   to anon using (true);
 
+create policy "Get Images for Authenticated" on public.image for
+select
+  to authenticated using (true);
+
 create policy "Manage Images" on public.image for all to authenticated using (is_admin ());
 
 -- 语言
 create policy "Get Languages" on public.language for
 select
   to anon using (true);
+
+create policy "Get Languages for Authenticated" on public.language for
+select
+  to authenticated using (true);
 
 create policy "Manage Languages" on public.language for all to authenticated using (is_admin ());
 
@@ -836,6 +877,10 @@ with
 create policy "Get Stats" on public.stats for
 select
   to anon using (true);
+
+create policy "Get Stats for Authenticated" on public.stats for
+select
+  to authenticated using (true);
 
 -- 定时任务
 create extension pg_cron
