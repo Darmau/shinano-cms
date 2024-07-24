@@ -17,13 +17,24 @@ export default Node.create({
 	},
 	addNodeView() {
 		return ({ node }) => {
-			const dom = document.createElement('img');
-			dom.classList.add('w-1/3');
-			dom.src = `${node.attrs.prefix}/cdn-cgi/image/format=auto,width=960/${node.attrs.prefix}/${node.attrs.storage_key}`;
-			dom.alt = node.attrs.alt;
+			const figure = document.createElement('figure');
+			figure.classList.add('w-1/3');
+
+			// 创建img元素
+			const img = document.createElement('img');
+			img.src = `${node.attrs.prefix}/cdn-cgi/image/format=auto,width=960/${node.attrs.prefix}/${node.attrs.storage_key}`;
+			img.alt = node.attrs.alt;
+
+			// 创建figcaption元素
+			const figcaption = document.createElement('figcaption');
+			figcaption.textContent = node.attrs.caption;
+
+			// 将img和figcaption添加到figure中
+			figure.appendChild(img);
+			figure.appendChild(figcaption);
 
 			return {
-				dom,
+				dom: figure,
 				ignoreMutation: () => true,
 			};
 		};
@@ -41,6 +52,9 @@ export default Node.create({
 			},
 			prefix: {
 				default: '',
+			},
+			caption: {
+				default: ''
 			}
 		};
 	},
