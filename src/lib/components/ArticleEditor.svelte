@@ -405,7 +405,6 @@
 			on:click = {getTranslation}
 			class="rounded-md bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
 		>{$t('translate')}</button>
-		<div>{JSON.stringify(articleContent.content_json)}</div>
 	</div>
 
 	<aside class = "col-span-1 space-y-8">
