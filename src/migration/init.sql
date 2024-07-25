@@ -689,6 +689,105 @@ return exists (
 end;
 $$;
 
+CREATE
+OR REPLACE FUNCTION public.get_article_count_by_year (lang_name text) RETURNS TABLE (year text, count bigint) LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = public,
+  pg_temp AS $$
+DECLARE
+  lang_id integer;
+BEGIN
+  -- 首先在language表中查找对应的语言id
+  SELECT id INTO lang_id
+  FROM public.language
+  WHERE lang = lang_name;
+
+  -- 如果找不到对应的语言,返回空结果
+  IF lang_id IS NULL THEN
+    RETURN;
+  END IF;
+
+  -- 使用找到的lang_id来筛选文章并按年份统计
+  RETURN QUERY
+  SELECT
+    EXTRACT(YEAR FROM published_at)::text AS year,
+    COUNT(id)::bigint AS count
+  FROM public.article
+  WHERE lang = lang_id
+  GROUP BY EXTRACT(YEAR FROM published_at)
+  ORDER BY year DESC;
+END;
+$$;
+
+CREATE
+OR REPLACE FUNCTION public.get_photography_count_by_year (lang_name text)
+RETURNS TABLE (year text, count bigint) LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = public,
+  pg_temp AS $$
+DECLARE
+  lang_id integer;
+BEGIN
+  -- 首先在language表中查找对应的语言id
+  SELECT id INTO lang_id
+  FROM public.language
+  WHERE lang = lang_name;
+
+  -- 如果找不到对应的语言,返回空结果
+  IF lang_id IS NULL THEN
+    RETURN;
+  END IF;
+
+  -- 使用找到的lang_id来筛选文章并按年份统计
+  RETURN QUERY
+  SELECT
+    EXTRACT(YEAR FROM published_at)::text AS year,
+    COUNT(id)::bigint AS count
+  FROM public.photo
+  WHERE lang = lang_id
+  GROUP BY EXTRACT(YEAR FROM published_at)
+  ORDER BY year DESC;
+END;
+$$;
+
+CREATE
+OR REPLACE FUNCTION public.get_article_count_by_category (lang_name text) RETURNS TABLE (title TEXT, slug TEXT, count BIGINT) LANGUAGE SQL AS $$
+  SELECT
+    c.title,
+    c.slug,
+    COUNT(a.id)::BIGINT AS count
+  FROM
+    category c
+    LEFT JOIN article a ON c.id = a.category
+    JOIN language l ON c.lang = l.id
+  WHERE
+    l.lang = lang_name
+    AND c.type = 'article'
+  GROUP BY
+    c.id, c.title, c.slug
+  ORDER BY
+    count DESC;
+$$;
+
+CREATE
+OR REPLACE FUNCTION public.get_photography_count_by_category (lang_name text) RETURNS TABLE (title TEXT, slug TEXT, count BIGINT) LANGUAGE SQL AS $$
+  SELECT
+    c.title,
+    c.slug,
+    COUNT(p.id)::BIGINT AS count
+  FROM
+    category c
+    LEFT JOIN photo p ON c.id = p.category
+    JOIN language l ON c.lang = l.id
+  WHERE
+    l.lang = lang_name
+    AND c.type = 'photo'
+  GROUP BY
+    c.id, c.title, c.slug
+  ORDER BY
+    count DESC;
+$$;
+
 -- 文章
 create policy "Get articles for authenticated users" on public.article for
 select
