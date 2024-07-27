@@ -240,19 +240,19 @@
 			name: 'heading-2',
 			command: toggleHeading(2),
 			content: H2Icon,
-			active: () => isActive('heading', { level: 2 })
+			active: () => isActive('headingWithID', { level: 2 })
 		},
 		{
 			name: 'heading-3',
 			command: toggleHeading(3),
 			content: H3Icon,
-			active: () => isActive('heading', { level: 3 })
+			active: () => isActive('headingWithID', { level: 3 })
 		},
 		{
 			name: 'heading-4',
 			command: toggleHeading(4),
 			content: H4Icon,
-			active: () => isActive('heading', { level: 4 })
+			active: () => isActive('headingWithID', { level: 4 })
 		},
 		{
 			name: 'bold',

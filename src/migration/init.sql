@@ -797,33 +797,6 @@ create policy "Get limited article info for anonymous users" on public.article f
 select
   to anon using (not is_draft);
 
-revoke
-select
-  on public.article
-from
-  anon;
-
-grant
-select
-  (
-    id,
-    lang,
-    slug,
-    title,
-    subtitle,
-    cover,
-    abstract,
-    is_draft,
-    is_featured,
-    is_top,
-    is_premium,
-    category,
-    topic,
-    page_view,
-    updated_at,
-    published_at
-  ) on public.article to anon;
-
 create policy "Manage Articles" on public.article for all to authenticated using (is_admin ());
 
 -- 摄影
