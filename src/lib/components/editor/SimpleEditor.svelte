@@ -21,9 +21,9 @@
 	import OrderedListIcon from '$assets/icons/editor/olist.svelte';
 	import HardBreakIcon from '$assets/icons/editor/break.svelte';
 	import { Typography } from '@tiptap/extension-typography';
-	import { HeadingWithID } from '$components/editor/HeadingWithId';
 	import { createEventDispatcher } from 'svelte';
 	import Gapcursor from '@tiptap/extension-gapcursor'
+	import Heading from '@tiptap/extension-heading';
 
 	const dispatch = createEventDispatcher();
 	export let content;
@@ -34,7 +34,9 @@
 		editor = createEditor({
 			extensions: [
 				StarterKit,
-				HeadingWithID,
+				Heading.configure({
+					levels: [2],
+				}),
 				Highlight,
 				Link.configure({
 					protocols: ['http', 'https', 'mailto'],
@@ -61,7 +63,7 @@
 		});
 	});
 
-	const toggleHeading = (level: 1 | 2) => {
+	const toggleHeading = (level: 2) => {
 		return () => {
 			$editor.chain().focus().toggleHeading({ level }).run();
 		};
