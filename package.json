@@ -68,6 +68,6 @@
 		"@tiptap/extension-underline": "^2.5.5",
 		"@tiptap/pm": "^2.5.5",
 		"@tiptap/starter-kit": "^2.5.5",
-		"uuid": "^10.0.0"
+		"tiptap-unique-id": "^2.0.0"
 	}
 }

@@ -42,7 +42,8 @@
 	import { CustomCodeBlock } from '$components/editor/CustomCodeBlock';
 	import Check from '$assets/icons/check.svelte';
 	import { Typography } from '@tiptap/extension-typography';
-	import { HeadingWithID } from '$components/editor/HeadingWithId';
+	import UniqueId from "tiptap-unique-id";
+	import Heading from '@tiptap/extension-heading';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import Image from '$components/editor/Image';
 	import { createEventDispatcher } from 'svelte';
@@ -60,7 +61,14 @@
 		editor = createEditor({
 			extensions: [
 				StarterKit,
-				HeadingWithID,
+				Heading.configure({
+					levels: [2, 3, 4],
+				}),
+				UniqueId.configure({
+					attributeName: "id",
+					types: ["paragraph", "heading",],
+					createId: () => window.crypto.randomUUID(),
+				}),
 				Highlight,
 				Link.configure({
 					protocols: ['http', 'https', 'mailto'],
@@ -107,7 +115,7 @@
 		});
 	});
 
-	const toggleHeading = (level: 1 | 2) => {
+	const toggleHeading = (level: 2 | 3 | 4) => {
 		return () => {
 			$editor.chain().focus().toggleHeading({ level }).run();
 		};
@@ -240,19 +248,19 @@
 			name: 'heading-2',
 			command: toggleHeading(2),
 			content: H2Icon,
-			active: () => isActive('headingWithID', { level: 2 })
+			active: () => isActive('heading', { level: 2 })
 		},
 		{
 			name: 'heading-3',
 			command: toggleHeading(3),
 			content: H3Icon,
-			active: () => isActive('headingWithID', { level: 3 })
+			active: () => isActive('heading', { level: 3 })
 		},
 		{
 			name: 'heading-4',
 			command: toggleHeading(4),
 			content: H4Icon,
-			active: () => isActive('headingWithID', { level: 4 })
+			active: () => isActive('heading', { level: 4 })
 		},
 		{
 			name: 'bold',
