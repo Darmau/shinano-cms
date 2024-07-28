@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import type { Readable } from 'svelte/store';
 	import StarterKit from '@tiptap/starter-kit';
 	import Highlight from '@tiptap/extension-highlight';
@@ -42,12 +42,11 @@
 	import { CustomCodeBlock } from '$components/editor/CustomCodeBlock';
 	import Check from '$assets/icons/check.svelte';
 	import { Typography } from '@tiptap/extension-typography';
-	import UniqueId from "tiptap-unique-id";
+	import UniqueId from 'tiptap-unique-id';
 	import Heading from '@tiptap/extension-heading';
 	import ImagesModel from '$components/editor/ImagesModel.svelte';
 	import Image from '$components/editor/Image';
-	import { createEventDispatcher } from 'svelte';
-	import Gapcursor from '@tiptap/extension-gapcursor'
+	import Gapcursor from '@tiptap/extension-gapcursor';
 
 	const dispatch = createEventDispatcher();
 	export let data;
@@ -66,7 +65,7 @@
 				}),
 				UniqueId.configure({
 					attributeName: "id",
-					types: ["paragraph", "heading",],
+					types: ["heading",],
 					createId: () => window.crypto.randomUUID(),
 				}),
 				Highlight,
@@ -248,19 +247,19 @@
 			name: 'heading-2',
 			command: toggleHeading(2),
 			content: H2Icon,
-			active: () => isActive('heading', { level: 2 })
+			active: () => isActive('heading-2', { level: 2 })
 		},
 		{
 			name: 'heading-3',
 			command: toggleHeading(3),
 			content: H3Icon,
-			active: () => isActive('heading', { level: 3 })
+			active: () => isActive('heading-3', { level: 3 })
 		},
 		{
 			name: 'heading-4',
 			command: toggleHeading(4),
 			content: H4Icon,
-			active: () => isActive('heading', { level: 4 })
+			active: () => isActive('heading-4', { level: 4 })
 		},
 		{
 			name: 'bold',

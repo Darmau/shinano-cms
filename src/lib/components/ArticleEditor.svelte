@@ -394,12 +394,17 @@
 				>
 			</div>
 		</div>
-    <div>{JSON.stringify(articleContent.content_json)}</div>
+
 		<!--Content-->
 		<Tiptap
 			on:contentUpdate = {handleContentUpdate} {data} content =
 			{articleContent.content_json} bind:this = {editorComponent}
 		/>
+		<button
+			type="button"
+			on:click = {getTranslation}
+			class="rounded-md bg-cyan-50 px-3 py-2 text-sm font-semibold text-cyan-600 shadow-sm hover:bg-cyan-100"
+		>{$t('translate')}</button>
 	</div>
 
 	<aside class = "col-span-1 space-y-8">
