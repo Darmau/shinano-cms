@@ -793,7 +793,7 @@ create policy "Get articles for authenticated users" on public.article for
 select
   to authenticated using (not is_draft);
 
-create policy "Get limited article info for anonymous users" on public.article for
+create policy "Get articles info for anonymous users" on public.article for
 select
   to anon using (not is_draft);
 
@@ -814,23 +814,11 @@ create policy "Get Photos of Album" on public.photo_image for
 select
   to anon using (true);
 
-create policy "Get Photos of Album for authenticated users" on public.photo_image
- for
+create policy "Get Photos of Album for authenticated users" on public.photo_image for
 select
   to authenticated using (true);
 
 create policy "Manage Photos of Album" on public.photo_image for all to authenticated using (is_admin ());
-
--- 视频
-create policy "Get All Videos" on public.video for
-select
-  to anon using (not is_draft);
-
-create policy "Get Videos for authenticated users" on public.video for
-select
-  to authenticated using (not is_draft);
-
-create policy "Manage Videos" on public.video for all to authenticated using (is_admin ());
 
 -- 想法
 create policy "Get All Thoughts" on public.thought for
@@ -894,8 +882,7 @@ create policy "Authenticated User Can React" on public.reaction for insert to au
 with
   check (not user_is_blocked ());
 
-create policy "Users Can Cancel Their Own Reactions" on public.reaction
- for delete to authenticated using (public.user_is_react_owner ());
+create policy "Users Can Cancel Their Own Reactions" on public.reaction for delete to authenticated using (public.user_is_react_owner ());
 
 -- 图片
 create policy "Get Images" on public.image for
@@ -920,28 +907,24 @@ select
 create policy "Manage Languages" on public.language for all to authenticated using (is_admin ());
 
 -- 信息
--- 允许所有认证用户发送消息
-create policy "Send Message" on public.message for insert to authenticated
+create policy "Logged Users Can Send Message" on public.message for insert to authenticated
 with
-  check (true);
+  check (not is_admin ());
 
--- 允许管理员查看所有消息
-create policy "Admin View Messages" on public.message for
+create policy "Get Messages" on public.message for
 select
-  to authenticated using (true);
+  to authenticated using (is_admin ());
 
--- 允许管理员更新所有消息
-create policy "Admin Update Messages" on public.message
+create policy "Read Messages" on public.message
 for update
   to authenticated using (is_admin ());
 
-create policy "Delete Messages for Admin" on public.message for delete to authenticated using (is_admin ());
-
--- 允许管理员删除所有消息
-create policy "Admin Delete Messages" on public.message for delete to authenticated using (is_admin ());
+create policy "Delete Messages" on public.message for delete to authenticated using (is_admin ());
 
 -- 用户
-create policy "Get Users" on public.users for select to authenticated using (true);
+create policy "Get Users" on public.users for
+select
+  to authenticated using (true);
 
 create policy "Manage Users" on public.users for all to authenticated using (is_admin ());
 
