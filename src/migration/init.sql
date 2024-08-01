@@ -653,7 +653,7 @@ or replace function public.is_admin () returns boolean language plpgsql security
 begin
   return exists (
     select 1 from public.users
-    where (select auth.uid()) = user_id and role = 'admin'
+    where (auth.uid()) = user_id and role = 'admin'
   );
 end;
 $$;
@@ -920,11 +920,25 @@ select
 create policy "Manage Languages" on public.language for all to authenticated using (is_admin ());
 
 -- 信息
+-- 允许所有认证用户发送消息
 create policy "Send Message" on public.message for insert to authenticated
 with
   check (true);
 
-create policy "Manage Message" on public.message for all to authenticated using (is_admin ());
+-- 允许管理员查看所有消息
+create policy "Admin View Messages" on public.message for
+select
+  to authenticated using (true);
+
+-- 允许管理员更新所有消息
+create policy "Admin Update Messages" on public.message
+for update
+  to authenticated using (is_admin ());
+
+create policy "Delete Messages for Admin" on public.message for delete to authenticated using (is_admin ());
+
+-- 允许管理员删除所有消息
+create policy "Admin Delete Messages" on public.message for delete to authenticated using (is_admin ());
 
 -- 用户
 create policy "Get Users" on public.users for select to authenticated using (true);
