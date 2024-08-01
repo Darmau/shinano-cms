@@ -9,6 +9,7 @@ export const load: PageServerLoad = async ({ url,params: { page }, locals: { sup
 		.from('message')
 		.select('*')
 		.range((pageNumber - 1) * limit, pageNumber * limit - 1)
+	  .order('is_read', { ascending: true })
 		.order('created_at', { ascending: false });
 
 	// 获取image表中数据的条目数

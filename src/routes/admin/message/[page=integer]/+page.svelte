@@ -83,7 +83,6 @@
 
 <div class = "">
 	<PageTitle title = {$t('message')} />
-	<div>{JSON.stringify(data.messages)}</div>
 	<div class = "flex gap-4 items-center justify-between">
 		<button
 			type = "button"
@@ -174,7 +173,9 @@
 									</td>
 									<td
 										class =
-											"break-words py-4 pl-4 pr-3 text-sm font-medium text-gray-900"
+											{`${message.is_read ? 'font-normal text-gray-400' :
+											'font-bold text-gray-900'
+											} break-words py-4 pl-4 pr-3 text-sm`}
 									>
 										{message.name}
 										<dl class = "font-normal lg:hidden">
@@ -185,7 +186,9 @@
 										</dl>
 									</td>
 									<td
-										class = "hidden px-3 py-4 text-sm text-gray-500 lg:table-cell"
+										class = {`${message.is_read ? 'font-normal text-gray-400' :
+											'font-bold text-gray-900'
+											} hidden px-3 py-4 text-sm lg:table-cell`}
 									>{message.message.slice(0, 12)}
 									</td>
 									<td
@@ -205,7 +208,7 @@
 											"relative whitespace-nowrap py-4 pl-3 pr-4 space-x-4 text-right text-sm font-medium sm:pr-6"
 									>
 										<a
-											href = {`/admin/message/${message.id}`}
+											href = {`/admin/message/detail/${message.id}`}
 											class = "text-cyan-600 hover:text-cyan-900"
 										>{$t('view')}</a>
 										<button
@@ -225,15 +228,7 @@
 		{:else}
 			<div class = "flex flex-col items-center justify-center text-center min-h-80">
 				<ArticleIcon classList="mx-auto h-12 w-12 text-gray-400" />
-				<h3 class = "mt-2 text-sm font-semibold text-gray-900">No thoughts</h3>
-				<div class = "mt-6">
-					<a
-						href = "/admin/thought/new"
-						class = "inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600"
-					>
-						{$t('add-new')}
-					</a>
-				</div>
+				<h3 class = "mt-2 text-sm font-semibold text-gray-900">No message</h3>
 			</div>
 
 		{/if}
