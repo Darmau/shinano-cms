@@ -100,6 +100,12 @@ const translations: Translation = {
 		"photos-count": "照片数量",
 		"image": "图片",
 		"translate": "翻译",
+		"sender": "发送人",
+		"contact_type": "联系渠道",
+		"contact": "联系方式",
+		"message": "消息",
+		"send_time": "发送时间",
+		"view": "查看",
 	},
 	"en": {
 		"home": "Home",
@@ -195,6 +201,12 @@ const translations: Translation = {
 		"photos-count": "Photos Count",
 		"image": "Image",
 		"translate": "Translate",
+		"sender": "Sender",
+		"contact_type": "Contact Type",
+		"contact": "Contact",
+		"message": "Message",
+		"send_time": "Send Time",
+		"view": "View",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -290,6 +302,12 @@ const translations: Translation = {
 		"photos-count": "照片數量",
 		"image": "圖片",
 		"translate": "翻譯",
+		"sender": "發送人",
+		"contact_type": "聯繫方式",
+		"contact": "聯繫方式",
+		"message": "消息",
+		"send_time": "發送時間",
+		"view": "查看",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -385,6 +403,12 @@ const translations: Translation = {
 		"photos-count": "写真の数",
 		"image": "画像",
 		"translate": "翻訳",
+		"sender": "送信者",
+		"contact_type": "連絡方法",
+		"contact": "連絡先",
+		"message": "メッセージ",
+		"send_time": "送信時間",
+		"view": "表示",
 	}
 }
 

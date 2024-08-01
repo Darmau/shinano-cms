@@ -653,7 +653,7 @@ or replace function public.is_admin () returns boolean language plpgsql security
 begin
   return exists (
     select 1 from public.users
-    where (auth.uid()) = user_id and role = 'admin'
+    where (select auth.uid()) = user_id and role = 'admin'
   );
 end;
 $$;

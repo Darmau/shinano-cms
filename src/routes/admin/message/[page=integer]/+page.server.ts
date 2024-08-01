@@ -3,10 +3,10 @@ import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ url,params: { page }, locals: { supabase } }) => {
 	const pageNumber = Number(page)
-	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 15
+	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 16
 
-	const { data: users, error: fetchError } = await supabase
-		.from('users')
+	const { data: messages, error: fetchError } = await supabase
+		.from('message')
 		.select('*')
 		.range((pageNumber - 1) * limit, pageNumber * limit - 1)
 		.order('created_at', { ascending: false });
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ url,params: { page }, locals: { sup
 
 	return {
 		page: pageNumber,
-		users: users,
+		messages: messages,
 		count: count ?? 0,
 		limit: limit,
 		path: path
