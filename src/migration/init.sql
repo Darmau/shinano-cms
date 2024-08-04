@@ -271,7 +271,7 @@ CREATE TABLE
     "to_video" BIGINT,
     "is_blocked" BOOLEAN DEFAULT false,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
-    "reply_to" BIGINT DEFAULT 0,
+    "reply_to" BIGINT,
     "upvote" INT DEFAULT 0,
     "downvote" INT DEFAULT 0,
     "is_anonymous" BOOLEAN DEFAULT false,
@@ -907,9 +907,9 @@ select
 create policy "Manage Languages" on public.language for all to authenticated using (is_admin ());
 
 -- 信息
-create policy "Logged Users Can Send Message" on public.message for insert to authenticated
-with
-  check (not is_admin ());
+CREATE POLICY "Logged Users Can Send Message" ON public.message FOR INSERT TO authenticated
+WITH
+  CHECK (true);
 
 create policy "Get Messages" on public.message for
 select
@@ -924,7 +924,11 @@ create policy "Delete Messages" on public.message for delete to authenticated us
 -- 用户
 create policy "Get Users" on public.users for
 select
-  to authenticated using (true);
+  to anon using (true);
+
+create policy "Get Users for Authenticated" on public.users for
+select
+to authenticated using (true);
 
 create policy "Manage Users" on public.users for all to authenticated using (is_admin ());
 
@@ -1021,6 +1025,103 @@ SELECT
   $$
   );
 
+-- 阅读量
+CREATE
+OR REPLACE FUNCTION article_page_view (article_id BIGINT) RETURNS BIGINT LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE
+  new_page_view BIGINT;
+BEGIN
+  IF article_id IS NULL THEN
+    RAISE EXCEPTION 'article_id cannot be null';
+  END IF;
+
+  UPDATE article
+  SET page_view = page_view + 1
+  WHERE id = article_id
+  RETURNING page_view INTO new_page_view;
+
+  IF new_page_view IS NULL THEN
+    RAISE EXCEPTION 'Article with id % not found', article_id;
+  END IF;
+
+  RETURN new_page_view;
+END;
+$$;
+
+ALTER FUNCTION article_page_view (BIGINT)
+SET
+  search_path = public,
+  pg_temp;
+
+GRANT
+EXECUTE ON FUNCTION article_page_view (BIGINT) TO authenticated,
+anon;
+
+CREATE
+OR REPLACE FUNCTION photo_page_view (photo_id BIGINT) RETURNS BIGINT LANGUAGE
+plpgsql SECURITY DEFINER AS $$
+DECLARE
+  new_page_view BIGINT;
+BEGIN
+  IF photo_id IS NULL THEN
+    RAISE EXCEPTION 'photo_id cannot be null';
+  END IF;
+
+  UPDATE photo
+  SET page_view = page_view + 1
+  WHERE id = photo_id
+  RETURNING page_view INTO new_page_view;
+
+  IF new_page_view IS NULL THEN
+    RAISE EXCEPTION 'Photo with id % not found', photo_id;
+  END IF;
+
+  RETURN new_page_view;
+END;
+$$;
+
+ALTER FUNCTION photo_page_view (BIGINT)
+SET
+  search_path = public,
+  pg_temp;
+
+GRANT
+EXECUTE ON FUNCTION photo_page_view (BIGINT) TO authenticated,
+anon;
+
+CREATE
+OR REPLACE FUNCTION thought_page_view (thought_id BIGINT) RETURNS BIGINT
+LANGUAGE plpgsql SECURITY DEFINER AS $$
+DECLARE
+  new_page_view BIGINT;
+BEGIN
+  IF thought_id IS NULL THEN
+    RAISE EXCEPTION 'thought_id cannot be null';
+  END IF;
+
+  UPDATE thought
+  SET page_view = page_view + 1
+  WHERE id = thought_id
+  RETURNING page_view INTO new_page_view;
+
+  IF new_page_view IS NULL THEN
+    RAISE EXCEPTION 'Thought with id % not found', thought_id;
+  END IF;
+
+  RETURN new_page_view;
+END;
+$$;
+
+ALTER FUNCTION thought_page_view (BIGINT)
+SET
+  search_path = public,
+  pg_temp;
+
+GRANT
+EXECUTE ON FUNCTION thought_page_view (BIGINT) TO authenticated,
+anon;
+
+
 -- 允许全文搜索插件
 create extension pgroonga
 with
@@ -1049,3 +1150,4 @@ create index video_content ON video USING pgroonga (content_text);
 create index thought_content ON thought USING pgroonga (content_text);
 
 create index comment_content ON comment USING pgroonga (content_text);
+
