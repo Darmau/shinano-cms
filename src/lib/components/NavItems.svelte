@@ -11,9 +11,12 @@
 	import Setting from '$assets/icons/cog.svelte';
 	import { page } from '$app/stores';
 	import { t } from '$lib/functions/i18n';
+	import UnreadBadge from '$components/UnreadBadge.svelte';
 
 	export let data;
 	export let menuOpen;
+	export let message;
+	export let comment;
 
 	const navItems = [
 		{ name: 'home', href: '/admin', icon: Home },
@@ -33,17 +36,13 @@
 	<ul role = "list" class = "flex flex-1 flex-col gap-y-2">
 
 		{#each navItems as item}
-			<li>
+			<li class = "relative">
 				<a
 					href = {item.href}
 					on:click = {() => menuOpen = false}
 					data-sveltekit-preload-data = "tap"
-					class = {
-                       $page.url.pathname === item.href
-                         ? 'text-cyan-600 bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                         :
-                         'text-gray-700 hover:text-cyan-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                     }
+					class = {$page.url.pathname === item.href ?
+					'text-cyan-600 bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold' : 'text-gray-700 hover:text-cyan-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'}
 				>
 					<svelte:component
 						this = {item.icon} classList = {
@@ -54,6 +53,11 @@
 					/>
 					{$t(item.name)}
 				</a>
+				{#if item.name === 'message' && message > 0}
+					<UnreadBadge count={message} />
+				{:else if item.name === 'comment' && comment > 0}
+					<UnreadBadge count={comment} />
+				{/if}
 			</li>
 		{/each}
 

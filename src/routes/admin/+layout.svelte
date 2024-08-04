@@ -10,7 +10,7 @@
 
 <div class = "frame">
   <nav class = "sidebar">
-    <Navbar message={data.unread_message_count}/>
+    <Navbar message={data.message_count} comment={data.comment_count}/>
   </nav>
   <main class = "main bg-white">
     <slot/>
