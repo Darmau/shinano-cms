@@ -3,7 +3,7 @@ import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ url,params: { page }, locals: { supabase } }) => {
 	const pageNumber = Number(page)
-	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 15
+	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 16
 
 	const { data: users, error: fetchError } = await supabase
 		.from('users')
