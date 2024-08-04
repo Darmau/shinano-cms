@@ -585,7 +585,7 @@
 			</div>
 			<div class = "mt-2">
 				<textarea
-					name = "abstract" id = "abstract" rows = "3"
+					name = "abstract" id = "abstract" rows = "5"
 					bind:value = {articleContent.abstract}
 					placeholder = "使用AI为文章生成摘要"
 					class =
