@@ -26,7 +26,7 @@
 		{ name: 'photo', href: '/admin/photo/1', icon: Photo },
 		{ name: 'thought', href: '/admin/thought/1', icon: Memo },
 		{ name: 'category', href: '/admin/category', icon: Category },
-		{ name: 'comment', href: '/admin/comment', icon: Comment },
+		{ name: 'comment', href: '/admin/comment/1', icon: Comment },
 		{ name: 'user', href: '/admin/users/1', icon: User },
 		{ name: 'setting', href: '/admin/setting', icon: Setting }
 	];
