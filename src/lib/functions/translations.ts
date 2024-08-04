@@ -107,6 +107,10 @@ const translations: Translation = {
 		"view": "查看",
 		"block_user": "封禁用户",
 		"unblock_user": "解封用户",
+		"anonymous_comment": "匿名评论",
+		"set_public": "设为公开",
+		"block_comment": "封禁评论",
+		"unblock_comment": "解封评论",
 	},
 	"en": {
 		"home": "Home",
@@ -209,6 +213,10 @@ const translations: Translation = {
 		"view": "View",
 		"block_user": "Block User",
 		"unblock_user": "Unblock User",
+		"anonymous_comment": "Anonymous Comment",
+		"set_public": "Set Public",
+		"block_comment": "Block Comment",
+		"unblock_comment": "Unblock Comment",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -309,8 +317,12 @@ const translations: Translation = {
 		"contact": "聯繫方式",
 		"send_time": "發送時間",
 		"view": "查看",
-		"block_user": "封禁用户",
-		"unblock_user": "解封用户",
+		"block_user": "封禁用戶",
+		"unblock_user": "解封用戶",
+		"anonymous_comment": "匿名評論",
+		"set_public": "設為公開",
+		"block_comment": "封禁評論",
+		"unblock_comment": "解封評論"
 	},
 	"jp": {
 		"home": "ホーム",
@@ -413,6 +425,10 @@ const translations: Translation = {
 		"view": "表示",
 		"block_user": "ユーザーをブロック",
 		"unblock_user": "ユーザーのブロックを解除",
+		"anonymous_comment": "匿名コメント",
+		"set_public": "公開に設定",
+		"block_comment": "コメントをブロック",
+		"unblock_comment": "コメントのブロックを解除"
 	}
 }
 

@@ -1,13 +1,16 @@
 <script lang="ts">
   import Navbar from "$components/Navbar.svelte";
   import Footer from "$components/Footer.svelte";
+  import type { LayoutData } from './$types';
+
+  export let data: LayoutData;
 </script>
 
 <svelte:head></svelte:head>
 
 <div class = "frame">
   <nav class = "sidebar">
-    <Navbar/>
+    <Navbar message={data.message_count} comment={data.comment_count}/>
   </nav>
   <main class = "main bg-white">
     <slot/>
