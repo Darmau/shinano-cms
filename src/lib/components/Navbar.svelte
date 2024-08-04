@@ -12,6 +12,7 @@
   import Category from '$assets/icons/rectangle-stack.svelte';
   import {page} from '$app/stores';
   import { t, locale, locales } from '$lib/functions/i18n';
+  import NavItems from '$components/NavItems.svelte';
 
   const navItems = [
     {name: 'home', href: '/admin', icon: Home},
@@ -27,6 +28,8 @@
   ];
 
   let menuOpen = false;
+
+  export let data;
 </script>
 
 <div>
@@ -91,34 +94,7 @@
                 alt = "Your Company"
               >
             </div>
-            <nav class = "flex flex-1 flex-col">
-              <ul role = "list" class = "flex flex-1 flex-col gap-y-2">
-                {#each navItems as item}
-                  <li>
-                    <a
-                      href = {item.href}
-                      on:click={() => menuOpen = false}
-                      data-sveltekit-preload-data="tap"
-                      class = {
-                       $page.url.pathname === item.href
-                         ? 'text-cyan-600 bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                         :
-                         'text-gray-700 hover:text-cyan-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                     }
-                    >
-                      <svelte:component
-                        this = {item.icon} classList = {
-                    $page.url.pathname === item.href
-                      ? 'h-6 w-6 shrink-0 text-cyan-600'
-                      : 'h-6 w-6 shrink-0 text-gray-400 group-hover:text-cyan-600'
-                    }
-                      />
-                      {$t(item.name)}
-                    </a>
-                  </li>
-                {/each}
-              </ul>
-            </nav>
+            <NavItems {data} bind:menuOpen={menuOpen}/>
             <select
               bind:value={$locale}
               class="rounded-md bg-white px-3 py-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"
@@ -148,33 +124,7 @@
           alt = "可可托海没有海管理后台"
         >
       </div>
-      <nav class = "flex flex-1 flex-col">
-        <ul role = "list" class = "flex flex-1 flex-col gap-2">
-              {#each navItems as item}
-                <li>
-                  <a
-                    href = {item.href}
-                    data-sveltekit-preload-data="hover"
-                    class = {
-                       $page.url.pathname === item.href
-                         ? 'text-cyan-600 bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                         :
-                         'text-gray-700 hover:text-cyan-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
-                     }
-                  >
-                    <svelte:component
-                      this = {item.icon} classList = {
-                    $page.url.pathname === item.href
-                      ? 'h-6 w-6 shrink-0 text-cyan-600'
-                      : 'h-6 w-6 shrink-0 text-gray-400 group-hover:text-cyan-600'
-                    }
-                    />
-                    {$t(item.name)}
-                  </a>
-                </li>
-              {/each}
-        </ul>
-      </nav>
+      <NavItems {data} bind:menuOpen={menuOpen}/>
       <select
         bind:value={$locale}
         class="justify-self-end rounded-md border bg-white p-2 text-sm text-gray-900 shadow-sm hover:bg-gray-50"

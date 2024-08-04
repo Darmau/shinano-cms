@@ -274,7 +274,7 @@
 
 									<td
 										class =
-											"relative space-y-4 sm:space-y-2 sm:space-x-4 py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+											"space-y-4 sm:space-y-2 sm:space-x-4 py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 									>
 										<a
 											href = {`/admin/article/edit/${article.id}`}

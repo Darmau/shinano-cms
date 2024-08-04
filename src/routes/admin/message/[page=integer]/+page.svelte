@@ -149,7 +149,7 @@
 							</tr>
 							</thead>
 							<tbody class = "divide-y divide-gray-200 bg-white">
-							<!--文章数据-->
+							<!--消息数据-->
 							{#each data.messages as message (message.id)}
 								<tr
 									class = "even:bg-gray-50 hover:bg-gray-100 cursor-cell"
