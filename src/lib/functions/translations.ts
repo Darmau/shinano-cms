@@ -103,9 +103,10 @@ const translations: Translation = {
 		"sender": "发送人",
 		"contact_type": "联系渠道",
 		"contact": "联系方式",
-		"message": "消息",
 		"send_time": "发送时间",
 		"view": "查看",
+		"block_user": "封禁用户",
+		"unblock_user": "解封用户",
 	},
 	"en": {
 		"home": "Home",
@@ -204,9 +205,10 @@ const translations: Translation = {
 		"sender": "Sender",
 		"contact_type": "Contact Type",
 		"contact": "Contact",
-		"message": "Message",
 		"send_time": "Send Time",
 		"view": "View",
+		"block_user": "Block User",
+		"unblock_user": "Unblock User",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -305,9 +307,10 @@ const translations: Translation = {
 		"sender": "發送人",
 		"contact_type": "聯繫方式",
 		"contact": "聯繫方式",
-		"message": "消息",
 		"send_time": "發送時間",
 		"view": "查看",
+		"block_user": "封禁用户",
+		"unblock_user": "解封用户",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -406,9 +409,10 @@ const translations: Translation = {
 		"sender": "送信者",
 		"contact_type": "連絡方法",
 		"contact": "連絡先",
-		"message": "メッセージ",
 		"send_time": "送信時間",
 		"view": "表示",
+		"block_user": "ユーザーをブロック",
+		"unblock_user": "ユーザーのブロックを解除",
 	}
 }
 
