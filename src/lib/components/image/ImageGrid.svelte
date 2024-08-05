@@ -179,7 +179,7 @@
 				{#if image.taken_at}
 					<div>
 						<h4 class = "font-medium text-sm mb-1">{$t('shooting-time')}</h4>
-						<p class = "text-sm text-gray-700">{localTime(image.taken_at)}</p>
+						<p class = "text-sm text-gray-700">{image.taken_at}</p>
 					</div>
 				{/if}
 				{#if image.location}
