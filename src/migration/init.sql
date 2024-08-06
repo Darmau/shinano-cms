@@ -399,7 +399,9 @@ CREATE TABLE
 
 -- 函数和触发器
 CREATE
-OR REPLACE FUNCTION manage_default_language () RETURNS TRIGGER AS $$
+OR REPLACE FUNCTION manage_default_language () RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_default IS TRUE THEN
@@ -426,7 +428,7 @@ BEGIN
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER manage_default_language BEFORE INSERT
 OR
@@ -436,12 +438,14 @@ EXECUTE FUNCTION manage_default_language ();
 
 -- 替换置顶文章
 CREATE
-OR REPLACE FUNCTION replace_top_article () RETURNS TRIGGER AS $$
+OR REPLACE FUNCTION public.replace_top_article () RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_top IS TRUE THEN
         -- 更新其他具有相同lang且is_top为true的文章
-        UPDATE article
+        UPDATE public.article
         SET is_top = false
         WHERE is_top = true
           AND lang = NEW.lang
@@ -456,7 +460,7 @@ BEGIN
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trigger_switch_top_article BEFORE INSERT
 OR
@@ -465,7 +469,10 @@ EXECUTE FUNCTION replace_top_article ();
 
 -- 替换置顶摄影
 CREATE
-OR REPLACE FUNCTION replace_top_photo () RETURNS TRIGGER AS $$
+OR REPLACE FUNCTION public.replace_top_photo () RETURNS TRIGGER LANGUAGE
+plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_top IS TRUE THEN
@@ -485,7 +492,7 @@ BEGIN
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trigger_switch_top_photo BEFORE INSERT
 OR
@@ -494,7 +501,10 @@ EXECUTE FUNCTION replace_top_photo ();
 
 -- 替换置顶视频
 CREATE
-OR REPLACE FUNCTION replace_top_video () RETURNS TRIGGER AS $$
+OR REPLACE FUNCTION public.replace_top_video () RETURNS TRIGGER LANGUAGE
+plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
 BEGIN
     -- 处理INSERT和UPDATE
     IF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND NEW.is_top IS TRUE THEN
@@ -514,7 +524,7 @@ BEGIN
         RETURN OLD;
     END IF;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER trigger_switch_top_video BEFORE INSERT
 OR
@@ -523,28 +533,30 @@ EXECUTE FUNCTION replace_top_video ();
 
 -- 同步auth新用户信息
 CREATE
-OR REPLACE FUNCTION sync_new_user () RETURNS TRIGGER AS $$
-declare
+OR REPLACE FUNCTION public.sync_new_user () RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = '' AS $$
+DECLARE
   count_users int;
-begin
+BEGIN
   -- Count the number of users in the public.users table
-  select count(*) into count_users from public.users;
+  SELECT count(*) INTO count_users FROM public.users;
 
   -- Insert a new record into public.users
-  insert into public.users (user_id, name, source, role)
-  values (
-    new.id,
-    new.raw_user_meta_data->>'name',
-    new.raw_app_meta_data->>'provider',
-    case
-      when count_users > 0 then 'reader'::public.role
-      else 'admin'::public.role
-    end
+  INSERT INTO public.users (user_id, name, source, role)
+  VALUES (
+    NEW.id,
+    NEW.raw_user_meta_data->>'name',
+    NEW.raw_app_meta_data->>'provider',
+    CASE
+      WHEN count_users > 0 THEN 'reader'::public.role
+      ELSE 'admin'::public.role
+    END
   );
 
-  return new;
-end;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+  RETURN NEW;
+END;
+$$;
 
 CREATE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users FOR EACH ROW
@@ -552,7 +564,9 @@ EXECUTE PROCEDURE sync_new_user ();
 
 -- 创建语言时同时创建默认分类
 CREATE
-OR REPLACE FUNCTION insert_default_categories () RETURNS TRIGGER AS $$
+OR REPLACE FUNCTION insert_default_categories () RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
 BEGIN
   -- 插入article类型的默认分类
   INSERT INTO category (lang, title, description, type, slug)
@@ -568,7 +582,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER insert_default_categories_after_language_created
 AFTER INSERT ON language FOR EACH ROW
@@ -576,7 +590,9 @@ EXECUTE FUNCTION insert_default_categories ();
 
 -- 如果是匿名评论，is_public设置为false
 CREATE
-OR REPLACE FUNCTION set_comment_is_public () RETURNS TRIGGER AS $$
+OR REPLACE FUNCTION set_comment_is_public () RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = '' AS $$
 BEGIN
   IF NEW.is_anonymous = TRUE THEN
     NEW.is_public = FALSE;
@@ -584,11 +600,13 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- 检查文章发布的发布时间
-CREATE OR REPLACE FUNCTION update_published_time()
-RETURNS TRIGGER AS $$
+CREATE
+OR REPLACE FUNCTION update_published_time () RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
 BEGIN
     IF NEW.is_draft = false AND OLD.is_draft = true THEN
         IF NEW.published_at IS NULL THEN
@@ -599,8 +617,7 @@ BEGIN
     END IF;
     RETURN NEW;
 END;
-$$
- LANGUAGE plpgsql;
+$$;
 
 CREATE TRIGGER check_article_update_time
 BEFORE UPDATE ON article
@@ -649,7 +666,9 @@ ALTER TABLE stats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reaction ENABLE ROW LEVEL SECURITY;
 
 create
-or replace function public.is_admin () returns boolean language plpgsql security definer as $$
+or replace function public.is_admin () returns boolean language plpgsql security definer
+set
+  search_path = '' as $$
 begin
   return exists (
     select 1 from public.users
@@ -658,18 +677,24 @@ begin
 end;
 $$;
 
-create
-or replace function public.user_is_comment_owner () returns boolean language plpgsql security definer as $$
-begin
-return exists (
-  select 1 from public.comment
-  join public.users on public.users.id = public.comment.user_id
-  where auth.uid() = public.users.user_id
-);
-end;
+CREATE
+OR REPLACE FUNCTION public.user_is_comment_owner () RETURNS boolean LANGUAGE plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1
+    FROM public.comment
+    JOIN public.users ON public.users.id = public.comment.user_id
+    WHERE auth.uid() = public.users.user_id
+  );
+END;
 $$;
 
-create or replace function public.user_is_react_owner () returns boolean language plpgsql security definer as $$
+create
+or replace function public.user_is_react_owner () returns boolean language plpgsql security definer
+set
+  search_path = '' as $$
 begin
 return exists (
   select 1 from public.reaction
@@ -680,7 +705,9 @@ end;
 $$;
 
 create
-or replace function public.user_is_blocked () returns boolean language plpgsql security definer as $$
+or replace function public.user_is_blocked () returns boolean language plpgsql security definer
+set
+  search_path = '' as $$
 begin
 return exists (
   select 1 from public.users
@@ -690,10 +717,9 @@ end;
 $$;
 
 CREATE
-OR REPLACE FUNCTION public.get_article_count_by_year (lang_name text) RETURNS TABLE (year text, count bigint) LANGUAGE plpgsql SECURITY DEFINER
+OR REPLACE FUNCTION public.get_article_count_by_year (lang_name text) RETURNS TABLE (year text, count bigint) LANGUAGE plpgsql SECURITY INVOKER
 SET
-  search_path = public,
-  pg_temp AS $$
+  search_path = '' AS $$
 DECLARE
   lang_id integer;
 BEGIN
@@ -720,46 +746,19 @@ END;
 $$;
 
 CREATE
-OR REPLACE FUNCTION public.get_photography_count_by_year (lang_name text)
-RETURNS TABLE (year text, count bigint) LANGUAGE plpgsql SECURITY DEFINER
+OR REPLACE FUNCTION public.get_article_count_by_category (lang_name text) RETURNS TABLE (title TEXT, slug TEXT, count BIGINT) LANGUAGE plpgsql SECURITY INVOKER
 SET
-  search_path = public,
-  pg_temp AS $$
-DECLARE
-  lang_id integer;
+  search_path = '' AS $$
 BEGIN
-  -- 首先在language表中查找对应的语言id
-  SELECT id INTO lang_id
-  FROM public.language
-  WHERE lang = lang_name;
-
-  -- 如果找不到对应的语言,返回空结果
-  IF lang_id IS NULL THEN
-    RETURN;
-  END IF;
-
-  -- 使用找到的lang_id来筛选文章并按年份统计
   RETURN QUERY
-  SELECT
-    EXTRACT(YEAR FROM published_at)::text AS year,
-    COUNT(id)::bigint AS count
-  FROM public.photo
-  WHERE lang = lang_id
-  GROUP BY EXTRACT(YEAR FROM published_at)
-  ORDER BY year DESC;
-END;
-$$;
-
-CREATE
-OR REPLACE FUNCTION public.get_article_count_by_category (lang_name text) RETURNS TABLE (title TEXT, slug TEXT, count BIGINT) LANGUAGE SQL AS $$
   SELECT
     c.title,
     c.slug,
     COUNT(a.id)::BIGINT AS count
   FROM
-    category c
-    LEFT JOIN article a ON c.id = a.category
-    JOIN language l ON c.lang = l.id
+    public.category c
+    LEFT JOIN public.article a ON c.id = a.category
+    JOIN public.language l ON c.lang = l.id
   WHERE
     l.lang = lang_name
     AND c.type = 'article'
@@ -767,25 +766,7 @@ OR REPLACE FUNCTION public.get_article_count_by_category (lang_name text) RETURN
     c.id, c.title, c.slug
   ORDER BY
     count DESC;
-$$;
-
-CREATE
-OR REPLACE FUNCTION public.get_photography_count_by_category (lang_name text) RETURNS TABLE (title TEXT, slug TEXT, count BIGINT) LANGUAGE SQL AS $$
-  SELECT
-    c.title,
-    c.slug,
-    COUNT(p.id)::BIGINT AS count
-  FROM
-    category c
-    LEFT JOIN photo p ON c.id = p.category
-    JOIN language l ON c.lang = l.id
-  WHERE
-    l.lang = lang_name
-    AND c.type = 'photo'
-  GROUP BY
-    c.id, c.title, c.slug
-  ORDER BY
-    count DESC;
+END;
 $$;
 
 -- 文章
@@ -1027,7 +1008,9 @@ SELECT
 
 -- 阅读量
 CREATE
-OR REPLACE FUNCTION article_page_view (article_id BIGINT) RETURNS BIGINT LANGUAGE plpgsql SECURITY DEFINER AS $$
+OR REPLACE FUNCTION public.article_page_view (article_id BIGINT) RETURNS BIGINT LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = '' AS $$
 DECLARE
   new_page_view BIGINT;
 BEGIN
@@ -1035,31 +1018,27 @@ BEGIN
     RAISE EXCEPTION 'article_id cannot be null';
   END IF;
 
-  UPDATE article
+  UPDATE public.article
   SET page_view = page_view + 1
   WHERE id = article_id
   RETURNING page_view INTO new_page_view;
 
   IF new_page_view IS NULL THEN
-    RAISE EXCEPTION 'Article with id % not found', article_id;
+    RAISE EXCEPTION 'Photo with id % not found', article_id;
   END IF;
 
   RETURN new_page_view;
 END;
 $$;
 
-ALTER FUNCTION article_page_view (BIGINT)
-SET
-  search_path = public,
-  pg_temp;
-
 GRANT
-EXECUTE ON FUNCTION article_page_view (BIGINT) TO authenticated,
+EXECUTE ON FUNCTION public.article_page_view (BIGINT) TO authenticated,
 anon;
 
 CREATE
-OR REPLACE FUNCTION photo_page_view (photo_id BIGINT) RETURNS BIGINT LANGUAGE
-plpgsql SECURITY DEFINER AS $$
+OR REPLACE FUNCTION public.photo_page_view (photo_id BIGINT) RETURNS BIGINT LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = '' AS $$
 DECLARE
   new_page_view BIGINT;
 BEGIN
@@ -1067,7 +1046,7 @@ BEGIN
     RAISE EXCEPTION 'photo_id cannot be null';
   END IF;
 
-  UPDATE photo
+  UPDATE public.photo
   SET page_view = page_view + 1
   WHERE id = photo_id
   RETURNING page_view INTO new_page_view;
@@ -1080,18 +1059,14 @@ BEGIN
 END;
 $$;
 
-ALTER FUNCTION photo_page_view (BIGINT)
-SET
-  search_path = public,
-  pg_temp;
-
 GRANT
-EXECUTE ON FUNCTION photo_page_view (BIGINT) TO authenticated,
+EXECUTE ON FUNCTION public.photo_page_view (BIGINT) TO authenticated,
 anon;
 
 CREATE
-OR REPLACE FUNCTION thought_page_view (thought_id BIGINT) RETURNS BIGINT
-LANGUAGE plpgsql SECURITY DEFINER AS $$
+OR REPLACE FUNCTION public.thought_page_view (thought_id BIGINT) RETURNS BIGINT LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = '' AS $$
 DECLARE
   new_page_view BIGINT;
 BEGIN
@@ -1099,7 +1074,7 @@ BEGIN
     RAISE EXCEPTION 'thought_id cannot be null';
   END IF;
 
-  UPDATE thought
+  UPDATE public.thought
   SET page_view = page_view + 1
   WHERE id = thought_id
   RETURNING page_view INTO new_page_view;
@@ -1112,15 +1087,9 @@ BEGIN
 END;
 $$;
 
-ALTER FUNCTION thought_page_view (BIGINT)
-SET
-  search_path = public,
-  pg_temp;
-
 GRANT
-EXECUTE ON FUNCTION thought_page_view (BIGINT) TO authenticated,
+EXECUTE ON FUNCTION public.thought_page_view (BIGINT) TO authenticated,
 anon;
-
 
 -- 允许全文搜索插件
 create extension pgroonga
