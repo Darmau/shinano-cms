@@ -87,8 +87,20 @@
 					<p class="text-sm text-cyan-700 font-medium">{$t('anonymous_comment')}</p>
 				{/if}
 				<h2
-					class="text-base font-medium text-zinc-800">{comment.user_id.name}</h2>
+					class="text-base font-medium text-zinc-800">{comment.is_anonymous ?
+				comment.name : comment.user_id.name}</h2>
 				<p class="text-lg text-zinc-800">{comment.content_text}</p>
+
+				{#if comment.is_anonymous}
+					<p class="text-sm text-gray-700 font-medium">{comment.email}</p>
+				{/if}
+
+				{#if comment.website}
+					<a
+						href={comment.website}
+						target="_blank"
+						class="text-sm text-cyan-600 font-medium">{comment.website}</a>
+				{/if}
 
 				{#if comment.to_article}
 					<a
@@ -109,7 +121,7 @@
 
 				<time class="text-sm text-zinc-500">{localTime(comment.created_at)}</time>
 			</div>
-			<div class="bg-gray-50 px-4 py-4 sm:px-6">
+			<div class="bg-gray-50 px-4 py-4 sm:px-6 space-x-3">
 				{#if comment.is_public === false}
 					<button
 						class="text-violet-500 text-sm font-medium"

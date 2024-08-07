@@ -767,6 +767,10 @@ create policy "List All Comments for Authenticated" on public.comment for
 select
   to authenticated using (not is_blocked);
 
+create policy "Anon User Can Comment" on public.comment for insert to anon
+with
+  check (true);
+
 create policy "Authenticated and not blocked User Can Comment" on public.comment for insert to authenticated
 with
   check (not user_is_blocked ());

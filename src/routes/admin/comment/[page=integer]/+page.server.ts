@@ -11,6 +11,9 @@ export const load: PageServerLoad = async ({ url,params: { page }, locals: { sup
 	.select(`
 	  id,
 	  user_id (name),
+	  name,
+	  email,
+	  website,
 	  content_text,
 	  is_public,
 	  is_blocked,
