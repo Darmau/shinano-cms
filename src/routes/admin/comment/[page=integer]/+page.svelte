@@ -4,6 +4,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { localTime } from '$lib/functions/localTime';
 	import { t } from '$lib/functions/i18n';
+	import PageTitle from '$components/PageTitle.svelte';
 
 	export let data;
 	let { supabase } = data;
@@ -76,33 +77,42 @@
 	<title>{$t('comment')}</title>
 </svelte:head>
 
+<PageTitle title = {$t('comment')} />
 <div class = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 	{#each data.comments as comment}
-		<div class = "rounded-md border p-3 flex flex-col gap-3" data-comment-id =
+		<div class = "rounded-lg bg-white shadow flex flex-col" data-comment-id =
 			{comment.id}>
-			{#if comment.is_anonymous}
-				<p class="text-sm text-cyan-700 font-medium">{$t('anonymous_comment')}</p>
-			{/if}
-			<h2
-				class="text-base font-medium text-zinc-800">{comment.user_id.name}</h2>
-			<p class="text-lg text-zinc-800">{comment.content_text}</p>
+			<div class="p-4 grow space-y-4">
+				{#if comment.is_anonymous}
+					<p class="text-sm text-cyan-700 font-medium">{$t('anonymous_comment')}</p>
+				{/if}
+				<h2
+					class="text-base font-medium text-zinc-800">{comment.user_id.name}</h2>
+				<p class="text-lg text-zinc-800">{comment.content_text}</p>
 
-			{#if comment.to_article}
-				<h3
-					class="font-medium text-cyan-600 text-base">{comment.to_article.title}</h3>
-			{:else if comment.to_photo}
-				<h3
-					class="font-medium text-cyan-600 text-base">{comment.to_photo.title}</h3>
-			{:else if comment.to_thought}
-				<h3
-					class="font-medium text-cyan-600 text-base">{comment.to_thought.content_text}</h3>
-			{/if}
+				{#if comment.to_article}
+					<a
+						target="_blank"
+						href={`${data.baseUrl}/${comment.to_article.language.lang}/article/${comment.to_article.slug}`}
+						class="block font-medium text-cyan-600 text-base">{comment.to_article.title}</a>
+				{:else if comment.to_photo}
+					<a
+						target="_blank"
+						href={`${data.baseUrl}/${comment.to_photo.language.lang}/album/${comment.to_photo.slug}`}
+						class="block font-medium text-cyan-600 text-base">{comment.to_photo.title}</a>
+				{:else if comment.to_thought}
+					<a
+						target="_blank"
+						href={`${data.baseUrl}/zh/thought/${comment.to_thought.slug}`}
+						class="block font-medium text-cyan-600 text-base">{comment.to_thought.content_text}</a>
+				{/if}
 
-			<time class="text-sm text-zinc-500">{localTime(comment.created_at)}</time>
-			<div class="mt-auto space-x-2">
+				<time class="text-sm text-zinc-500">{localTime(comment.created_at)}</time>
+			</div>
+			<div class="bg-gray-50 px-4 py-4 sm:px-6">
 				{#if comment.is_public === false}
 					<button
-						class="p-2 rounded bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700"
+						class="text-violet-500 text-sm font-medium"
 						on:click = {() => setPublic(comment.id)}
 					>
 						{$t('set_public')}
@@ -110,14 +120,14 @@
 				{/if}
 				{#if comment.is_blocked === false}
 					<button
-						class="p-2 rounded bg-red-700 text-white text-sm font-medium hover:bg-red-800"
+						class="text-sm font-medium text-red-500"
 						on:click = {() => setBlock(comment.id)}
 					>
 						{$t('block_comment')}
 					</button>
 				{:else}
 					<button
-						class="p-2 rounded bg-green-600 text-white text-sm font-medium hover:bg-green-700"
+						class="text-sm font-medium text-green-500"
 						on:click = {() => cancelBlock(comment.id)}
 					>
 						{$t('unblock_comment')}

@@ -1,5 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
+import { BASE_URL } from '$env/static/private';
 
 export const load: PageServerLoad = async ({ url,params: { page }, locals: { supabase } }) => {
 	const pageNumber = Number(page)
@@ -15,8 +16,8 @@ export const load: PageServerLoad = async ({ url,params: { page }, locals: { sup
 	  is_blocked,
 	  is_anonymous,
 	  created_at,
-	  to_article (title, slug),
-	  to_photo (title, slug),
+	  to_article (title, slug, language!inner (lang)),
+	  to_photo (title, slug, language!inner (lang)),
 	  to_thought (content_text, slug)
 	`)
 	.range((pageNumber - 1) * limit, pageNumber * limit - 1)
@@ -39,6 +40,7 @@ export const load: PageServerLoad = async ({ url,params: { page }, locals: { sup
 		comments: comments,
 		count: count ?? 0,
 		limit: limit,
-		path: path
+		path: path,
+		baseUrl: BASE_URL,
 	};
 };
