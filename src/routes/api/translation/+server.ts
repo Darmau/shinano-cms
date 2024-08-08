@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
-			model: 'gpt-3.5-turbo',
+			model: 'gpt-4o',
 			messages: [
 				{ role: 'system', content: prompt },
 				{ role: 'user', content: content },
