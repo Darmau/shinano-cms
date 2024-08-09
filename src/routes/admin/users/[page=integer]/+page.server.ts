@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ url,params: { page }, locals: { sup
 		.order('created_at', { ascending: false });
 
 	// 获取image表中数据的条目数
-	const { count } = await supabase.from('message').select('id', { count: 'exact' });
+	const { count } = await supabase.from('users').select('id', { count: 'exact' });
 
 	if (fetchError) {
 		console.error(error);
