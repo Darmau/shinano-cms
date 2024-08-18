@@ -127,6 +127,11 @@
 								</th>
 								<th
 									scope = "col"
+									class = "py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+								>{$t('cover')}
+								</th>
+								<th
+									scope = "col"
 									class = "px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 								>{$t('book_title')}
 								</th>
@@ -167,6 +172,23 @@
 											class =
 												"book-checkbox h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-600"
 										/>
+									</td>
+									<td
+										class = "px-3 py-4 text-sm text-gray-500 lg:table-cell"
+									>
+										<div
+											class =
+												"w-12 object-cover rounded-full shadow-sm bg-gray-100 aspect-square"
+										>
+											{#if book.cover}
+												<img
+													class = "rounded-full w-12 h-12 object-cover"
+													src =
+														{`${data.prefix}/cdn-cgi/image/format=auto,width=120/${book.cover.storage_key}`}
+													alt = {book.cover.alt}
+												/>
+											{/if}
+										</div>
 									</td>
 									<td
 										class = "px-3 py-4 text-sm text-gray-500 line-clamp-2"

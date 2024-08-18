@@ -196,7 +196,8 @@
 											{#if photo.cover}
 												<img
 													class = "rounded-full w-12 h-12 object-cover"
-													src = {`${data.prefix}/cdn-cgi/image/format=auto,width=56/${photo.cover.storage_key}`}
+													src =
+														{`${data.prefix}/cdn-cgi/image/format=auto,width=240/${photo.cover.storage_key}`}
 													alt = {photo.cover.alt}
 												/>
 											{/if}
