@@ -14,6 +14,7 @@ const translations: Translation = {
 		"video": "视频",
 		"thought": "想法",
 		"comment": "评论",
+		"book": "书籍",
 		"user": "用户",
 		"topic": "话题",
 		"setting": "设置",
@@ -111,6 +112,9 @@ const translations: Translation = {
 		"set_public": "设为公开",
 		"block_comment": "封禁评论",
 		"unblock_comment": "解封评论",
+		"book_title": "书名",
+		"rate": "评分",
+		"read_time": "阅读时间",
 	},
 	"en": {
 		"home": "Home",
@@ -121,6 +125,7 @@ const translations: Translation = {
 		"video": "Video",
 		"thought": "Thought",
 		"comment": "Comment",
+		"book": "Book",
 		"user": "User",
 		"topic": "Topic",
 		"setting": "Setting",
@@ -217,6 +222,9 @@ const translations: Translation = {
 		"set_public": "Set Public",
 		"block_comment": "Block Comment",
 		"unblock_comment": "Unblock Comment",
+		"book_title": "Book Title",
+		"rate": "Rate",
+		"read_time": "Read Time",
 	},
 	"zh-TW": {
 		"home": "首頁",
@@ -226,6 +234,7 @@ const translations: Translation = {
 		"photo": "照片",
 		"video": "影片",
 		"thought": "想法",
+		"book": "書籍",
 		"comment": "評論",
 		"user": "用戶",
 		"topic": "話題",
@@ -322,7 +331,10 @@ const translations: Translation = {
 		"anonymous_comment": "匿名評論",
 		"set_public": "設為公開",
 		"block_comment": "封禁評論",
-		"unblock_comment": "解封評論"
+		"unblock_comment": "解封評論",
+		"book_title": "書名",
+		"rate": "評分",
+		"read_time": "閱讀時間",
 	},
 	"jp": {
 		"home": "ホーム",
@@ -332,6 +344,7 @@ const translations: Translation = {
 		"photo": "写真",
 		"video": "ビデオ",
 		"thought": "アイデア",
+		"book": "本",
 		"comment": "コメント",
 		"user": "ユーザー",
 		"topic": "トピック",
@@ -428,7 +441,10 @@ const translations: Translation = {
 		"anonymous_comment": "匿名コメント",
 		"set_public": "公開に設定",
 		"block_comment": "コメントをブロック",
-		"unblock_comment": "コメントのブロックを解除"
+		"unblock_comment": "コメントのブロックを解除",
+		"book_title": "書名",
+		"rate": "評価",
+		"read_time": "読了時間",
 	}
 }
 
