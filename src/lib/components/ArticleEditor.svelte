@@ -6,7 +6,7 @@
 	import AddIcon from '$assets/icons/plus.svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { beforeNavigate, goto } from '$app/navigation';
-	import getDateFormat from '$lib/functions/dateFormat.js';
+	import getDateFormat from '$lib/functions/dateFormat.ts';
 	import { onMount } from 'svelte';
 
 	export let data;

@@ -13,20 +13,6 @@
 	import { locale, locales } from '$lib/functions/i18n';
 	import NavItems from '$components/NavItems.svelte';
 
-	const navItems = [
-		{ name: 'home', href: '/admin', icon: Home },
-		{ name: 'message', href: '/admin/message/1', icon: Message },
-		{ name: 'media', href: '/admin/media/1', icon: Media },
-		{ name: 'article', href: '/admin/article/1', icon: Article },
-		{ name: 'photo', href: '/admin/photo/1', icon: Photo },
-		{ name: 'thought', href: '/admin/thought/1', icon: Memo },
-		{ name: 'book', href: '/admin/book/1', icon: Book },
-		{ name: 'category', href: '/admin/category', icon: Category },
-		{ name: 'comment', href: '/admin/comment', icon: Comment },
-		{ name: 'user', href: '/admin/users/1', icon: User },
-		{ name: 'setting', href: '/admin/setting', icon: Setting }
-	];
-
 	let menuOpen = false;
 
 	export let data;

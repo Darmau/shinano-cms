@@ -12,6 +12,7 @@
 	import { page } from '$app/stores';
 	import { t } from '$lib/functions/i18n';
 	import UnreadBadge from '$components/UnreadBadge.svelte';
+	import Book from '$assets/icons/book.svelte';
 
 	export let data;
 	export let menuOpen;
@@ -25,6 +26,7 @@
 		{ name: 'article', href: '/admin/article/1', icon: Article },
 		{ name: 'photo', href: '/admin/photo/1', icon: Photo },
 		{ name: 'thought', href: '/admin/thought/1', icon: Memo },
+		{ name: 'book', href: '/admin/book/1', icon: Book },
 		{ name: 'category', href: '/admin/category', icon: Category },
 		{ name: 'comment', href: '/admin/comment/1', icon: Comment },
 		{ name: 'user', href: '/admin/users/1', icon: User },
