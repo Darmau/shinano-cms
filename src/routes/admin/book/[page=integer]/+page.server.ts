@@ -4,7 +4,7 @@ import { URL_PREFIX } from '$env/static/private';
 
 export const load: PageServerLoad = async ({ url, params: {page},locals: { supabase } }) => {
 	const pageNumber = Number(page);
-	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 10;
+	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 24;
 
 	// 获取book表中数据的条目数
 	const { count } = await supabase.from('book').select('id', { count: 'exact' });
