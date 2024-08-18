@@ -4,14 +4,13 @@
 	import Media from '$assets/icons/photo.svelte';
 	import Article from '$assets/icons/document-text.svelte';
 	import Photo from '$assets/icons/camera.svelte';
-	import Video from '$assets/icons/video-camera.svelte';
+	import Book from '$assets/icons/book.svelte';
 	import Memo from '$assets/icons/light-bulb.svelte';
 	import Comment from '$assets/icons/chat-bubble-left.svelte';
 	import User from '$assets/icons/users.svelte';
 	import Setting from '$assets/icons/cog.svelte';
 	import Category from '$assets/icons/rectangle-stack.svelte';
-	import { page } from '$app/stores';
-	import { t, locale, locales } from '$lib/functions/i18n';
+	import { locale, locales } from '$lib/functions/i18n';
 	import NavItems from '$components/NavItems.svelte';
 
 	const navItems = [
@@ -21,6 +20,7 @@
 		{ name: 'article', href: '/admin/article/1', icon: Article },
 		{ name: 'photo', href: '/admin/photo/1', icon: Photo },
 		{ name: 'thought', href: '/admin/thought/1', icon: Memo },
+		{ name: 'book', href: '/admin/book/1', icon: Book },
 		{ name: 'category', href: '/admin/category', icon: Category },
 		{ name: 'comment', href: '/admin/comment', icon: Comment },
 		{ name: 'user', href: '/admin/users/1', icon: User },
