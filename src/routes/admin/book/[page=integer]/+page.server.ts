@@ -18,6 +18,7 @@ export const load: PageServerLoad = async ({ url, params: {page},locals: { supab
 	  date,
 	  cover (id, alt, storage_key)
 	`)
+	.range((pageNumber - 1) * limit, pageNumber * limit - 1)
 	.order('created_at', { ascending: false });
 
 	if (fetchError) {
