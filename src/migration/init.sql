@@ -1057,7 +1057,7 @@ FROM
       subtitle,
       abstract,
       content_text AS content,
-      topic,
+      array_to_string(topic, ', ') AS topic,
       'article' AS
     type,
     slug,
@@ -1072,7 +1072,7 @@ FROM
       NULL AS subtitle,
       abstract,
       content_text AS content,
-      topic,
+      array_to_string(topic, ', ') AS topic,
       'photo' AS
     type,
     slug,
@@ -1087,7 +1087,7 @@ FROM
       NULL AS subtitle,
       NULL AS abstract,
       content_text AS content,
-      topic,
+      array_to_string(topic, ', ') AS topic,
       'thought' AS
     type,
     slug::text AS slug,
@@ -1128,4 +1128,48 @@ OR DELETE ON thought FOR EACH ROW
 EXECUTE FUNCTION refresh_materialized_view ();
 
 CREATE INDEX all_text_search_combined ON public.all_text USING pgroonga (title, subtitle, abstract, content, topic);
+
+CREATE
+OR REPLACE FUNCTION search_all_text (query TEXT) RETURNS TABLE (
+  title TEXT,
+  subtitle TEXT,
+  abstract TEXT,
+  content TEXT,
+  topic TEXT,
+  type TEXT,
+  slug TEXT,
+  lang INT8,
+  score float8
+) LANGUAGE plpgsql SECURITY DEFINER
+SET
+  search_path = public,
+  extensions AS $$
+BEGIN
+  IF query IS NULL OR query = '' THEN
+    RETURN;
+  END IF;
+
+  RETURN QUERY
+  SELECT
+    all_text.title,
+    all_text.subtitle,
+    all_text.abstract,
+    all_text.content,
+    all_text.topic,
+    all_text.type,
+    all_text.slug,
+    all_text.lang,
+    pgroonga_score(all_text.tableoid, all_text.ctid) AS score
+  FROM all_text
+  WHERE (
+        COALESCE(all_text.title, '') || ' ' ||
+        COALESCE(all_text.subtitle, '') || ' ' ||
+        COALESCE(all_text.abstract, '') || ' ' ||
+        COALESCE(all_text.content, '') || ' ' ||
+        COALESCE(all_text.topic, '')
+    ) &@~ query
+    ORDER BY score DESC;
+END;
+$$;
+
 
