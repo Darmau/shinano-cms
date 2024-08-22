@@ -1039,21 +1039,98 @@ create extension pgroonga
 with
   schema extensions;
 
-create index article_title ON article USING pgroonga (title);
+CREATE MATERIALIZED VIEW
+  "All Text for Search" AS
+SELECT
+  title,
+  subtitle,
+  abstract,
+  content,
+  topic,
+type,
+slug,
+lang
+FROM
+  (
+    SELECT
+      title,
+      subtitle,
+      abstract,
+      content_text AS content,
+      topic,
+      'article' AS
+    type,
+    slug,
+    lang
+    FROM
+      article
+    WHERE
+      is_draft = false
+    UNION ALL
+    SELECT
+      title,
+      NULL AS subtitle,
+      abstract,
+      content_text AS content,
+      topic,
+      'photo' AS
+    type,
+    slug,
+    lang
+    FROM
+      photo
+    WHERE
+      is_draft = false
+    UNION ALL
+    SELECT
+      NULL AS title,
+      NULL AS subtitle,
+      NULL AS abstract,
+      content_text AS content,
+      topic,
+      'thought' AS
+    type,
+    slug::text AS slug,
+    NULL AS lang
+    FROM
+      thought
+  ) AS combined_data;
 
-create index article_subtitle ON article USING pgroonga (subtitle);
+CREATE
+OR REPLACE FUNCTION refresh_materialized_view () RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER
+SET
+  search_path = '' AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW "All Text for Search";
+  RETURN NULL;
+END;
+$$;
 
-create index article_abstract ON article USING pgroonga (abstract);
+CREATE TRIGGER refresh_mv_article
+AFTER INSERT
+OR
+UPDATE
+OR DELETE ON article FOR EACH STATEMENT
+EXECUTE FUNCTION refresh_materialized_view ();
 
-create index article_content ON article USING pgroonga (content_text);
+CREATE TRIGGER refresh_mv_photo
+AFTER INSERT
+OR
+UPDATE
+OR DELETE ON photo FOR EACH STATEMENT
+EXECUTE FUNCTION refresh_materialized_view ();
 
-create index photo_title ON photo USING pgroonga (title);
+CREATE TRIGGER refresh_mv_thought
+AFTER INSERT
+OR
+UPDATE
+OR DELETE ON thought FOR EACH STATEMENT
+EXECUTE FUNCTION refresh_materialized_view ();
 
-create index photo_abstract ON photo USING pgroonga (abstract);
-
-create index photo_content ON photo USING pgroonga (content_text);
-
-create index thought_content ON thought USING pgroonga (content_text);
-
-create index comment_content ON comment USING pgroonga (content_text);
-
+CREATE INDEX ix_all_text_search_combined ON "All Text for Search" USING pgroonga (
+  title,
+  subtitle,
+  abstract,
+  content,
+  topic
+);
