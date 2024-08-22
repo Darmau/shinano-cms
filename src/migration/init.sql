@@ -1040,7 +1040,7 @@ with
   schema extensions;
 
 CREATE MATERIALIZED VIEW
-  "All Text for Search" AS
+  "all_text" AS
 SELECT
   title,
   subtitle,
@@ -1097,11 +1097,11 @@ FROM
   ) AS combined_data;
 
 CREATE
-OR REPLACE FUNCTION refresh_materialized_view () RETURNS TRIGGER LANGUAGE plpgsql SECURITY INVOKER
+OR REPLACE FUNCTION refresh_materialized_view () RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER
 SET
   search_path = '' AS $$
 BEGIN
-  REFRESH MATERIALIZED VIEW "All Text for Search";
+  REFRESH MATERIALIZED VIEW public.all_text;
   RETURN NULL;
 END;
 $$;
@@ -1110,27 +1110,22 @@ CREATE TRIGGER refresh_mv_article
 AFTER INSERT
 OR
 UPDATE
-OR DELETE ON article FOR EACH STATEMENT
+OR DELETE ON article FOR EACH ROW
 EXECUTE FUNCTION refresh_materialized_view ();
 
 CREATE TRIGGER refresh_mv_photo
 AFTER INSERT
 OR
 UPDATE
-OR DELETE ON photo FOR EACH STATEMENT
+OR DELETE ON photo FOR EACH ROW
 EXECUTE FUNCTION refresh_materialized_view ();
 
 CREATE TRIGGER refresh_mv_thought
 AFTER INSERT
 OR
 UPDATE
-OR DELETE ON thought FOR EACH STATEMENT
+OR DELETE ON thought FOR EACH ROW
 EXECUTE FUNCTION refresh_materialized_view ();
 
-CREATE INDEX ix_all_text_search_combined ON "All Text for Search" USING pgroonga (
-  title,
-  subtitle,
-  abstract,
-  content,
-  topic
-);
+CREATE INDEX all_text_search_combined ON public.all_text USING pgroonga (title, subtitle, abstract, content, topic);
+
